@@ -1,4 +1,5 @@
-const index = async ({ Marcas }, req, res) => {
+const index = ({ Marcas }) => async (req, res) => {
+  console.log("marcas index controller", Marcas)
   const marcas = await Marcas.findAll()
 
   res.render("marcas/index", {
@@ -6,18 +7,18 @@ const index = async ({ Marcas }, req, res) => {
   })
 }
 
-const create = (req, res) => {
+const create = () => (req, res) => {
   res.render("marcas/create_form", {
     title: "Nova a Marca"
   })
 }
 
-const createProcess = async ({ Marcas }, req, res) => {
+const createProcess = ({ Marcas }) => async (req, res) => {
   await Marcas.create(req.body)
   res.redirect("/marcas")
 }
 
-const edit = async ({ Marcas }, req, res) => {
+const edit = ({ Marcas }) => async (req, res) => {
   const marca = await Marcas.findByPk(req.params.id)
   res.render("marcas/edit_form", {
     title: "Editando a Marca",
@@ -25,7 +26,7 @@ const edit = async ({ Marcas }, req, res) => {
   })
 }
 
-const editProcess = async ({ Marcas }, req, res) => {
+const editProcess = ({ Marcas }) => async (req, res) => {
   await Marcas.update(req.body, {
     where: {
       id: req.params.id
@@ -34,7 +35,7 @@ const editProcess = async ({ Marcas }, req, res) => {
   res.redirect("/marcas")
 }
 
-const remove = async ({ Marcas }, req, res) => {
+const remove = ({ Marcas }) => async (req, res) => {
   await Marcas.destroy({
     where: {
       id: req.params.id
