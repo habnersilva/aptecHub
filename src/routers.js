@@ -6,5 +6,6 @@ const marca = require("./controllers/marca")
 
 router.get("/", dashboard.index)
 router.get("/marcas", marca.index)
+router.get("/marcas/adicionar", marca.create)
 
 module.exports = router
