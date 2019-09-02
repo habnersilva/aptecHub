@@ -1,13 +1,13 @@
 const express = require("express")
 const router = express.Router()
 
-const dashboard = require("./controllers/dashboard")
-const marca = require("./controllers/marca")
+const dashboardController = require("./controllers/dashboard")
+const marcaController = require("./controllers/marca")
 
-router.get("/", dashboard.index)
-router.get("/marcas", marca.index)
-router.get("/marcas/adicionar", marca.create)
-router.get("/marcas/editar/:id", marca.edit)
-router.get("/marcas/deletar/:id", marca.remove)
+router.get("/", dashboardController.index)
+router.get("/marcas", marcaController.index)
+router.get("/marcas/adicionar", marcaController.create)
+router.get("/marcas/editar/:id", marcaController.edit)
+router.get("/marcas/deletar/:id", marcaController.remove)
 
 module.exports = router
