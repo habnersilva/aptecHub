@@ -3,11 +3,15 @@ const index = (req, res) => {
 }
 
 const create = (req, res) => {
-  res.render("marcas/edit_form")
+  res.render("marcas/edit_form", {
+    title: "Nova a Marca"
+  })
 }
 
 const edit = (req, res) => {
-  res.render("marcas/edit_form")
+  res.render("marcas/edit_form", {
+    title: "Editando a Marca"
+  })
 }
 
 const remove = (req, res) => {
