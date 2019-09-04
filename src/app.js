@@ -1,13 +1,31 @@
 const init = models => {
   const express = require("express")
   const bodyParser = require("body-parser")
+  const session = require("express-session")
   const path = require("path")
   const routers = require("./routes/index")
 
   app = express()
 
   app.use(bodyParser.urlencoded({ extended: true }))
+  app.use(
+    session({
+      secret: "AptecHubSession",
+      name: "sessionId"
+    })
+  )
   app.use(express.static("./dist/public"))
+
+  //Middleware
+  app.use(async (req, res, next) => {
+    const { user } = req.session
+
+    res.locals = {
+      user
+    }
+    next()
+  })
+
   app.use(routers(models))
 
   app.set("view engine", "ejs")

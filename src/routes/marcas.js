@@ -1,6 +1,4 @@
 const init = models => {
-  console.log("marca Routes", models)
-
   const router = require("express").Router()
   const marcasController = require("../controllers/marcas")
 
