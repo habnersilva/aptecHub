@@ -20,10 +20,19 @@ const init = models => {
   app.use(async (req, res, next) => {
     const { user } = req.session
 
-    res.locals = {
-      user
+    if (!user) {
+      if (req.path !== "/login") {
+        res.redirect("/login")
+      } else {
+        next()
+      }
+    } else {
+      res.locals = {
+        user
+      }
+
+      next()
     }
-    next()
   })
 
   app.use(routers(models))
