@@ -1,11 +1,5 @@
 const bcrypt = require("bcryptjs")
 
-// const generateHash = passwd => {
-//   const salt = bcrypt.genSaltSync(10)
-//   const hash = bcrypt.hashSync(passwd, salt)
-//   return hash
-// }
-
 const UsuarioModel = (sequelize, DataType) => {
   const UsuarioSequelize = sequelize.define(
     "Usuarios",

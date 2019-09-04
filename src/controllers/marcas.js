@@ -1,5 +1,4 @@
 const index = ({ Marcas }) => async (req, res) => {
-  console.log("marcas index controller", Marcas)
   const marcas = await Marcas.findAll()
 
   res.render("marcas/index", {
@@ -7,16 +6,32 @@ const index = ({ Marcas }) => async (req, res) => {
   })
 }
 
-const create = () => (req, res) => {
-  res.render("marcas/create_form", {
-    title: "Nova a Marca"
-  })
+const create = ({ Marcas }) => async (req, res) => {
+  if (req.method === "GET") {
+    res.render("marcas/create_form", {
+      title: "Nova a Marca",
+      form: {},
+      errors: []
+    })
+  } else {
+    try {
+      await Marcas.create(req.body)
+      res.redirect("/marcas")
+    } catch (err) {
+      console.error(err)
+      res.render("marcas/create_form", {
+        title: "Nova a Marca",
+        form: req.body,
+        errors: err.errors.fields
+      })
+    }
+  }
 }
 
-const createProcess = ({ Marcas }) => async (req, res) => {
-  await Marcas.create(req.body)
-  res.redirect("/marcas")
-}
+// const createProcess = ({ Marcas }) => async (req, res) => {
+//   await Marcas.create(req.body)
+//   res.redirect("/marcas")
+// }
 
 const edit = ({ Marcas }) => async (req, res) => {
   const marca = await Marcas.findByPk(req.params.id)
@@ -48,7 +63,7 @@ const remove = ({ Marcas }) => async (req, res) => {
 module.exports = {
   index,
   create,
-  createProcess,
+  //createProcess,
   edit,
   editProcess,
   remove

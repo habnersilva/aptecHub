@@ -17,16 +17,21 @@
 
                 <div class="form-group">
                     <label for="inputName">Nome</label>
-                    <input name="name" type="text" class="form-control" id="inputName" aria-describedby="nameHelp"
-                        placeholder="Entre com o Nome">
-                    <!-- <small id="nameHelp" class="form-text text-muted">O Campo Nome é Obrigatório</small> -->
+                    <input name="name" type="text"
+                        class="form-control <% if(errors.indexOf('name') >= 0){ %> is-invalid <% } %>" id="inputName"
+                        aria-describedby="nameHelp" placeholder="Entre com o Nome" value="<%= form.name %>">
+                    <% if (errors.indexOf('name') >= 0){ %>
+                    <div class="invalid-feedback">O Campo Nome é Obrigatório</div>
+                    <%  } %>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail">Email</label>
-                    <input name="email" type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp"
-                        placeholder="Entre com o E-mail">
-                    <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
-                        else.</small> -->
+                    <input name="email" type="email"
+                        class="form-control <% if(errors.indexOf('email') >= 0){ %> is-invalid <% } %>" id="inputEmail"
+                        aria-describedby="emailHelp" placeholder="Entre com o E-mail" value="<%= form.email %>">
+                    <% if (errors.indexOf('email') >= 0){ %>
+                    <div class="invalid-feedback">O Campo E-mail é Obrigatório</div>
+                    <%  } %>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Salvar</button>
