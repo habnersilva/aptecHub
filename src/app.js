@@ -11,13 +11,21 @@ const init = models => {
   app.use(
     session({
       secret: "AptecHubSession",
-      name: "sessionId"
+      name: "sessionId",
+      resave: false,
+      saveUninitialized: true
+      //  cookie: { secure: true }
     })
   )
   app.use(express.static("./dist/public"))
 
   //Middleware
   app.use(async (req, res, next) => {
+    // req.session.user = {
+    //   name: "Habner Silva",
+    //   email: "habner@aptec.com.br"
+    // }
+
     const { user } = req.session
 
     if (!user) {

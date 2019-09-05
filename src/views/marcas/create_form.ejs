@@ -5,7 +5,7 @@
 
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800"><%= title %></h1>
+        <h1 class="h3 mb-0 text-gray-800">Nova marca</h1>
         <a href="/marcas" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm"><i
                 class="fas fa-chevron-circle-left"></i> Voltar</a>
     </div>
@@ -13,25 +13,26 @@
     <div class="row">
         <div class="col-lg-6">
 
-            <form action="/marcas/adicionar" method="POST">
-
+            <form action="/marcas/adicionar" method="POST" novalidate>
                 <div class="form-group">
                     <label for="inputName">Nome</label>
                     <input name="name" type="text"
-                        class="form-control <% if(errors.indexOf('name') >= 0){ %> is-invalid <% } %>" id="inputName"
-                        aria-describedby="nameHelp" placeholder="Entre com o Nome" value="<%= form.name %>">
-                    <% if (errors.indexOf('name') >= 0){ %>
-                    <div class="invalid-feedback">O Campo Nome é Obrigatório</div>
-                    <%  } %>
+                        class="form-control <% if(validate.fields.indexOf('name') >= 0){ %> is-invalid <% } %>"
+                        id="inputName" aria-describedby="nameHelp" placeholder="Entre com o Nome"
+                        value="<%= form.name %>">
+                    <% if (validate.fields.indexOf('name') >= 0){ %>
+                    <div class="invalid-feedback"><%= validate.errors.name %></div>
+                    <% } %>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail">Email</label>
                     <input name="email" type="email"
-                        class="form-control <% if(errors.indexOf('email') >= 0){ %> is-invalid <% } %>" id="inputEmail"
-                        aria-describedby="emailHelp" placeholder="Entre com o E-mail" value="<%= form.email %>">
-                    <% if (errors.indexOf('email') >= 0){ %>
-                    <div class="invalid-feedback">O Campo E-mail é Obrigatório</div>
-                    <%  } %>
+                        class="form-control <% if(validate.fields.indexOf('email') >= 0){ %> is-invalid <% }  %>"
+                        id="inputEmail" aria-describedby="emailHelp" placeholder="Entre com o E-mail"
+                        value="<%= form.email %>">
+                    <%  if (validate.fields.indexOf('email') >= 0){ %>
+                    <div class="invalid-feedback"><%= validate.errors.email %></div>
+                    <% } %>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Salvar</button>

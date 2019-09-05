@@ -1,37 +1,26 @@
-const Joi = require("@hapi/joi")
-
-const extractErrors = error => {
-  const errors = error.details.reduce((prev, curr) => {
-    if (prev[curr.path[0]]) {
-      prev[curr.path[0]].push(curr.type)
-    } else {
-      prev[curr.path[0]] = [curr.type]
-    }
-    return prev
-  }, {})
-
-  return {
-    errors,
-    fields: Object.keys(errors)
+const extractErrors = (err = null) => {
+  const objError = {
+    error: {},
+    fields: []
   }
-}
 
-const ValidationError = (message, errors) => ({ message, errors })
+  if (err) {
+    const errors = err.errors.reduce((prev, curr) => {
+      if (prev[curr.path]) {
+        prev[curr.path].push(curr.message)
+      } else {
+        prev[curr.path] = [curr.message]
+      }
+      return prev
+    }, {})
 
-const validate = (obj, schema) => {
-  const { error, value } = Joi.validate(obj, schema, {
-    abortEarly: false,
-    stripUnknown: true
-  })
-
-  if (error) {
-    throw ValidationError("validation", extractErrors(error))
-  } else {
-    return value
+    objError.errors = errors
+    objError.fields = Object.keys(errors)
   }
+
+  return objError
 }
 
 module.exports = {
-  extractErrors,
-  validate
+  extractErrors
 }

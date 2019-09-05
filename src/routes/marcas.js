@@ -5,8 +5,8 @@ const init = models => {
   router.get("/", marcasController.index(models))
   router.get("/adicionar", marcasController.create(models))
   router.post("/adicionar", marcasController.create(models))
-  router.get("/editar/:id", marcasController.edit(models))
-  router.post("/editar/:id", marcasController.editProcess(models))
+  router.get("/editar/:id", marcasController.update(models))
+  router.post("/editar/:id", marcasController.update(models))
   router.get("/excluir/:id", marcasController.remove(models))
 
   return router

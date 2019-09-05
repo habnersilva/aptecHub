@@ -1,3 +1,5 @@
+const { extractErrors } = require("../utils/validations")
+
 const index = ({ Marcas }) => async (req, res) => {
   const marcas = await Marcas.findAll()
 
@@ -9,45 +11,49 @@ const index = ({ Marcas }) => async (req, res) => {
 const create = ({ Marcas }) => async (req, res) => {
   if (req.method === "GET") {
     res.render("marcas/create_form", {
-      title: "Nova a Marca",
       form: {},
-      errors: []
+      validate: extractErrors()
     })
   } else {
     try {
       await Marcas.create(req.body)
       res.redirect("/marcas")
     } catch (err) {
-      console.error(err)
       res.render("marcas/create_form", {
-        title: "Nova a Marca",
         form: req.body,
-        errors: err.errors.fields
+        validate: extractErrors(err)
       })
     }
   }
 }
 
-// const createProcess = ({ Marcas }) => async (req, res) => {
-//   await Marcas.create(req.body)
-//   res.redirect("/marcas")
-// }
+const update = ({ Marcas }) => async (req, res) => {
+  const { id } = req.params
 
-const edit = ({ Marcas }) => async (req, res) => {
-  const marca = await Marcas.findByPk(req.params.id)
-  res.render("marcas/edit_form", {
-    title: "Editando a Marca",
-    marca
-  })
-}
+  if (req.method === "GET") {
+    const marca = await Marcas.findByPk(id)
 
-const editProcess = ({ Marcas }) => async (req, res) => {
-  await Marcas.update(req.body, {
-    where: {
-      id: req.params.id
+    res.render("marcas/edit_form", {
+      id,
+      form: marca,
+      validate: extractErrors()
+    })
+  } else {
+    try {
+      await Marcas.update(req.body, {
+        where: {
+          id
+        }
+      })
+      res.redirect("/marcas")
+    } catch (err) {
+      res.render("marcas/edit_form", {
+        id,
+        form: req.body,
+        validate: extractErrors(err)
+      })
     }
-  })
-  res.redirect("/marcas")
+  }
 }
 
 const remove = ({ Marcas }) => async (req, res) => {
@@ -63,8 +69,6 @@ const remove = ({ Marcas }) => async (req, res) => {
 module.exports = {
   index,
   create,
-  //createProcess,
-  edit,
-  editProcess,
+  update,
   remove
 }
