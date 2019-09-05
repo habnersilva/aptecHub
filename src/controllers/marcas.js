@@ -16,7 +16,8 @@ const create = ({ Marcas }) => async (req, res) => {
     })
   } else {
     try {
-      await Marcas.create(req.body)
+      const marca = await Marcas.create(req.body)
+      req.flash("success", `A marca ${marca.name} foi criada com sucesso!`)
       res.redirect("/marcas")
     } catch (err) {
       res.render("marcas/create_form", {
@@ -40,11 +41,12 @@ const update = ({ Marcas }) => async (req, res) => {
     })
   } else {
     try {
-      await Marcas.update(req.body, {
+      const marca = await Marcas.update(req.body, {
         where: {
           id
         }
       })
+      req.flash("success", `A marca ${req.body.name} foi editada com sucesso!`)
       res.redirect("/marcas")
     } catch (err) {
       res.render("marcas/edit_form", {
@@ -57,11 +59,15 @@ const update = ({ Marcas }) => async (req, res) => {
 }
 
 const remove = ({ Marcas }) => async (req, res) => {
-  await Marcas.destroy({
+  const marca = await Marcas.findByPk(req.params.id)
+
+  Marcas.destroy({
     where: {
       id: req.params.id
     }
   })
+
+  req.flash("into", `A marca ${marca.name} foi excluída!`)
 
   res.redirect("/marcas")
 }

@@ -15,21 +15,25 @@ const UsuarioModel = (sequelize, DataType) => {
       email: {
         type: DataType.STRING,
         validate: {
-          notEmpty: {
-            msg: "Preencha o campo E-mail"
+          len: {
+            args: [3, 60],
+            msg: "O e-mail deve conter mais de 3 caracteres"
           },
           isEmail: {
             msg: "Verifique se o e-mail está correto"
           },
-          len: {
-            args: [3, 60],
-            msg: "O e-mail deve conter mais de 3 caracteres"
+          notEmpty: {
+            msg: "Preencha o campo E-mail"
           }
         }
       },
       passwd: {
         type: DataType.STRING,
         validate: {
+          len: {
+            args: [3, 25],
+            msg: "O e-mail deve conter mais de 3 caracteres"
+          },
           notEmpty: {
             msg: "Preencha o campo Senha"
           }
@@ -49,15 +53,18 @@ const UsuarioModel = (sequelize, DataType) => {
   )
 
   UsuarioSequelize.authenticate = async (email, passwd) => {
+    await UsuarioSequelize.build({ email, passwd }).validate()
+
     const user = await UsuarioSequelize.findOne({ where: { email } })
 
     if (!user) {
-      throw new Error("Usuário Inválido")
+      throw new Error("Usuário Inválido.")
     }
 
     if (!bcrypt.compareSync(passwd, user.passwd)) {
-      throw new Error("Senha Inválida")
+      throw new Error("Senha Inválida.")
     }
+
     return user
   }
 

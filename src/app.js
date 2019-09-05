@@ -12,19 +12,23 @@ const init = models => {
     session({
       secret: "AptecHubSession",
       name: "sessionId",
-      resave: false,
+      resave: true,
       saveUninitialized: true
       //  cookie: { secure: true }
     })
   )
   app.use(express.static("./dist/public"))
+  app.use(require("connect-flash")())
 
   //Middleware
   app.use(async (req, res, next) => {
-    // req.session.user = {
-    //   name: "Habner Silva",
-    //   email: "habner@aptec.com.br"
-    // }
+    // Seta messages global
+    res.locals.messages = require("express-messages")(req, res)
+
+    req.session.user = {
+      name: "Habner Silva",
+      email: "habner@aptec.com.br"
+    }
 
     const { user } = req.session
 
@@ -35,10 +39,7 @@ const init = models => {
         next()
       }
     } else {
-      res.locals = {
-        user
-      }
-
+      res.locals.user = user
       next()
     }
   })

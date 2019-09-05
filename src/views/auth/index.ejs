@@ -41,15 +41,33 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Bemvindo ao AptecHub!</h1>
                                     </div>
-                                    <form class="user" action="/login" method="POST">
-                                        <div class="form-group">
+
+                                    <%- messages('message', locals)  %>
+
+                                    <form class="user" action="/login" method="POST" novalidate>
+                                        <!-- <div class="form-group">
                                             <input name="email" type="email" class="form-control form-control-user"
                                                 id="inputEmail" aria-describedby="emailHelp"
                                                 placeholder="Enter com seu E-mail...">
-                                        </div>
+                                        </div> -->
+
                                         <div class="form-group">
-                                            <input name="passwd" type="password" class="form-control form-control-user"
-                                                id="inputPassword" placeholder="Entre com seu Password">
+                                            <input name="email" type="email"
+                                                class="form-control form-control-user <% if(validate.fields.indexOf('email') >= 0){ %> is-invalid <% } %>"
+                                                id="inputEmail" aria-describedby="emailHelp"
+                                                placeholder="Entre com o E-mail" value="<%= /* form.email */ %>">
+                                            <%  if (validate.fields.indexOf('email') >= 0){ %>
+                                            <div class="invalid-feedback"><%= validate.errors.email %></div>
+                                            <% } %>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <input name="passwd" type="password"
+                                                class="form-control form-control-user <% if(validate.fields.indexOf('passwd') >= 0){ %> is-invalid <% } %>"
+                                                id="inputPassword" placeholder="Entre com sua Senha">
+                                            <%  if (validate.fields.indexOf('passwd') >= 0){ %>
+                                            <div class="invalid-feedback"><%= validate.errors.passwd %></div>
+                                            <% } %>
                                         </div>
                                         <div class="form-group">
                                             <div class="custom-control custom-checkbox small">

@@ -6,11 +6,7 @@ const extractErrors = (err = null) => {
 
   if (err) {
     const errors = err.errors.reduce((prev, curr) => {
-      if (prev[curr.path]) {
-        prev[curr.path].push(curr.message)
-      } else {
-        prev[curr.path] = [curr.message]
-      }
+      prev[curr.path] = [curr.message]
       return prev
     }, {})
 
