@@ -29,6 +29,9 @@ const extractErrors = (err = null) => {
       case "SequelizeValidationError":
         objError = trataErrorsSequelize(err)
         break
+      case "SequelizeUniqueConstraintError":
+        objError = trataErrorsSequelize(err)
+        break
       case "AptecHubError":
         objError.global = err.errors[0]
         break

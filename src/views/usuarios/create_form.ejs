@@ -1,0 +1,49 @@
+<%- include('../partials/header.ejs') %>
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Nova Usuário</h1>
+        <a href="/usuarios" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm"><i
+                class="fas fa-chevron-circle-left"></i> Voltar</a>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+
+            <form action="/usuarios/adicionar" method="POST" novalidate>
+                <div class="form-group">
+                    <label for="inputName">Nome</label>
+                    <input name="name" type="text"
+                        class="form-control <% if(errors.fields.arrayOfFields.indexOf('name') >= 0){ %> is-invalid <% } %>"
+                        id="inputName" aria-describedby="nameHelp" placeholder="Entre com o Nome"
+                        value="<%= form.name %>">
+                    <% if (errors.fields.arrayOfFields.indexOf('name') >= 0){ %>
+                    <div class="invalid-feedback"><%= errors.fields.name %></div>
+                    <% } %>
+                </div>
+                <div class="form-group">
+                    <label for="inputEmail">Email</label>
+                    <input name="email" type="email"
+                        class="form-control <% if(errors.fields.arrayOfFields.indexOf('email') >= 0){ %> is-invalid <% }  %>"
+                        id="inputEmail" aria-describedby="emailHelp" placeholder="Entre com o E-mail"
+                        value="<%= form.email %>">
+                    <%  if (errors.fields.arrayOfFields.indexOf('email') >= 0){ %>
+                    <div class="invalid-feedback"><%= errors.fields.email %></div>
+                    <% } %>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Salvar</button>
+
+            </form>
+
+
+        </div>
+    </div>
+
+</div>
+
+<!-- /.container-fluid -->
+<%- include('../partials/footer.ejs') %>

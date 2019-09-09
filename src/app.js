@@ -22,14 +22,14 @@ const init = models => {
 
   //Middleware
   app.use(async (req, res, next) => {
-    // Seta messages global
-    res.locals.messagesGlobal = require("./utils/messagesGlobal")(req, res)
-    res.locals.messagesFlash = require("express-messages")(req, res)
-
     req.session.user = {
       name: "Habner Silva",
       email: "habner@aptec.com.br"
     }
+
+    // Seta messages global
+    res.locals.messagesGlobal = require("./utils/messagesGlobal")(req, res)
+    res.locals.messagesFlash = require("express-messages")(req, res)
 
     const { user } = req.session
 

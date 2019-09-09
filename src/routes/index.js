@@ -7,9 +7,11 @@ const init = models => {
 
   const authRoutes = require("./auth")
   const marcasRoutes = require("./marcas")
+  const usuariosRoutes = require("./usuarios")
 
   router.use("/login", authRoutes(models))
   router.use("/marcas", marcasRoutes(models))
+  router.use("/usuarios", usuariosRoutes(models))
 
   return router
 }

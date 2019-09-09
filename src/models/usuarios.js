@@ -15,6 +15,10 @@ const UsuarioModel = (sequelize, DataType) => {
       },
       email: {
         type: DataType.STRING,
+        unique: {
+          args: true,
+          msg: "Este e-mail já possui cadastro"
+        },
         validate: {
           len: {
             args: [3, 60],
@@ -46,8 +50,10 @@ const UsuarioModel = (sequelize, DataType) => {
     {
       hooks: {
         beforeCreate: user => {
-          const salt = bcrypt.genSaltSync(10)
-          user.passwd = bcrypt.hashSync(user.passwd, salt)
+          if (user.passwd) {
+            const salt = bcrypt.genSaltSync(10)
+            user.passwd = bcrypt.hashSync(user.passwd, salt)
+          }
         }
       }
     }
