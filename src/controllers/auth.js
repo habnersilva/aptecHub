@@ -6,7 +6,7 @@ const login = ({ Usuarios }) => async (req, res) => {
   if (req.method === "GET") {
     res.render("auth/index", {
       form: {},
-      validate: extractErrors()
+      errors: extractErrors()
     })
   } else {
     try {
@@ -14,10 +14,10 @@ const login = ({ Usuarios }) => async (req, res) => {
       req.session.user = user
       res.redirect("/")
     } catch (err) {
-      console.log(err, extractErrors(err))
+      extractErrors(err)
       res.render("auth/index", {
         form: req.body,
-        validate: extractErrors(err)
+        errors: extractErrors(err)
       })
     }
   }

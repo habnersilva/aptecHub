@@ -1,4 +1,5 @@
 const bcrypt = require("bcryptjs")
+const aptecHubError = require("../errors")
 
 const UsuarioModel = (sequelize, DataType) => {
   const UsuarioSequelize = sequelize.define(
@@ -58,11 +59,27 @@ const UsuarioModel = (sequelize, DataType) => {
     const user = await UsuarioSequelize.findOne({ where: { email } })
 
     if (!user) {
-      throw new Error("Usuário Inválido.")
+      throw new aptecHubError({
+        errors: [
+          {
+            path: "global",
+            type: "danger",
+            message: "Usuário Inválido."
+          }
+        ]
+      })
     }
 
     if (!bcrypt.compareSync(passwd, user.passwd)) {
-      throw new Error("Senha Inválida.")
+      throw new aptecHubError({
+        errors: [
+          {
+            path: "global",
+            type: "danger",
+            message: "Senha Inválida."
+          }
+        ]
+      })
     }
 
     return user
