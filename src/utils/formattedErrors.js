@@ -1,6 +1,5 @@
 const trataErrorsSequelize = err => {
   const fieldsErrors = err.errors.reduce((prev, curr) => {
-    //  console.log(prev)
     prev[curr.path] = [curr.message]
     return prev
   }, {})

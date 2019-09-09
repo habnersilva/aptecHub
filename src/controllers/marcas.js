@@ -1,4 +1,4 @@
-const { extractErrors } = require("../utils/validations")
+const { extractErrors } = require("../utils/formattedErrors")
 
 const index = ({ Marcas }) => async (req, res) => {
   const marcas = await Marcas.findAll()
@@ -12,7 +12,7 @@ const create = ({ Marcas }) => async (req, res) => {
   if (req.method === "GET") {
     res.render("marcas/create_form", {
       form: {},
-      validate: extractErrors()
+      errors: extractErrors()
     })
   } else {
     try {
@@ -22,7 +22,7 @@ const create = ({ Marcas }) => async (req, res) => {
     } catch (err) {
       res.render("marcas/create_form", {
         form: req.body,
-        validate: extractErrors(err)
+        errors: extractErrors(err)
       })
     }
   }
@@ -37,7 +37,7 @@ const update = ({ Marcas }) => async (req, res) => {
     res.render("marcas/edit_form", {
       id,
       form: marca,
-      validate: extractErrors()
+      errors: extractErrors()
     })
   } else {
     try {
@@ -52,7 +52,7 @@ const update = ({ Marcas }) => async (req, res) => {
       res.render("marcas/edit_form", {
         id,
         form: req.body,
-        validate: extractErrors(err)
+        errors: extractErrors(err)
       })
     }
   }

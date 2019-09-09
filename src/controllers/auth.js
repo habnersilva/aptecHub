@@ -1,4 +1,4 @@
-const { extractErrors } = require("../utils/validations")
+const { extractErrors } = require("../utils/formattedErrors")
 
 const login = ({ Usuarios }) => async (req, res) => {
   const { email, passwd } = req.body
@@ -14,7 +14,6 @@ const login = ({ Usuarios }) => async (req, res) => {
       req.session.user = user
       res.redirect("/")
     } catch (err) {
-      extractErrors(err)
       res.render("auth/index", {
         form: req.body,
         errors: extractErrors(err)

@@ -9,7 +9,6 @@ module.exports = function(req, res) {
   return function(type, message) {
     let output = ""
 
-    console.log(type, message)
     if (type && message)
       output = `<div class="alert alert-${type}" role="alert"><p class="mb-0">${message}</p></div>`
 
