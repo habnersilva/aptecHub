@@ -7,6 +7,7 @@ const init = models => {
 
   app = express()
 
+  // Body Parser
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use(
     session({
@@ -40,6 +41,7 @@ const init = models => {
         next()
       }
     } else {
+      //  console.log(user.roles)
       res.locals.user = user
       next()
     }

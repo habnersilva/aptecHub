@@ -5,15 +5,15 @@
 
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Editando a marca</h1>
-        <a href="/marcas" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm"><i
+        <h1 class="h3 mb-0 text-gray-800">Editando a usuário</h1>
+        <a href="/usuarios" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm"><i
                 class="fas fa-chevron-circle-left"></i> Voltar</a>
     </div>
 
     <div class="row">
         <div class="col-lg-6">
 
-            <form action="/marcas/editar/<%= id %>" method="POST" novalidate>
+            <form action="/usuarios/editar/<%= id %>" method="POST" novalidate>
 
                 <div class="form-group">
                     <label for="inputName">Nome</label>
@@ -34,6 +34,21 @@
                     <%  if (errors.fields.arrayOfFields.indexOf('email') >= 0){ %>
                     <div class="invalid-feedback"><%= errors.fields.email %></div>
                     <% } %>
+                </div>
+                <div class="form-group">
+                    <p>Perfil do Usuário</p>
+
+
+                    <div class="form-check form-check-inline">
+                        <input name="roles" class="form-check-input" type="checkbox" id="rolesCheckboxAdmin"
+                            value="administrador" <% if(form.roles.indexOf('administrador') >= 0){ %> checked <% }  %>">
+                        <label class="form-check-label" for="rolesCheckboxAdmin">Administrador</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input name="roles" class="form-check-input" type="checkbox" id="rolesCheckboxTec"
+                            value="tecnico" <% if(form.roles.indexOf('tecnico') >= 0){ %> checked <% }  %>">
+                        <label class="form-check-label" for="rolesCheckboxTec">Técnico</label>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Salvar</button>
