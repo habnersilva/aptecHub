@@ -6,7 +6,8 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Usuários</h1>
-        <a href="/usuarios/adicionar" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+        <a href="/usuarios/adicionar?action=Novo Usuário"
+            class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                 class="fas fa-plus fa-sm text-white-50"></i> Nova usuário</a>
     </div>
 
@@ -33,12 +34,12 @@
                         <td><%= usuario.name %></td>
                         <td><%= usuario.email %></td>
                         <td>
-                            <a href="/usuarios/editar/<%= usuario.id %>" class="btn">
+                            <a href="/usuarios/editar/<%= usuario.id %>?action=Editar Usuário" class="btn">
                                 <i class="fas fa-edit"></i></a>
-                            <a href="/usuarios/excluir/<%= usuario.id %>" class="btn">
+
+                            <a href="/usuarios/excluir/<%= usuario.id %>?action=Excluir Usuário" class="btn">
                                 <i class="fas fa-trash"></i>
                             </a>
-
                         </td>
                     </tr>
                     <% }) %>

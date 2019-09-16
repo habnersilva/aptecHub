@@ -27,7 +27,31 @@ const logout = (req, res) => {
   res.redirect("/login")
 }
 
+const register = ({ Usuarios }) => async (req, res) => {
+  if (req.method === "GET") {
+    res.render("auth/register", {
+      form: {},
+      errors: extractErrors()
+    })
+  } else {
+    try {
+      const usuario = await Usuarios.create(req.body)
+      req.flash(
+        "success",
+        `<b>${usuario.name}<b>, sua conta está em aprovação! Em breve estraremos em contato!`
+      )
+      res.redirect("/login/cadastrese")
+    } catch (err) {
+      res.render("auth/register", {
+        form: req.body,
+        errors: extractErrors(err)
+      })
+    }
+  }
+}
+
 module.exports = {
   login,
-  logout
+  logout,
+  register
 }

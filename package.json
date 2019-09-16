@@ -21,6 +21,7 @@
     "dotenv": "^8.1.0",
     "ejs": "^2.6.2",
     "express": "^4.17.1",
+    "express-acl": "https://github.com/habnersilva/express-acl",
     "express-messages": "^1.0.1",
     "express-session": "^1.16.2",
     "mysql2": "^1.7.0",

@@ -3,6 +3,7 @@ const init = models => {
   const usuariosController = require("../controllers/usuarios")
 
   router.get("/", usuariosController.index(models))
+
   router.get("/adicionar", usuariosController.create(models))
   router.post("/adicionar", usuariosController.create(models))
   router.get("/editar/:id", usuariosController.update(models))

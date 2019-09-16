@@ -4,6 +4,8 @@ const init = models => {
 
   router.get("/", authController.login(models))
   router.post("/", authController.login(models))
+  router.get("/cadastrese", authController.register(models))
+  router.post("/cadastrese", authController.register(models))
   router.get("/sair", authController.logout)
 
   return router

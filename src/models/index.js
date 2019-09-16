@@ -26,7 +26,7 @@ const initialUser = async id => {
       email: "habner@aptec.com.br",
       passwd: "123",
       email_checked: true,
-      roles: "admin"
+      roles: "administrador, tecnico"
     })
   }
 }

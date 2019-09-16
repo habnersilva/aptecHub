@@ -79,6 +79,19 @@ const UsuarioModel = (sequelize, DataType) => {
       })
     }
 
+    if (!user.roles) {
+      throw new aptecHubError({
+        errors: [
+          {
+            path: "global",
+            type: "warning",
+            message:
+              "Sua conta não foi aprovada. Entre em contato com a administração."
+          }
+        ]
+      })
+    }
+
     return user
   }
 

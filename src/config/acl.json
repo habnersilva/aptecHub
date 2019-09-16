@@ -1,0 +1,56 @@
+[
+    {
+        "group": "guest",
+        "permissions": [
+            {
+                "resource": "login/*",
+                "methods": [
+                    "POST",
+                    "GET"
+                ],
+                "action": "allow"
+            }
+        ]
+    },
+    {
+        "group": "administrador",
+        "permissions": [
+            {
+                "resource": "usuarios/adicionar",
+                "methods": [
+                    "POST",
+                    "GET"
+                ],
+                "action": "deny"
+            },
+            {
+                "resource": "usuarios/*",
+                "methods": [
+                    "POST",
+                    "GET"
+                ],
+                "action": "allow"
+            }
+        ]
+    },
+    {
+        "group": "tecnico",
+        "permissions": [
+            {
+                "resource": "usuarios",
+                "methods": [
+                    "GET"
+                ],
+                "action": "allow"
+            },
+            {
+                "resource": "marcas/*",
+                "methods": [
+                    "GET",
+                    "POST"
+                ],
+                "action": "allow"
+            }
+        ]
+    }
+]
