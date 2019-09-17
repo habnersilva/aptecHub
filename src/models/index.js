@@ -2,11 +2,16 @@ const models = {}
 const fs = require("fs")
 const path = require("path")
 const Sequelize = require("sequelize")
-const sequelize = new Sequelize("aptec-hub", "root", "", {
-  dialect: "mysql",
-  host: "127.0.0.1",
-  logging: false
-})
+const sequelize = new Sequelize(
+  process.env.MYSQL_DBNAME,
+  process.env.MYSQL_USER,
+  "",
+  {
+    dialect: "mysql",
+    host: process.env.MYSQL_HOST,
+    logging: false
+  }
+)
 
 // Importa tabelas em database
 fs.readdirSync(__dirname)
