@@ -49,6 +49,7 @@ const init = models => {
   })
 
   app.use(routers(models))
+  app.disable("x-powered-by")
 
   app.set("view engine", "ejs")
   app.set("views", path.join(__dirname, "views"))
