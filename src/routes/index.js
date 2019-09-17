@@ -9,7 +9,7 @@ const init = models => {
     baseUrl: "/",
     roleSearchPath: "session.user.role",
     denyCallback: (req, res) => {
-      const msg = `"${req.query.action}"` || ""
+      const msg = req.query.action ? `"${req.query.action}"` : `"${req.path}"`
 
       req.flash(
         "warning",
