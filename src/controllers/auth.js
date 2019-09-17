@@ -38,7 +38,7 @@ const register = ({ Usuarios }) => async (req, res) => {
       const usuario = await Usuarios.create(req.body)
       req.flash(
         "success",
-        `<b>${usuario.name}<b>, sua conta está em aprovação! Em breve estraremos em contato!`
+        `${usuario.name}, sua conta está em aprovação! Em breve estraremos em contato!`
       )
       res.redirect("/login/cadastrese")
     } catch (err) {

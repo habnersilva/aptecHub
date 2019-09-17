@@ -4,7 +4,6 @@ const init = models => {
   const session = require("express-session")
   const path = require("path")
   const routers = require("./routes/index")
-  const acl = require("express-acl")
 
   app = express()
 
@@ -25,9 +24,10 @@ const init = models => {
   //Middleware
   app.use(async (req, res, next) => {
     req.session.user = {
+      id: "1",
       name: "Habner Silva",
       email: "habner@aptec.com.br",
-      roles: "tecnico"
+      role: "administrador"
     }
 
     // Seta messages global
@@ -43,31 +43,10 @@ const init = models => {
         next()
       }
     } else {
-      //  console.log(user.roles)
       res.locals.user = user
       next()
     }
   })
-
-  acl.config({
-    path: "src/config",
-    filename: "acl.json",
-    baseUrl: "/",
-    roleSearchPath: "session.user.roles",
-    denyCallback: (req, res) => {
-      console.log(res)
-
-      const msg = `"${req.query.action}"` || ""
-
-      req.flash(
-        "info",
-        `${res.locals.user.name}, você não possui permissão para acessar ${msg}!`
-      )
-
-      return res.redirect("back")
-    }
-  })
-  app.use(acl.authorize)
 
   app.use(routers(models))
 

@@ -34,22 +34,18 @@ const update = ({ Usuarios }) => async (req, res) => {
   if (req.method === "GET") {
     const usuario = await Usuarios.findByPk(id)
 
-    res.render("Usuarios/edit_form", {
+    res.render("usuarios/edit_form", {
       id,
       form: usuario,
       errors: extractErrors()
     })
   } else {
-    req.body.roles =
-      typeof req.body.roles === "object"
-        ? req.body.roles.join(",")
-        : req.body.roles
-
     try {
       await Usuarios.update(req.body, {
         where: {
           id
-        }
+        },
+        individualHooks: true
       })
       req.flash(
         "success",

@@ -36,33 +36,32 @@
                     <% } %>
                 </div>
 
-                <%- JSON.stringify(user) %>
-                <% if(user.roles.indexOf('administrador')){ %>
+                <% if(user.role === 'administrador'){ %>
                 <div class="form-group">
                     <label for="inputEmail">Senha</label>
-                    <input name="senha" type="password" class="form-control <% if(errors.fields.arrayOfFields.indexOf('email') >= 0){ %> is-invalid
+                    <input name="passwd" type="password" class="form-control <% if(errors.fields.arrayOfFields.indexOf('passwd') >= 0){ %> is-invalid
                 <% }  %>" id="inputSenha" aria-describedby="senhaHelp" placeholder="Entre com a Senha"
-                        value="<%= form.email %>">
-                    <%  if (errors.fields.arrayOfFields.indexOf('email') >= 0){ %>
-                    <div class="invalid-feedback"><%= errors.fields.email %></div>
+                        value="<%= form.passwd %>">
+                    <%  if (errors.fields.arrayOfFields.indexOf('passwd') >= 0){ %>
+                    <div class="invalid-feedback"><%= errors.fields.passwd %></div>
                     <% } %>
                 </div>
                 <% } %>
 
 
+                <% if(user.role === 'administrador'){ %>
                 <div class="form-group">
                     <p>Perfil do Usuário</p>
-                    <div class="form-check form-check-inline">
-                        <input name="roles" class="form-check-input" type="checkbox" id="rolesCheckboxAdmin"
-                            value="administrador" <% if(form.roles.indexOf('administrador') >= 0){ %> checked <% }  %>">
-                        <label class="form-check-label" for="rolesCheckboxAdmin">Administrador</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input name="roles" class="form-check-input" type="checkbox" id="rolesCheckboxTec"
-                            value="tecnico" <% if(form.roles.indexOf('tecnico') >= 0){ %> checked <% }  %>">
-                        <label class="form-check-label" for="rolesCheckboxTec">Técnico</label>
-                    </div>
+
+                    <select name="role" class="form-control">
+                        <option selected>Selecione o perfil do Usuário</option>
+                        <option value="administrador" <% if(form.role === 'administrador'){ %>selected<% } %>>
+                            Administrador</option>
+                        <option value="tecnico" <% if(form.role === 'tecnico'){ %>selected<% } %>>Técnico
+                        </option>
+                    </select>
                 </div>
+                <% } %>
 
                 <button type="submit" class="btn btn-primary">Salvar</button>
 

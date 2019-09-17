@@ -1,27 +1,14 @@
 [
     {
-        "group": "guest",
-        "permissions": [
-            {
-                "resource": "login/*",
-                "methods": [
-                    "POST",
-                    "GET"
-                ],
-                "action": "allow"
-            }
-        ]
-    },
-    {
         "group": "administrador",
         "permissions": [
             {
-                "resource": "usuarios/adicionar",
+                "resource": "marcas/*",
                 "methods": [
-                    "POST",
-                    "GET"
+                    "GET",
+                    "POST"
                 ],
-                "action": "deny"
+                "action": "allow"
             },
             {
                 "resource": "usuarios/*",
@@ -41,6 +28,11 @@
                 "methods": [
                     "GET"
                 ],
+                "action": "allow"
+            },
+            {
+                "resource": "usuarios/meusdados/*",
+                "methods": "*",
                 "action": "allow"
             },
             {

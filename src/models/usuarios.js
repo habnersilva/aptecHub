@@ -1,6 +1,14 @@
 const bcrypt = require("bcryptjs")
 const aptecHubError = require("../errors")
 
+const hashPasswd = user => {
+  if (user.passwd) {
+    const salt = bcrypt.genSaltSync(10)
+    user.passwd = bcrypt.hashSync(user.passwd, salt)
+  }
+  return user
+}
+
 const UsuarioModel = (sequelize, DataType) => {
   const UsuarioSequelize = sequelize.define("Usuarios", {
     name: {
@@ -43,7 +51,7 @@ const UsuarioModel = (sequelize, DataType) => {
       }
     },
     email_checked: DataType.TINYINT,
-    roles: {
+    role: {
       type: DataType.STRING,
       defaultValue: ""
     }
@@ -79,7 +87,7 @@ const UsuarioModel = (sequelize, DataType) => {
       })
     }
 
-    if (!user.roles) {
+    if (!user.role) {
       throw new aptecHubError({
         errors: [
           {
@@ -96,14 +104,13 @@ const UsuarioModel = (sequelize, DataType) => {
   }
 
   // HOOKS
-  UsuarioSequelize.beforeCreate(user => {
-    if (user.passwd) {
-      const salt = bcrypt.genSaltSync(10)
-      user.passwd = bcrypt.hashSync(user.passwd, salt)
-    }
-  })
+  UsuarioSequelize.beforeCreate(hashPasswd)
+  UsuarioSequelize.beforeUpdate(hashPasswd)
 
   return UsuarioSequelize
 }
+
+// Refatorar
+// Criar função para encrypt de senhas https://github.com/sequelize/sequelize/issues/4170
 
 module.exports = UsuarioModel

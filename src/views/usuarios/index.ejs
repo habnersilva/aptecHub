@@ -31,7 +31,9 @@
                     <% usuarios.forEach( usuario => { %>
                     <tr>
                         <th scope="row"></th>
-                        <td><%= usuario.name %></td>
+                        <td><%= usuario.name %><br /> <% if(usuario.role){ %> <span
+                                class="badge badge-warning">Aguardando
+                                Aprovação</span><% } %></td>
                         <td><%= usuario.email %></td>
                         <td>
                             <a href="/usuarios/editar/<%= usuario.id %>?action=Editar Usuário" class="btn">

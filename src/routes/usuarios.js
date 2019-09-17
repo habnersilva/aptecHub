@@ -10,6 +10,9 @@ const init = models => {
   router.post("/editar/:id", usuariosController.update(models))
   router.get("/excluir/:id", usuariosController.remove(models))
 
+  router.get("/meusdados/:id", usuariosController.update(models))
+  router.post("/meusdados/:id", usuariosController.update(models))
+
   return router
 }
 
