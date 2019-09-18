@@ -8,26 +8,6 @@ const index = ({ Usuarios }) => async (req, res) => {
   })
 }
 
-const create = ({ Usuarios }) => async (req, res) => {
-  if (req.method === "GET") {
-    res.render("usuarios/create_form", {
-      form: {},
-      errors: extractErrors()
-    })
-  } else {
-    try {
-      const usuario = await Usuarios.create(req.body)
-      req.flash("success", `A usuario ${usuario.name} foi criada com sucesso!`)
-      res.redirect("/usuarios")
-    } catch (err) {
-      res.render("usuarios/create_form", {
-        form: req.body,
-        errors: extractErrors(err)
-      })
-    }
-  }
-}
-
 const update = ({ Usuarios }) => async (req, res) => {
   const { id } = req.params
   let attributes = ["id", "name", "email", "passwd", "role"]
@@ -69,9 +49,9 @@ const update = ({ Usuarios }) => async (req, res) => {
       })
       req.flash(
         "success",
-        `A usuario ${req.body.name} foi editada com sucesso!`
+        `O usuário ${req.body.name} foi editada com sucesso!`
       )
-      res.redirect("back")
+      res.redirect("/usuarios")
     } catch (err) {
       res.render("usuarios/edit_form", {
         id,
@@ -99,7 +79,6 @@ const remove = ({ Usuarios }) => async (req, res) => {
 
 module.exports = {
   index,
-  create,
   update,
   remove
 }
