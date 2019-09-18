@@ -13,7 +13,7 @@
     <div class="row">
         <div class="col-lg-6">
 
-            <form action="/usuarios/editar/<%= id %>" method="POST" novalidate>
+            <form action="<%= action %>" method="POST" novalidate>
 
                 <div class="form-group">
                     <label for="inputName">Nome</label>
@@ -36,12 +36,14 @@
                     <% } %>
                 </div>
 
-                <% if(user.role === 'administrador'){ %>
+
+
+                <% if(form.passwd){ %>
                 <div class="form-group">
                     <label for="inputEmail">Senha</label>
-                    <input name="passwd" type="password" class="form-control <% if(errors.fields.arrayOfFields.indexOf('passwd') >= 0){ %> is-invalid
-                <% }  %>" id="inputSenha" aria-describedby="senhaHelp" placeholder="Entre com a Senha"
-                        value="<%= form.passwd %>">
+                    <input name="passwd" type="password" class="form-control <% if(errors.fields.arrayOfFields.indexOf('passwd') >= 0){ %>
+                is-invalid
+                <% }  %>" id="inputSenha" aria-describedby="senhaHelp" placeholder="Entre com a Senha" value="">
                     <%  if (errors.fields.arrayOfFields.indexOf('passwd') >= 0){ %>
                     <div class="invalid-feedback"><%= errors.fields.passwd %></div>
                     <% } %>
@@ -49,19 +51,17 @@
                 <% } %>
 
 
-                <% if(user.role === 'administrador'){ %>
                 <div class="form-group">
                     <p>Perfil do Usuário</p>
 
-                    <select name="role" class="form-control">
-                        <option selected>Selecione o perfil do Usuário</option>
+                    <select name="role" class="form-control" <% if(user.role !== 'administrador'){ %>disabled<% } %>>
+                        <option>Selecione o perfil do Usuário</option>
                         <option value="administrador" <% if(form.role === 'administrador'){ %>selected<% } %>>
                             Administrador</option>
                         <option value="tecnico" <% if(form.role === 'tecnico'){ %>selected<% } %>>Técnico
                         </option>
                     </select>
                 </div>
-                <% } %>
 
                 <button type="submit" class="btn btn-primary">Salvar</button>
 

@@ -1,8 +1,8 @@
 const bcrypt = require("bcryptjs")
 const aptecHubError = require("../errors")
 
-const hashPasswd = user => {
-  if (user.passwd) {
+const hashPasswd = (user, opt) => {
+  if (user.passwd && opt.fields.indexOf("passwd") >= 0) {
     const salt = bcrypt.genSaltSync(10)
     user.passwd = bcrypt.hashSync(user.passwd, salt)
   }
@@ -103,14 +103,28 @@ const UsuarioModel = (sequelize, DataType) => {
     return user
   }
 
+  UsuarioSequelize.permissionAccessMyData = req => {
+    const { id } = req.params
+    const { user } = req.session
+
+    if (parseInt(id) !== parseInt(user.id) && user.role !== "administrador") {
+      throw new aptecHubError({
+        errors: [
+          {
+            path: "global",
+            type: "warning",
+            message: "Você não possui permissão de acesso."
+          }
+        ]
+      })
+    }
+  }
+
   // HOOKS
   UsuarioSequelize.beforeCreate(hashPasswd)
   UsuarioSequelize.beforeUpdate(hashPasswd)
 
   return UsuarioSequelize
 }
-
-// Refatorar
-// Criar função para encrypt de senhas https://github.com/sequelize/sequelize/issues/4170
 
 module.exports = UsuarioModel
