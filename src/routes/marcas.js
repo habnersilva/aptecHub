@@ -9,6 +9,9 @@ const init = models => {
   router.post("/editar/:id", marcasController.update(models))
   router.get("/excluir/:id", marcasController.remove(models))
 
+  router.get("/importar/:id", marcasController.importProducts(models))
+  router.get("/enviar/:id", marcasController.sendProducts(models))
+
   return router
 }
 

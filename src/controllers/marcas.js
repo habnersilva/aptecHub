@@ -72,9 +72,20 @@ const remove = ({ Marcas }) => async (req, res) => {
   res.redirect("/marcas")
 }
 
+const importProducts = ({ Marcas }) => async (req, res) => {
+  console.log("ok")
+  res.send("import")
+}
+
+const sendProducts = ({ Marcas }) => async (req, res) => {
+  res.send("send")
+}
+
 module.exports = {
   index,
   create,
   update,
-  remove
+  remove,
+  importProducts,
+  sendProducts
 }
