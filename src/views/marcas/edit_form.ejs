@@ -36,6 +36,28 @@
                     <% } %>
                 </div>
 
+                <div class="form-group">
+                    <label for="inputDomain">Domínio Principal</label>
+                    <input name="domain" type="domain"
+                        class="form-control <% if(errors.fields.arrayOfFields.indexOf('domain') >= 0){ %> is-invalid <% }  %>"
+                        id="inputdomain" aria-describedby="domainHelp" placeholder="Entre com o Domínio"
+                        value="<%= form.domain %>">
+                    <%  if (errors.fields.arrayOfFields.indexOf('domain') >= 0){ %>
+                    <div class="invalid-feedback"><%= errors.fields.domain %></div>
+                    <% } %>
+                </div>
+
+                <div class="form-group">
+                    <label for="inputAppKey">appKey</label>
+                    <input name="appKey" type="appKey"
+                        class="form-control <% if(errors.fields.arrayOfFields.indexOf('appKey') >= 0){ %> is-invalid <% }  %>"
+                        id="inputappKey" aria-describedby="appKeyHelp" placeholder="Entre com o Domínio"
+                        value="<%= form.appKey %>">
+                    <%  if (errors.fields.arrayOfFields.indexOf('appKey') >= 0){ %>
+                    <div class="invalid-feedback"><%= errors.fields.appKey %></div>
+                    <% } %>
+                </div>
+
                 <button type="submit" class="btn btn-primary">Salvar</button>
 
             </form>

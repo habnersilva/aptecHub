@@ -1,4 +1,5 @@
 const { extractErrors } = require("../utils/formattedErrors")
+const aptecWeb = require("../api/aptecweb")
 
 const index = ({ Marcas }) => async (req, res) => {
   const marcas = await Marcas.findAll()
@@ -73,7 +74,11 @@ const remove = ({ Marcas }) => async (req, res) => {
 }
 
 const importProducts = ({ Marcas }) => async (req, res) => {
-  console.log("ok")
+  const marca = await Marcas.findByPk(req.params.id)
+
+  const produtos = await aptecWeb(marca).products.getAll()
+  console.log(produtos[0])
+
   res.send("import")
 }
 

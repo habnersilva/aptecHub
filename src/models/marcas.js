@@ -22,6 +22,22 @@ const MarcasModel = (sequelize, DataType) => {
           msg: "Preencha o campo E-mail"
         }
       }
+    },
+    domain: {
+      type: DataType.STRING,
+      validate: {
+        notEmpty: {
+          msg: "Preencha o campo Domínio"
+        }
+      }
+    },
+    appKey: {
+      type: DataType.STRING,
+      validate: {
+        notEmpty: {
+          msg: "Preencha o campo appKey"
+        }
+      }
     }
   })
 
