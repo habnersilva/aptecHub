@@ -41,5 +41,9 @@ module.exports = (sequelize, DataType) => {
     }
   })
 
+  Brands.associate = models => {
+    Brands.hasMany(models.Syncs)
+  }
+
   return Brands
 }

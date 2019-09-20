@@ -6,7 +6,7 @@ const port = process.env.PORT || 3000
 
 const server = require("./app")(models)
 
-sequelize.sync({ force: false }).then(() => {
+sequelize.sync({ force: true }).then(() => {
   // Criar o primeiro Usuario
   initialUser()
 

@@ -16,5 +16,10 @@ module.exports = (sequelize, DataType) => {
       type: DataType.BOOLEAN
     }
   })
+
+  Syncs.associate = models => {
+    Syncs.belongsTo(models.Brands)
+  }
+
   return Syncs
 }

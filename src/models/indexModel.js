@@ -21,6 +21,12 @@ fs.readdirSync(__dirname)
     models[model.name] = model
   })
 
+Object.keys(models).forEach(modelName => {
+  if ("associate" in models[modelName]) {
+    models[modelName].associate(models)
+  }
+})
+
 // Criar o primeiro Usuario
 const initialUser = async id => {
   const count = await models.Users.count()
