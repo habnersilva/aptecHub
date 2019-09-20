@@ -20,8 +20,8 @@ const create = ({ Brands }) => async (req, res) => {
     })
   } else {
     try {
-      const marca = await Brands.create(req.body)
-      req.flash("success", `A marca ${marca.name} foi criada com sucesso!`)
+      const brand = await Brands.create(req.body)
+      req.flash("success", `A marca ${brand.name} foi criada com sucesso!`)
       res.redirect("/marcas")
     } catch (err) {
       res.render("brands/create_form", {
@@ -36,16 +36,16 @@ const update = ({ Brands }) => async (req, res) => {
   const { id } = req.params
 
   if (req.method === "GET") {
-    const marca = await Brands.findByPk(id)
+    const brand = await Brands.findByPk(id)
 
     res.render("brands/edit_form", {
       id,
-      form: marca,
+      form: brand,
       errors: extractErrors()
     })
   } else {
     try {
-      const marca = await Brands.update(req.body, {
+      const brand = await Brands.update(req.body, {
         where: {
           id
         }
@@ -63,7 +63,7 @@ const update = ({ Brands }) => async (req, res) => {
 }
 
 const remove = ({ Brands }) => async (req, res) => {
-  const marca = await Brands.findByPk(req.params.id)
+  const brand = await Brands.findByPk(req.params.id)
 
   Brands.destroy({
     where: {
@@ -71,17 +71,17 @@ const remove = ({ Brands }) => async (req, res) => {
     }
   })
 
-  req.flash("success", `A marca ${marca.name} foi excluída!`)
+  req.flash("success", `A marca ${brand.name} foi excluída!`)
 
   res.redirect("/marcas")
 }
 
 const importProducts = ({ Brands }) => async (req, res) => {
-  const marca = await Brands.findByPk(req.params.id)
+  const brand = await Brands.findByPk(req.params.id)
 
   try {
-    const produtos = await aptecWeb(marca).products.getAll()
-    cacheProducts.save(marca, produtos)
+    const products = await aptecWeb(brand).products.getAll()
+    cacheProducts.save(brand, products)
   } catch (err) {
     console.error(err)
   }
