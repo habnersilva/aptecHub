@@ -1,28 +1,10 @@
 const fs = require("fs")
 const dateFormat = require("dateformat")
 const byteFormat = require("bytes")
+const aptecHubError = require("../errors")
 
-function save(marca, content) {
-  const filePath = `./tmp/${marca.id}.json`
-
-  const contentString = JSON.stringify(content)
-  return fs.writeFileSync(filePath, contentString)
-}
-
-function fileExist(filePath) {
-  return new Promise((resolve, reject) => {
-    fs.access(filePath, fs.F_OK, err => {
-      if (err) {
-        console.error(err)
-        return reject(err)
-      }
-      //file exists
-      resolve()
-    })
-  })
-}
-const detailsCache = path => {
-  const stats = fs.statSync(path)
+const fileStats = filePath => {
+  const stats = fs.statSync(filePath)
   return {
     sizeOriginal: stats.size,
     size: byteFormat(stats.size),
@@ -30,23 +12,38 @@ const detailsCache = path => {
     date: dateFormat(stats.birthtimeMs, "dd/mm/yyyy h:MM:ss TT")
   }
 }
-const hasProductsCached = filePath => fs.existsSync(path)
-const hasProductsUpdate = () => {}
 
-const load = async marca => {
-  const path = `./tmp/${marca.id}.json`
+const hasProductsCached = filePath => fs.existsSync(filePath)
 
-  if (!hasProductsCached) {
-    throw new Error("Não existe produtos cacheados")
+const save = async (brand, content) => {
+  const filePath = `./tmp/${brand.id}.json`
+
+  const contentString = JSON.stringify(content)
+  fs.writeFileSync(filePath, contentString)
+
+  return await load(brand)
+}
+
+const load = async brand => {
+  const filePath = `./tmp/${brand.id}.json`
+
+  if (!hasProductsCached(filePath)) {
+    throw new aptecHubError({
+      errors: [
+        {
+          type: "danger",
+          message: `Não existe arquivo cacheado para marca ${brand.name}`
+        }
+      ]
+    })
   } else {
-    const fileBuffer = fs.readFileSync(path, "utf-8")
+    const fileBuffer = fs.readFileSync(filePath, "utf-8")
     const contentJson = JSON.parse(fileBuffer)
 
     return {
+      filePath,
       totalProducts: contentJson.length,
-      details: detailsCache(path),
-      hasProductsCached,
-      hasProductsUpdate: false,
+      stats: fileStats(filePath),
       data: contentJson
     }
   }

@@ -76,17 +76,32 @@ const remove = ({ Brands }) => async (req, res) => {
   res.redirect("/marcas")
 }
 
-const importProducts = ({ Brands }) => async (req, res) => {
+const importProducts = ({ Brands, Syncs }) => async (req, res) => {
   const brand = await Brands.findByPk(req.params.id)
 
   try {
     const products = await aptecWeb(brand).products.getAll()
-    cacheProducts.save(brand, products)
+    const { filePath, totalOfProducts, stats } = await cacheProducts.save(
+      brand,
+      products
+    )
+
+    await Syncs.create({
+      type: "import",
+      filePath,
+      size: stats.size,
+      totalOfProducts
+    })
+
+    req.flash("success", `Importação realizar com sucesso para ${brand.name}`)
+    res.redirect("/marcas")
   } catch (err) {
     console.error(err)
-  }
+    if (err.name === "AptecHubError")
+      req.flash(err.errors[0].type, err.errors[0].message)
 
-  res.send("import")
+    res.redirect("/marcas")
+  }
 }
 
 const sendProducts = ({ Brands }) => async (req, res) => {
