@@ -29,10 +29,10 @@ const init = models => {
   )
 
   // Routers
-  const dashboardController = require("../controllers/dashboard")
-  const authRoutes = require("./auth")
-  const marcasRoutes = require("./marcas")
-  const usuariosRoutes = require("./usuarios")
+  const dashboardController = require("../controllers/dashboardController")
+  const authRoutes = require("./authRoutes")
+  const marcasRoutes = require("./brandRoutes")
+  const usuariosRoutes = require("./userRoutes")
 
   router.get("/", dashboardController.index)
   router.use("/login", authRoutes(models))

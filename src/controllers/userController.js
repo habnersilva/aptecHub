@@ -1,14 +1,14 @@
 const { extractErrors } = require("../utils/formattedErrors")
 
-const index = ({ Usuarios }) => async (req, res) => {
-  const usuarios = await Usuarios.findAll()
+const index = ({ Users }) => async (req, res) => {
+  const users = await Users.findAll()
 
-  res.render("usuarios/index", {
-    usuarios
+  res.render("users/index", {
+    users
   })
 }
 
-const update = ({ Usuarios }) => async (req, res) => {
+const update = ({ Users }) => async (req, res) => {
   const { id } = req.params
   let attributes = ["id", "name", "email", "passwd", "role"]
   let action = "/usuarios" + req.path
@@ -19,29 +19,29 @@ const update = ({ Usuarios }) => async (req, res) => {
 
   try {
     // Valida se usuario é ele mesmo ou possui perfil administrador
-    Usuarios.permissionAccessMyData(req)
+    Users.permissionAccessMyData(req)
   } catch (err) {
     req.flash(err.errors[0].type, err.errors[0].message)
     return res.redirect("back")
   }
 
   if (req.method === "GET") {
-    const usuario = await Usuarios.findOne({
+    const user = await Users.findOne({
       where: {
         id
       },
       attributes
     })
 
-    res.render("usuarios/edit_form", {
+    res.render("users/edit_form", {
       id,
-      form: usuario,
+      form: user,
       errors: extractErrors(),
       action
     })
   } else {
     try {
-      await Usuarios.update(req.body, {
+      await Users.update(req.body, {
         where: {
           id
         },
@@ -53,7 +53,7 @@ const update = ({ Usuarios }) => async (req, res) => {
       )
       res.redirect("/usuarios")
     } catch (err) {
-      res.render("usuarios/edit_form", {
+      res.render("users/edit_form", {
         id,
         form: req.body,
         errors: extractErrors(err),
@@ -63,16 +63,16 @@ const update = ({ Usuarios }) => async (req, res) => {
   }
 }
 
-const remove = ({ Usuarios }) => async (req, res) => {
-  const usuario = await Usuarios.findByPk(req.params.id)
+const remove = ({ Users }) => async (req, res) => {
+  const user = await Users.findByPk(req.params.id)
 
-  Usuarios.destroy({
+  Users.destroy({
     where: {
       id: req.params.id
     }
   })
 
-  req.flash("into", `A usuario ${usuario.name} foi excluída!`)
+  req.flash("success", `A usuario ${user.name} foi excluída!`)
 
   res.redirect("/usuarios")
 }

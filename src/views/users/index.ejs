@@ -22,23 +22,29 @@
                         <th scope="col"></th>
                         <th scope="col">Nome</th>
                         <th scope="col">E-mail</th>
+                        <th scope="col">Função</th>
                         <th scope="col">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
 
-                    <% usuarios.forEach( usuario => { %>
+                    <% users.forEach( user => { %>
                     <tr>
                         <th scope="row"></th>
-                        <td><%= usuario.name %><br /> <% if(!usuario.role){ %> <span
-                                class="badge badge-warning">Aguardando
-                                Aprovação</span><% } %></td>
-                        <td><%= usuario.email %></td>
+                        <td><%= user.name %></td>
+                        <td><%= user.email %></td>
                         <td>
-                            <a href="/usuarios/editar/<%= usuario.id %>?action=Editar Usuário" class="btn">
+                            <% if(!user.role){ %>
+                            <span class="badge badge-warning"> Aguardando Aprovação</span>
+                            <% } else { %>
+                            <%= user.role %>
+                            <% } %>
+                        </td>
+                        <td>
+                            <a href="/usuarios/editar/<%= user.id %>?action=Editar Usuário" class="btn">
                                 <i class="fas fa-edit"></i></a>
 
-                            <a href="/usuarios/excluir/<%= usuario.id %>?action=Excluir Usuário" class="btn">
+                            <a href="/usuarios/excluir/<%= user.id %>?action=Excluir Usuário" class="btn">
                                 <i class="fas fa-trash"></i>
                             </a>
                         </td>

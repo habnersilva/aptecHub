@@ -15,33 +15,53 @@
 
             <%- messagesFlash('message_templates', locals)  %>
 
-            <% marcas.forEach( marca => { %>
+            <% brands.forEach( brand => { %>
 
             <!-- Collapsable Card Example -->
             <div class="card shadow mb-4">
                 <!-- Card Header - Accordion -->
                 <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse" role="button"
                     aria-expanded="true" aria-controls="collapseCardExample">
-                    <h6 class="m-0 font-weight-bold text-primary"><%= marca.name %></h6>
+                    <h6 class="m-0 font-weight-bold text-primary"><%= brand.name %></h6>
                 </a>
                 <!-- Card Content - Collapse -->
                 <div class="collapse show" id="collapseCardExample">
                     <div class="card-body">
 
+
                         <div class="row">
-                            <div class="col-lg-10">
+
+                            <div class="col-lg-2 py-2">
+                                Total de Produtos
+                                <div class="h5 mb-0 font-weight-bold text-gray-800"><%=products%></div>
+
+                            </div>
+                            <div class="col-lg-2 py-2">
+                                Armazenamento
+                                <div class="h5 mb-0 font-weight-bold text-gray-800"><%= products %></div>
+                            </div>
+                            <div class="col-lg-2 py-2">
+                                Criado em
+                                <div class="h5 mb-0 font-weight-bold text-gray-800"><%= products %></div>
+                            </div>
+                            <div class="col-lg-2 py-2">
+                                Existe atualização?
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">Sim</div>
+                            </div>
 
 
+
+                            <div class="col-lg-2">
                             </div>
                             <div class="col-lg-2">
                                 <div class="float-right">
-                                    <a href="/marcas/importar/<%= marca.id %>" class="btn btn-primary btn-circle">
+                                    <a href="/marcas/importar/<%= brand.id %>" class="btn btn-primary btn-circle">
                                         <i class="fas fa-sync-alt"></i></a>
-                                    <a href="/marcas/envia/<%= marca.id %>" class="btn btn-primary btn-circle">
+                                    <a href="/marcas/envia/<%= brand.id %>" class="btn btn-primary btn-circle">
                                         <i class="fas fa-file-import"></i></a>
-                                    <a href="/marcas/editar/<%= marca.id %>" class="btn btn-success btn-circle">
+                                    <a href="/marcas/editar/<%= brand.id %>" class="btn btn-success btn-circle">
                                         <i class="fas fa-edit"></i></a>
-                                    <a href="/marcas/excluir/<%= marca.id %>" class="btn btn-danger btn-circle">
+                                    <a href="/marcas/excluir/<%= brand.id %>" class="btn btn-danger btn-circle">
                                         <i class="fas fa-trash"></i>
                                     </a>
                                 </div>

@@ -1,6 +1,6 @@
 const init = models => {
   const router = require("express").Router()
-  const authController = require("../controllers/auth")
+  const authController = require("../controllers/authController")
 
   router.get("/", authController.login(models))
   router.post("/", authController.login(models))

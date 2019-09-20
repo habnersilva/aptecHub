@@ -1,6 +1,6 @@
 const { extractErrors } = require("../utils/formattedErrors")
 
-const login = ({ Usuarios }) => async (req, res) => {
+const login = ({ Users }) => async (req, res) => {
   const { email, passwd } = req.body
 
   if (req.method === "GET") {
@@ -10,7 +10,7 @@ const login = ({ Usuarios }) => async (req, res) => {
     })
   } else {
     try {
-      const user = await Usuarios.authenticate(email, passwd)
+      const user = await Users.authenticate(email, passwd)
       req.session.user = user
       res.redirect("/")
     } catch (err) {
@@ -27,7 +27,7 @@ const logout = (req, res) => {
   res.redirect("/login")
 }
 
-const register = ({ Usuarios }) => async (req, res) => {
+const register = ({ Users }) => async (req, res) => {
   if (req.method === "GET") {
     res.render("auth/register", {
       form: {},
@@ -35,7 +35,7 @@ const register = ({ Usuarios }) => async (req, res) => {
     })
   } else {
     try {
-      const usuario = await Usuarios.create(req.body)
+      const usuario = await Users.create(req.body)
       req.flash(
         "success",
         `${usuario.name}, sua conta está em aprovação! Em breve estraremos em contato!`

@@ -1,5 +1,5 @@
-const MarcasModel = (sequelize, DataType) => {
-  const MarcaSequelize = sequelize.define("Marcas", {
+module.exports = (sequelize, DataType) => {
+  const Brands = sequelize.define("Brands", {
     name: {
       type: DataType.STRING,
       validate: {
@@ -41,7 +41,5 @@ const MarcasModel = (sequelize, DataType) => {
     }
   })
 
-  return MarcaSequelize
+  return Brands
 }
-
-module.exports = MarcasModel

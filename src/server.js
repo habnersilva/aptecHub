@@ -1,6 +1,6 @@
 require("dotenv").config()
 
-const { sequelize, models, initialUser } = require("./models/index")
+const { sequelize, models, initialUser } = require("./models/indexModel")
 
 const port = process.env.PORT || 3000
 

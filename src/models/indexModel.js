@@ -15,7 +15,7 @@ const sequelize = new Sequelize(
 
 // Importa tabelas em database
 fs.readdirSync(__dirname)
-  .filter(file => file !== "index.js")
+  .filter(file => file !== "indexModel.js")
   .forEach(file => {
     const model = sequelize.import(path.join(__dirname, file))
     models[model.name] = model
@@ -23,10 +23,10 @@ fs.readdirSync(__dirname)
 
 // Criar o primeiro Usuario
 const initialUser = async id => {
-  const count = await models.Usuarios.count()
+  const count = await models.Users.count()
   if (count === 0) {
     // criar um usuario admin
-    await models.Usuarios.create({
+    await models.Users.create({
       name: "Habner Silva",
       email: "habner@aptec.com.br",
       passwd: "123",

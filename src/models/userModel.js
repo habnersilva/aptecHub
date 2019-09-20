@@ -9,8 +9,8 @@ const hashPasswd = (user, opt) => {
   return user
 }
 
-const UsuarioModel = (sequelize, DataType) => {
-  const UsuarioSequelize = sequelize.define("Usuarios", {
+const UsersModel = (sequelize, DataType) => {
+  const Users = sequelize.define("Users", {
     name: {
       type: DataType.STRING,
       validate: {
@@ -58,10 +58,10 @@ const UsuarioModel = (sequelize, DataType) => {
   })
 
   // METHODS
-  UsuarioSequelize.authenticate = async (email, passwd) => {
-    await UsuarioSequelize.build({ email, passwd }).validate()
+  Users.authenticate = async (email, passwd) => {
+    await Users.build({ email, passwd }).validate()
 
-    const user = await UsuarioSequelize.findOne({ where: { email } })
+    const user = await Users.findOne({ where: { email } })
 
     if (!user) {
       throw new aptecHubError({
@@ -103,7 +103,7 @@ const UsuarioModel = (sequelize, DataType) => {
     return user
   }
 
-  UsuarioSequelize.permissionAccessMyData = req => {
+  Users.permissionAccessMyData = req => {
     const { id } = req.params
     const { user } = req.session
 
@@ -121,10 +121,10 @@ const UsuarioModel = (sequelize, DataType) => {
   }
 
   // HOOKS
-  UsuarioSequelize.beforeCreate(hashPasswd)
-  UsuarioSequelize.beforeUpdate(hashPasswd)
+  Users.beforeCreate(hashPasswd)
+  Users.beforeUpdate(hashPasswd)
 
-  return UsuarioSequelize
+  return Users
 }
 
-module.exports = UsuarioModel
+module.exports = UsersModel

@@ -3,7 +3,7 @@ const init = models => {
   const bodyParser = require("body-parser")
   const session = require("express-session")
   const path = require("path")
-  const routers = require("./routes/index")
+  const routers = require("./routes/indexRoutes")
 
   app = express()
 
