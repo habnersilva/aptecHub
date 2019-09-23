@@ -4,6 +4,7 @@ const init = models => {
   const session = require("express-session")
   const path = require("path")
   const routers = require("./routes/indexRoutes")
+  const dateFormat = require("dateformat")
 
   app = express()
 
@@ -33,6 +34,7 @@ const init = models => {
     // Seta messages global
     res.locals.messagesGlobal = require("./utils/messagesGlobal")(req, res)
     res.locals.messagesFlash = require("express-messages")(req, res)
+    res.locals.dateFormat = dateFormat
 
     const { user } = req.session
 

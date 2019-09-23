@@ -6,7 +6,7 @@ module.exports = (sequelize, DataType) => {
     size: {
       type: DataType.STRING
     },
-    totalOfProducts: {
+    totalProducts: {
       type: DataType.INTEGER
     },
     filePath: {
@@ -17,8 +17,8 @@ module.exports = (sequelize, DataType) => {
     }
   })
 
-  Syncs.associate = models => {
-    Syncs.belongsTo(models.Brands)
+  Syncs.associate = ({ Brands }) => {
+    Syncs.belongsTo(Brands)
   }
 
   return Syncs

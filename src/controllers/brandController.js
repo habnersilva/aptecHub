@@ -2,13 +2,14 @@ const { extractErrors } = require("../utils/formattedErrors")
 const aptecWeb = require("../api/aptecweb")
 const cacheProducts = require("../utils/cacheProducts")
 
-const index = ({ Brands }) => async (req, res) => {
+const index = ({ Brands, Syncs }) => async (req, res) => {
   let sync = {}
-  const brands = await Brands.findAll()
+  const brands = await Brands.findAll({
+    include: [{ model: Syncs }]
+  })
 
   res.render("brands/index", {
-    brands,
-    products: {}
+    brands
   })
 }
 
@@ -81,22 +82,22 @@ const importProducts = ({ Brands, Syncs }) => async (req, res) => {
 
   try {
     const products = await aptecWeb(brand).products.getAll()
-    const { filePath, totalOfProducts, stats } = await cacheProducts.save(
+    const { filePath, totalProducts, stats } = await cacheProducts.save(
       brand,
       products
     )
 
-    await Syncs.create({
+    const sync = await Syncs.create({
       type: "import",
       filePath,
       size: stats.size,
-      totalOfProducts
+      totalProducts
     })
+    sync.setBrand(brand)
 
     req.flash("success", `Importação realizar com sucesso para ${brand.name}`)
     res.redirect("/marcas")
   } catch (err) {
-    console.error(err)
     if (err.name === "AptecHubError")
       req.flash(err.errors[0].type, err.errors[0].message)
 

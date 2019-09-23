@@ -33,16 +33,20 @@
 
                             <div class="col-lg-2 py-2">
                                 Total de Produtos
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><%=products%></div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    <%= brand.Syncs[0] ? brand.Syncs[0].totalProducts : 0 %></div>
 
                             </div>
                             <div class="col-lg-2 py-2">
                                 Armazenamento
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><%= products %></div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    <%= brand.Syncs[0] ? brand.Syncs[0].size : 0 %></div>
                             </div>
                             <div class="col-lg-2 py-2">
                                 Criado em
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><%= products %></div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    <%= brand.Syncs[0] ? dateFormat(brand.Syncs[0].createdAt, "dd/mm/yyyy h:MM:ss TT") : "" %>
+                                </div>
                             </div>
                             <div class="col-lg-2 py-2">
                                 Existe atualização?
