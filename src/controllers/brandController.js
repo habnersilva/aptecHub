@@ -1,6 +1,6 @@
 const { extractErrors } = require("../utils/formattedErrors")
 const aptecWeb = require("../api/aptecweb")
-const cacheProducts = require("../utils/cacheProducts")
+const sync = require("../sync")
 
 const index = ({ Brands, Syncs }) => async (req, res) => {
   let sync = {}
@@ -81,19 +81,7 @@ const importProducts = ({ Brands, Syncs }) => async (req, res) => {
   const brand = await Brands.findByPk(req.params.id)
 
   try {
-    const products = await aptecWeb(brand).products.getAll()
-    const { filePath, totalProducts, stats } = await cacheProducts.save(
-      brand,
-      products
-    )
-
-    const sync = await Syncs.create({
-      type: "import",
-      filePath,
-      size: stats.size,
-      totalProducts
-    })
-    sync.setBrand(brand)
+    await sync(brand)
 
     req.flash("success", `Importação realizar com sucesso para ${brand.name}`)
     res.redirect("/marcas")
