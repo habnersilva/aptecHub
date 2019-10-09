@@ -3,10 +3,11 @@ const aptecWeb = require("../api/aptecweb")
 const sync = require("../sync")
 
 const index = ({ Brands, Syncs }) => async (req, res) => {
-  let sync = {}
   const brands = await Brands.findAll({
     include: [{ model: Syncs }]
   })
+
+  brands.map(brand => (brand.sync = sync(brand).load()))
 
   res.render("brands/index", {
     brands
@@ -81,7 +82,7 @@ const importProducts = ({ Brands, Syncs }) => async (req, res) => {
   const brand = await Brands.findByPk(req.params.id)
 
   try {
-    await sync(brand)
+    sync(brand).start()
 
     req.flash("success", `Importação realizar com sucesso para ${brand.name}`)
     res.redirect("/marcas")
