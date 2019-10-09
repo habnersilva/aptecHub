@@ -66,26 +66,21 @@ function organizeFileContent(content) {
   delete content.temp.productsOriginal
 }
 
-function hasUpdate(content) {
-  console.log(content.temp.products)
-}
-
 function salveInTempProducts(content) {
   content.temp.products = content.temp.productsPattern
 }
 
-const init = async contentFilePath => {
+const init = async objContentFilesPath => {
   console.log("=> fetchProducts")
 
-  const content = state.load(contentFilePath)
+  const content = state.load(objContentFilesPath)
 
   createVariables(content)
   await fetchProducts(content)
   mapFieldsProductsPattern(content)
-  // hasUpdate(content)
   salveInTempProducts(content)
   organizeFileContent(content)
 
-  state.save(contentFilePath, content)
+  state.save(objContentFilesPath, content)
 }
 module.exports = init
