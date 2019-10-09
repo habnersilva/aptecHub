@@ -51,7 +51,7 @@ function mapFieldsProductsPattern(content) {
         images,
         price: item.WsprodutoEstoque[0].valor_venda,
         sync: {
-          status: "sought"
+          status: "init"
         }
       })
     })

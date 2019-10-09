@@ -1,18 +1,23 @@
 const robots = {
   initContentFiles: require("./initContentFiles"),
   fetchProducts: require("./fetchProducts"),
+  updateProducts: require("./updateProducts"),
+  recordProducts: require("./recordProducts"),
   state: require("./state")
 }
 
 async function start(brand, objContentFilesPath) {
-  console.log("=> Start ")
+  console.log("=> start")
 
   robots.initContentFiles(brand, objContentFilesPath)
   await robots.fetchProducts(objContentFilesPath)
+  await robots.updateProducts(objContentFilesPath)
+  await robots.recordProducts(objContentFilesPath)
 
   const content = robots.state.load(objContentFilesPath)
   console.log("///////// Result ")
-  console.log(content)
+  //console.log(content)
+  //console.log(content.products.products)
 }
 
 const init = brand => {

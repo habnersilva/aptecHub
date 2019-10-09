@@ -72,6 +72,34 @@
                             </div>
                         </div>
 
+                        <div class="row">
+
+                            <%#= JSON.stringify(brand.sync.products.products) %>
+                            <% if(JSON.stringify(brand.sync.products) !== "{}"){ %>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Nome</th>
+                                        <th scope="col">Status de Importação</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if(brand.sync.products.products.length > 0 ){ %>
+                                    <% brand.sync.products.products.forEach( product => { %>
+                                    <tr>
+                                        <th scope="row"><%= product.id %></th>
+                                        <td><%= product.title %></td>
+                                        <td><span class="badge badge-primary"><%= product.sync.status %></span></td>
+                                    </tr>
+                                    <% }) %>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                            <% } %>
+
+                        </div>
+
                     </div>
                 </div>
             </div>
