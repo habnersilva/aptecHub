@@ -7,7 +7,7 @@ function productIsNew(content) {
     )
 
     if (productCurrent === undefined || productCurrent === "undefined") {
-      content.temp.products[index].sync.status = "new"
+      content.temp.products[index].import.status = "new"
     }
   })
 }
@@ -25,7 +25,7 @@ function productHasUpdate(content) {
       const productLastInString = Object.entries(productLast).toString()
 
       if (productCurrentInString != productLastInString) {
-        content.temp.products[index].sync.status = "modified"
+        content.temp.products[index].import.status = "modified"
       }
     }
   })

@@ -7,10 +7,11 @@ const init = async objContentFilesPath => {
 
   content.temp.products.forEach((productTemp, index) => {
     if (
-      productTemp.sync.status === "new" ||
-      productTemp.sync.status === "modified"
+      productTemp.import.status === "new" ||
+      productTemp.import.status === "modified"
     ) {
       content.products.products[index] = productTemp
+      content.products.products[index].sync.status = "waiting"
     }
   })
 

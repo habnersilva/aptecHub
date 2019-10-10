@@ -50,8 +50,14 @@ function mapFieldsProductsPattern(content) {
         imageMain: imageMain,
         images,
         price: item.WsprodutoEstoque[0].valor_venda,
+        import: {
+          status: "init",
+          date: ""
+        },
         sync: {
-          status: "init"
+          status: "init",
+          date: "",
+          id: ""
         }
       })
     })

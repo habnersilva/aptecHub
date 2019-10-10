@@ -82,6 +82,7 @@
                                         <th scope="col">ID</th>
                                         <th scope="col">Nome</th>
                                         <th scope="col">Status de Importação</th>
+                                        <th scope="col">Status de Sincronização</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -90,7 +91,14 @@
                                     <tr>
                                         <th scope="row"><%= product.id %></th>
                                         <td><%= product.title %></td>
-                                        <td><span class="badge badge-primary"><%= product.sync.status %></span></td>
+                                        <td>
+                                            <h5><span class="badge badge-primary"><%= product.import.status %></span>
+                                            </h5>
+                                        </td>
+                                        <td>
+                                            <h5><span class="badge badge-primary"><%= product.sync.status %></span></h5>
+                                            <h6><span class="badge badge-primary"><%= product.sync.date %></span></h6>
+                                        </td>
                                     </tr>
                                     <% }) %>
                                     <% } %>
