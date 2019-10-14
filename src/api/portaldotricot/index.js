@@ -67,23 +67,23 @@ const init = () => {
       params = transformDataFromShopify(data)
       const shopify_product = await shopify.product.update(id, params)
 
-      // shopify.metafield.create({
-      //   key: "link",
-      //   value: data.domain + data.slug,
-      //   value_type: "string",
-      //   namespace: "aptecHub",
-      //   owner_resource: "product",
-      //   owner_id: shopify_product.id
-      // })
+      shopify.metafield.update({
+        key: "link",
+        value: data.domain + data.slug,
+        value_type: "string",
+        namespace: "aptecHub",
+        owner_resource: "product",
+        owner_id: shopify_product.id
+      })
 
-      // shopify.metafield.create({
-      //   key: "idAptecHub",
-      //   value: data.id,
-      //   value_type: "int",
-      //   namespace: "aptecHub",
-      //   owner_resource: "product",
-      //   owner_id: shopify_product.id
-      // })
+      shopify.metafield.update({
+        key: "idaptechub",
+        value: data.id,
+        value_type: "string",
+        namespace: "aptecHub",
+        owner_resource: "product",
+        owner_id: shopify_product.id
+      })
 
       return shopify_product
     } catch (err) {
