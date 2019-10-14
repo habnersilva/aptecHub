@@ -72,7 +72,7 @@
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div class="row mt-5">
 
                             <%#= JSON.stringify(brand.sync.products.products) %>
                             <% if(JSON.stringify(brand.sync.products) !== "{}"){ %>
@@ -81,8 +81,8 @@
                                     <tr>
                                         <th scope="col">ID</th>
                                         <th scope="col">Nome</th>
-                                        <th scope="col">Status de Importação</th>
-                                        <th scope="col">Status de Sincronização</th>
+                                        <th scope="col" class="w-25">Status de Importação</th>
+                                        <th scope="col" class="w-25">Status de Sincronização</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -92,12 +92,12 @@
                                         <th scope="row"><%= product.id %></th>
                                         <td><%= product.title %></td>
                                         <td>
-                                            <h5><span class="badge badge-primary"><%= product.import.status %></span>
-                                            </h5>
+                                            <span class="badge badge-primary"><%= product.import.status %></span>
+                                            <span class="badge badge-primary"><%= product.import.date %></span>
                                         </td>
                                         <td>
-                                            <h5><span class="badge badge-primary"><%= product.sync.status %></span></h5>
-                                            <h6><span class="badge badge-primary"><%= product.sync.date %></span></h6>
+                                            <span class="badge badge-primary"><%= product.sync.status  %></span>
+                                            <span class="badge badge-primary"><%= product.sync.date %></span>
                                         </td>
                                     </tr>
                                     <% }) %>

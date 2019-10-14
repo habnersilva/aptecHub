@@ -2,13 +2,22 @@ const portalDoTricot = require("../api/portaldotricot")
 const state = require("./state")
 const dateFormat = require("dateformat")
 
-async function sendProductsFromPortaldoTricot(content) {
+async function sync(content) {
   const promises = content.products.products.map(async (product, index) => {
-    if (product.sync.status === "waiting") {
-      const productSync = await portalDoTricot.create_a_product(product)
+    let productSync = {}
 
+    if (product.sync.status === "create") {
+      productSync = await portalDoTricot.create_a_product(product)
+    } else if (product.sync.status === "update") {
+      productSync = await portalDoTricot.update_a_product(
+        product.sync.id,
+        product
+      )
+    }
+
+    if (product.sync.status === "create" || product.sync.status === "update") {
       content.products.products[index].sync = {
-        status: "sync",
+        status: "synced",
         date: dateFormat(new Date(), "dd-mm-yyyy HH:MM:ss"),
         id: productSync.id
       }
@@ -23,7 +32,7 @@ const init = async objContentFilesPath => {
 
   const content = state.load(objContentFilesPath)
 
-  await sendProductsFromPortaldoTricot(content)
+  await sync(content)
 
   state.save(objContentFilesPath, content)
 }

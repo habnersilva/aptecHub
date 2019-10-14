@@ -1,5 +1,6 @@
 const aptecWeb = require("../api/aptecweb")
 const state = require("./state")
+const dateFormat = require("dateformat")
 
 function createVariables(content) {
   // Esta variaveis sera temporarias e sempre reclicadas
@@ -52,7 +53,7 @@ function mapFieldsProductsPattern(content) {
         price: item.WsprodutoEstoque[0].valor_venda,
         import: {
           status: "init",
-          date: ""
+          date: dateFormat(new Date(), "dd-mm-yyyy HH:MM:ss")
         },
         sync: {
           status: "init",

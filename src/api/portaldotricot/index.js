@@ -45,14 +45,14 @@ const init = () => {
           owner_id: shopify_product.id
         })
 
-        // shopify.metafield.create({
-        //   key: "idAptecHub",
-        //   value: data.id,
-        //   value_type: "int",
-        //   namespace: "aptecHub",
-        //   owner_resource: "product",
-        //   owner_id: shopify_product.id
-        // })
+        shopify.metafield.create({
+          key: "idaptechub",
+          value: data.id,
+          value_type: "string",
+          namespace: "aptecHub",
+          owner_resource: "product",
+          owner_id: shopify_product.id
+        })
 
         resolve(shopify_product)
       } catch (err) {
@@ -62,10 +62,40 @@ const init = () => {
     })
   }
 
+  const update_a_product = async (id, data) => {
+    try {
+      params = transformDataFromShopify(data)
+      const shopify_product = await shopify.product.update(id, params)
+
+      // shopify.metafield.create({
+      //   key: "link",
+      //   value: data.domain + data.slug,
+      //   value_type: "string",
+      //   namespace: "aptecHub",
+      //   owner_resource: "product",
+      //   owner_id: shopify_product.id
+      // })
+
+      // shopify.metafield.create({
+      //   key: "idAptecHub",
+      //   value: data.id,
+      //   value_type: "int",
+      //   namespace: "aptecHub",
+      //   owner_resource: "product",
+      //   owner_id: shopify_product.id
+      // })
+
+      return shopify_product
+    } catch (err) {
+      console.log(err.statusCode)
+    }
+  }
+
   const list_all_products = async () => await shopify.product.list()
 
   return {
     create_a_product,
+    update_a_product,
     list_all_products
   }
 }
