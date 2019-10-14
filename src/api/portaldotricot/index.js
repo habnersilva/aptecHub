@@ -91,12 +91,40 @@ const init = () => {
     }
   }
 
-  const list_all_products = async () => await shopify.product.list()
+  const list_all_products = async params => {
+    try {
+      let productsSyncs = await shopify.product.list(params)
+
+      productsSyncs = await Promise.all(
+        productsSyncs.map(async product => {
+          const metafields = await shopify.metafield.list({
+            metafield: {
+              owner_resource: "product",
+              owner_id: product.id
+            }
+          })
+          return {
+            ...product,
+            metafields
+          }
+        })
+      )
+
+      return productsSyncs
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const count_all_products = async params => {
+    return await shopify.product.count(params)
+  }
 
   return {
     create_a_product,
     update_a_product,
-    list_all_products
+    list_all_products,
+    count_all_products
   }
 }
 

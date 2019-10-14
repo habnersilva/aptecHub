@@ -1,5 +1,6 @@
 const robots = {
   initContentFiles: require("./initContentFiles"),
+  downloadProductsPortal: require("./downloadProductsPortal"),
   fetchProducts: require("./fetchProducts"),
   updateProducts: require("./updateProducts"),
   recordProducts: require("./recordProducts"),
@@ -11,10 +12,11 @@ async function start(brand, objContentFilesPath) {
   console.log("=> start")
 
   robots.initContentFiles(brand, objContentFilesPath)
+  // await robots.downloadProductsPortal(objContentFilesPath)
   await robots.fetchProducts(objContentFilesPath)
-  await robots.updateProducts(objContentFilesPath)
-  await robots.recordProducts(objContentFilesPath)
-  await robots.sendProducts(objContentFilesPath)
+  // await robots.updateProducts(objContentFilesPath)
+  // await robots.recordProducts(objContentFilesPath)
+  // await robots.sendProducts(objContentFilesPath)
 
   const content = robots.state.load(objContentFilesPath)
   console.log("///////// Result ")
