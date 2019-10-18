@@ -7,24 +7,40 @@ async function sync(content) {
     let productSync = {}
 
     if (product.sync.status === "create") {
-      productSync = await portalDoTricot.create_a_product(product)
+      productSync = await portalDoTricot
+        .create_a_product(product)
+        .catch(err => {
+          throw new Error(
+            `Criando produto no PortaldoTricot\n     JSON ${JSON.stringify(
+              product
+            )}\n |--> ${err}`
+          )
+        })
     } else if (product.sync.status === "update") {
-      productSync = await portalDoTricot.update_a_product(
-        product.sync.id,
-        product
-      )
+      productSync = await portalDoTricot
+        .update_a_product(product.sync.id, product)
+        .catch(err => {
+          throw new Error(
+            `Editando produto no PortaldoTricot\n     JSON ${JSON.stringify(
+              product
+            )}\n |--> ${err}`
+          )
+        })
     }
 
     if (product.sync.status === "create" || product.sync.status === "update") {
       content.products.products[index].sync = {
         status: "synced",
         date: dateFormat(new Date(), "dd-mm-yyyy HH:MM:ss"),
-        id: productSync.id
+        id: productSync.metafields.idaptechub.value,
+        metafields: { ...productSync.metafields }
       }
     }
   })
 
-  await Promise.all(promises)
+  await Promise.all(promises).catch(err => {
+    throw new Error(`Falha no Robot Send Products\n |--> ${err}`)
+  })
 }
 
 const init = async objContentFilesPath => {

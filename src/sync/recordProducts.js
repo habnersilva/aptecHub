@@ -6,7 +6,10 @@ function updateStatusSyncOfProducts(content) {
       content.products.products[index].sync.status = "create"
     }
 
-    if (product.import.status === "modified") {
+    if (
+      product.import.status === "modified" &&
+      product.sync.status !== "synced"
+    ) {
       content.products.products[index].sync.status = "update"
     }
   })

@@ -1,6 +1,7 @@
 const fs = require("fs")
 const state = require("./state")
 const portalDoTricot = require("../api/portaldotricot")
+const dateFormat = require("dateformat")
 
 function _createVariables(content) {
   // Esta variaveis sera temporarias e sempre reclicadas
@@ -20,43 +21,31 @@ function _createVariables(content) {
 }
 
 const _fetchProducts = async content => {
-  try {
-    content.temp.productsPortal = await portalDoTricot.list_all_products({
+  content.temp.productsPortal = await portalDoTricot
+    .list_all_products({
       vendor: content.products.brand.name
     })
-  } catch (err) {
-    console.error(err)
-  }
+    .catch(err => {
+      throw new Error(
+        `Editando produto no Shopify\n     JSON ${JSON.stringify(
+          params
+        )}\n |--> ${err}`
+      )
+    })
 }
 
 function mapFieldsProductsPattern(content) {
   const { brand } = content.temp
   try {
     content.temp.productsPortal.map(product => {
-      console.dir(product, { detph: null })
-      process.exit(0)
-      // let imageMain =
-      //   product.WsprodutoImagem.filter(
-      //     data => typeof data !== undefined && data.principal === "1"
-      //   ).shift() || null
+      const metafields = {}
+      product.metafields.map(metafield => {
+        metafields[metafield.key] = metafield
+      })
 
-      // let images = product.WsprodutoImagem.map(data => {
-      //   return {
-      //     id: data.id
-      //   }
-      // })
-
-      content.temp.productsPattern.push({
-        id: product.id,
+      content.temp.productsPortalPattern.push({
+        id: metafields.idaptechub.value,
         title: product.title,
-        // status: product.Wsproduto.situacao,
-        description: product.body_html,
-        brand: brand.name,
-        domain: brand.domain,
-        slug: product.metafields.filter(item => item.key === link),
-        imageMain: product.image,
-        images: product.images,
-        price: product.WsprodutoEstoque[0].valor_venda,
         import: {
           status: "init",
           date: dateFormat(new Date(), "dd-mm-yyyy HH:MM:ss")
@@ -64,7 +53,8 @@ function mapFieldsProductsPattern(content) {
         sync: {
           status: "download",
           date: dateFormat(new Date(), "dd-mm-yyyy HH:MM:ss"),
-          id: product.id
+          id: product.id,
+          metafields
         }
       })
     })
@@ -73,15 +63,14 @@ function mapFieldsProductsPattern(content) {
   }
 }
 
-const _clearProducts = content => {
-  content.products.products = []
+function organizeFileContent(content) {
+  // Zerar productsOriginal
+  delete content.temp.productsPortal
+  delete content.temp.productsPortalPattern
 }
 
-const _countProducts = async content => {
-  const products = await portalDoTricot.count_all_products({
-    vendor: content.products.brand.name
-  })
-  console.log(products)
+function salveInTempProducts(content) {
+  content.products.products = content.temp.productsPortalPattern
 }
 
 const init = async objContentFilesPath => {
@@ -89,16 +78,17 @@ const init = async objContentFilesPath => {
 
   const content = state.load(objContentFilesPath)
 
-  // _countProducts(content)
-  // _clearProducts(content)
-
-  _createVariables(content)
-  await _fetchProducts(content)
-  mapFieldsProductsPattern(content)
-  // salveInTempProducts(content)
-  // organizeFileContent(content)
-
-  console.log(content.products.products)
+  if (
+    typeof content.products.products === "undefined" ||
+    content.products.products <= 0
+  ) {
+    console.log("+++> Rodou!")
+    _createVariables(content)
+    await _fetchProducts(content)
+    mapFieldsProductsPattern(content)
+    salveInTempProducts(content)
+    organizeFileContent(content)
+  }
 
   state.save(objContentFilesPath, content)
 }

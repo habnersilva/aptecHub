@@ -9,18 +9,21 @@ const robots = {
 }
 
 async function start(brand, objContentFilesPath) {
+  console.log(`**********************`)
+  console.log(`${brand.id} - ${brand.name}`)
+  console.log(`**********************`)
   console.log("=> start")
 
   robots.initContentFiles(brand, objContentFilesPath)
-  // await robots.downloadProductsPortal(objContentFilesPath)
+  await robots.downloadProductsPortal(objContentFilesPath)
   await robots.fetchProducts(objContentFilesPath)
-  // await robots.updateProducts(objContentFilesPath)
-  // await robots.recordProducts(objContentFilesPath)
-  // await robots.sendProducts(objContentFilesPath)
+  await robots.updateProducts(objContentFilesPath)
+  await robots.recordProducts(objContentFilesPath)
+  await robots.sendProducts(objContentFilesPath)
 
-  const content = robots.state.load(objContentFilesPath)
-  console.log("///////// Result ")
-  //console.log(content)
+  // const content = robots.state.load(objContentFilesPath)
+  // console.log(">>>>>>>>>>> Result ")
+  // //console.log(content)
   //console.log(content.products.products)
 }
 

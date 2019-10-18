@@ -7,11 +7,33 @@ const init = () => {
     password: process.env.SHOPIFY_PASSWORD
   })
 
-  const transformDataFromShopify = data => {
+  const _getObjMetaFields = (data, idProductShopify) => {
+    return {
+      link: {
+        key: "link",
+        value: data.domain + "/" + data.slug,
+        value_type: "string",
+        namespace: "aptecHub",
+        owner_resource: "product",
+        owner_id: idProductShopify
+      },
+      idaptechub: {
+        key: "idaptechub",
+        value: data.id,
+        value_type: "string",
+        namespace: "aptecHub",
+        owner_resource: "product",
+        owner_id: idProductShopify
+      }
+    }
+  }
+
+  const _transformDataFromShopify = data => {
     const params = {
       title: data.title,
       product_type: "Roupa",
       vendor: data.brand,
+      domain: data.domain,
       variants: [
         {
           price: data.price
@@ -33,62 +55,101 @@ const init = () => {
   const create_a_product = async data => {
     return new Promise(async (resolve, reject) => {
       try {
-        params = transformDataFromShopify(data)
-        const shopify_product = await shopify.product.create(params)
+        const params = _transformDataFromShopify(data)
 
-        shopify.metafield.create({
-          key: "link",
-          value: data.domain + data.slug,
-          value_type: "string",
-          namespace: "aptecHub",
-          owner_resource: "product",
-          owner_id: shopify_product.id
+        // adiciona produto
+        let productShopify = await shopify.product.create(params).catch(err => {
+          throw new Error(
+            `${err}\n     ==> Criando produto no Shopify\n     JSON ${JSON.stringify(
+              params
+            )}\n |--> ${err}`
+          )
         })
 
-        shopify.metafield.create({
-          key: "idaptechub",
-          value: data.id,
-          value_type: "string",
-          namespace: "aptecHub",
-          owner_resource: "product",
-          owner_id: shopify_product.id
-        })
+        const objMetaFields = _getObjMetaFields(data, productShopify.id)
 
-        resolve(shopify_product)
+        // adiciona metafields
+        productShopify.metafields = {
+          // adiciona metafield "link"
+          link: await shopify.metafield
+            .create(objMetaFields.link)
+            .catch(err => {
+              throw new Error(
+                `${err}\n     ==> Criando metafield "link" no Shopify\n     JSON ${JSON.stringify(
+                  objMetaFields.link
+                )}\n |--> ${err}`
+              )
+            }),
+          // adiciona metafield "idaptechub"
+          idaptechub: await shopify.metafield
+            .create(objMetaFields.idaptechub)
+            .catch(err => {
+              throw new Error(
+                `${err}\n     ==> Criando metafield "idaptechub" no Shopify\n     JSON ${JSON.stringify(
+                  objMetaFields.idaptechub
+                )}\n |--> ${err}`
+              )
+            })
+        }
+
+        resolve(productShopify)
       } catch (err) {
-        console.log(err.statusCode)
         reject(err)
       }
     })
   }
 
-  const update_a_product = async (id, data) => {
-    try {
-      params = transformDataFromShopify(data)
-      const shopify_product = await shopify.product.update(id, params)
+  const update_a_product = async (idProduct, data) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const params = _transformDataFromShopify(data)
 
-      shopify.metafield.update({
-        key: "link",
-        value: data.domain + data.slug,
-        value_type: "string",
-        namespace: "aptecHub",
-        owner_resource: "product",
-        owner_id: shopify_product.id
-      })
+        // edita produto
+        let productShopify = await shopify.product
+          .update(idProduct, params)
+          .catch(err => {
+            throw new Error(
+              `Editando produto no Shopify\n     JSON ${JSON.stringify(
+                params
+              )}\n |--> ${err}`
+            )
+          })
 
-      shopify.metafield.update({
-        key: "idaptechub",
-        value: data.id,
-        value_type: "string",
-        namespace: "aptecHub",
-        owner_resource: "product",
-        owner_id: shopify_product.id
-      })
+        const objMetaFields = _getObjMetaFields(data, idProduct)
 
-      return shopify_product
-    } catch (err) {
-      console.log(err.statusCode)
-    }
+        // Edita metafields
+        productShopify.metafields = {
+          // Edita metafield "link"
+          link: await shopify.metafield
+            .update(data.sync.metafields.link.id, {
+              value: objMetaFields.link.value
+            })
+            .catch(err => {
+              throw new Error(
+                `${err}\n     ==> Editando metafield "link" no Shopify\n     JSON ${JSON.stringify(
+                  objMetaFields.link
+                )}\n |--> ${err}`
+              )
+            }),
+          // Edita metafield "idaptechub"
+          idaptechub: await shopify.metafield
+            .update(data.sync.metafields.idaptechub.id, {
+              value: objMetaFields.idaptechub.value
+            })
+            .catch(err => {
+              throw new Error(
+                `${err}\n     ==> Editando metafield "idaptechub" no Shopify\n     JSON ${JSON.stringify(
+                  objMetaFields.idaptechub
+                )}\n |--> ${err}`
+              )
+            })
+        }
+
+        resolve(productShopify)
+      } catch (err) {
+        reject(err)
+      }
+    })
   }
 
   const list_all_products = async params => {
