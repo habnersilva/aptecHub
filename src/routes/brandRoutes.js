@@ -9,8 +9,8 @@ const init = models => {
   router.post("/editar/:id", brandController.update(models))
   router.get("/excluir/:id", brandController.remove(models))
 
-  router.get("/importar/:id", brandController.importProducts(models))
-  router.get("/enviar/:id", brandController.sendProducts(models))
+  router.get("/sincronizar/:id", brandController.syncProducts(models))
+  router.get("/reiniciar/:id", brandController.resetSyncProducts(models))
 
   return router
 }

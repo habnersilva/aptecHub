@@ -2,33 +2,22 @@ const aptecWeb = require("../api/aptecweb")
 const state = require("./state")
 const dateFormat = require("dateformat")
 
-function createVariables(content) {
+function _createVariables(content) {
   // Esta variaveis sera temporarias e sempre reclicadas
-  content.temp.productsOriginal = []
-  content.temp.productsPattern = []
-  content.products.data = []
-
-  // A variavel products deve ser fixa
-  if (typeof content.temp.products === "undefined") {
-    content.temp.products = []
-  }
-
-  // A variavel products deve ser fixa
-  if (typeof content.products.products === "undefined") {
-    content.products.products = []
-  }
+  content.original.productsOriginal = []
+  content.original.productsPattern = []
 }
 
 async function fetchProducts(content) {
-  content.temp.productsOriginal = await aptecWeb(
-    content.temp.brand
+  content.original.productsOriginal = await aptecWeb(
+    content.original.brand
   ).products.getAll()
 }
 
 function mapFieldsProductsPattern(content) {
-  const { brand } = content.temp
+  const { brand } = content.original
   try {
-    content.temp.productsOriginal.map(item => {
+    content.original.productsOriginal.map(item => {
       let imageMain =
         item.WsprodutoImagem.filter(
           data => typeof data !== undefined && data.principal === "1"
@@ -40,7 +29,7 @@ function mapFieldsProductsPattern(content) {
         }
       })
 
-      content.temp.productsPattern.push({
+      content.original.productsPattern.push({
         id: item.Wsproduto.id,
         title: item.Wsproduto.nome,
         status: item.Wsproduto.situacao,
@@ -50,16 +39,7 @@ function mapFieldsProductsPattern(content) {
         slug: item.Wsproduto.slug,
         imageMain: imageMain,
         images,
-        price: item.WsprodutoEstoque[0].valor_venda,
-        import: {
-          status: "init",
-          date: dateFormat(new Date(), "dd-mm-yyyy HH:MM:ss")
-        },
-        sync: {
-          status: "init",
-          date: "",
-          id: ""
-        }
+        price: item.WsprodutoEstoque[0].valor_venda
       })
     })
   } catch (err) {
@@ -69,12 +49,12 @@ function mapFieldsProductsPattern(content) {
 
 function organizeFileContent(content) {
   // Zerar productsOriginal
-  delete content.temp.productsPattern
-  delete content.temp.productsOriginal
+  delete content.original.productsPattern
+  delete content.original.productsOriginal
 }
 
 function salveInTempProducts(content) {
-  content.temp.products = content.temp.productsPattern
+  content.original.products = content.original.productsPattern
 }
 
 const init = async objContentFilesPath => {
@@ -82,7 +62,7 @@ const init = async objContentFilesPath => {
 
   const content = state.load(objContentFilesPath)
 
-  createVariables(content)
+  _createVariables(content)
   await fetchProducts(content)
   mapFieldsProductsPattern(content)
   salveInTempProducts(content)

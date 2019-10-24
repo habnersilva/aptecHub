@@ -78,7 +78,7 @@ const remove = ({ Brands }) => async (req, res) => {
   res.redirect("/marcas")
 }
 
-const importProducts = ({ Brands, Syncs }) => async (req, res) => {
+const syncProducts = ({ Brands, Syncs }) => async (req, res) => {
   const brand = await Brands.findByPk(req.params.id)
 
   try {
@@ -95,8 +95,24 @@ const importProducts = ({ Brands, Syncs }) => async (req, res) => {
   }
 }
 
-const sendProducts = ({ Brands }) => async (req, res) => {
-  res.send("send")
+const resetSyncProducts = ({ Brands, Syncs }) => async (req, res) => {
+  const brand = await Brands.findByPk(req.params.id)
+
+  try {
+    await sync(brand).reset()
+
+    req.flash(
+      "success",
+      `Reinicialização realizar com sucesso para ${brand.name}`
+    )
+    res.redirect("/marcas")
+  } catch (err) {
+    console.log(err)
+    if (err.name === "AptecHubError")
+      req.flash(err.errors[0].type, err.errors[0].message)
+
+    res.redirect("/marcas")
+  }
 }
 
 module.exports = {
@@ -104,6 +120,6 @@ module.exports = {
   create,
   update,
   remove,
-  importProducts,
-  sendProducts
+  syncProducts,
+  resetSyncProducts
 }

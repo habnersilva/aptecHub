@@ -8,10 +8,23 @@ const robots = {
   state: require("./state")
 }
 
+async function reset(brand, objContentFilesPath) {
+  console.log("=> resetContentFiles")
+
+  const content = robots.state.load(objContentFilesPath)
+
+  content.temp = {}
+  content.products.products = []
+
+  robots.state.save(objContentFilesPath, content)
+
+  start(brand, objContentFilesPath)
+}
+
 async function start(brand, objContentFilesPath) {
-  console.log(`**********************`)
+  console.log("**********************")
   console.log(`${brand.id} - ${brand.name}`)
-  console.log(`**********************`)
+  console.log("**********************")
   console.log("=> start")
 
   robots.initContentFiles(brand, objContentFilesPath)
@@ -19,22 +32,31 @@ async function start(brand, objContentFilesPath) {
   await robots.fetchProducts(objContentFilesPath)
   await robots.updateProducts(objContentFilesPath)
   await robots.recordProducts(objContentFilesPath)
-  await robots.sendProducts(objContentFilesPath)
+  // // await robots.sendProducts(objContentFilesPath)
 
-  // const content = robots.state.load(objContentFilesPath)
-  // console.log(">>>>>>>>>>> Result ")
-  // //console.log(content)
-  //console.log(content.products.products)
+  const content = robots.state.load(objContentFilesPath)
+  console.log(">>>>>>>>>>> Product ORIGINAL ")
+  content.original.products.forEach(productOriginal =>
+    console.log(`${productOriginal.id} (${productOriginal.title})`)
+  )
+  console.log(">>>>>>>>>>> Product TEMP ")
+  content.temp.products.forEach(productTemp =>
+    console.log(
+      ` => ${productTemp.stage} ---- ${productTemp.id} (${productTemp.title})`
+    )
+  )
 }
 
 const init = brand => {
   const objContentFilesPath = {
+    original: `./tmp/${brand.id}_original.json`,
     temp: `./tmp/${brand.id}_temp.json`,
     products: `./tmp/${brand.id}_products.json`
   }
 
   return {
     start: start.bind(null, brand, objContentFilesPath),
+    reset: reset.bind(null, brand, objContentFilesPath),
     load: robots.state.load.bind(null, objContentFilesPath)
   }
 }

@@ -7,7 +7,6 @@ function _createVariables(content) {
   // Esta variaveis sera temporarias e sempre reclicadas
   content.temp.productsPortal = []
   content.temp.productsPortalPattern = []
-  content.products.data = []
 
   // A variavel products deve ser fixa
   if (typeof content.temp.products === "undefined") {
@@ -46,16 +45,8 @@ function mapFieldsProductsPattern(content) {
       content.temp.productsPortalPattern.push({
         id: metafields.idaptechub.value,
         title: product.title,
-        import: {
-          status: "init",
-          date: dateFormat(new Date(), "dd-mm-yyyy HH:MM:ss")
-        },
-        sync: {
-          status: "download",
-          date: dateFormat(new Date(), "dd-mm-yyyy HH:MM:ss"),
-          id: product.id,
-          metafields
-        }
+        stage: "download",
+        metafields
       })
     })
   } catch (err) {
@@ -80,9 +71,10 @@ const init = async objContentFilesPath => {
 
   if (
     typeof content.products.products === "undefined" ||
-    content.products.products <= 0
+    content.products.products.length <= 0
   ) {
     console.log("+++> Rodou!")
+
     _createVariables(content)
     await _fetchProducts(content)
     mapFieldsProductsPattern(content)

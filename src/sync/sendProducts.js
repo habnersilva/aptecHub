@@ -17,6 +17,7 @@ async function sync(content) {
           )
         })
     } else if (product.sync.status === "update") {
+      console.log("**** update")
       productSync = await portalDoTricot
         .update_a_product(product.sync.id, product)
         .catch(err => {

@@ -15,15 +15,41 @@ function updateStatusSyncOfProducts(content) {
   })
 }
 
-function storeProducts(content) {
-  content.temp.products.forEach((productTemp, index) => {
-    if (
-      productTemp.import.status === "new" ||
-      productTemp.import.status === "modified"
-    ) {
-      content.products.products[index] = productTemp
-    }
-  })
+// function storeProducts(content) {
+//   content.temp.products.forEach((productTemp, index) => {
+//     if (
+//       productTemp.import.status === "new" ||
+//       productTemp.import.status === "modified"
+//     ) {
+//       // Remove Sync de temp
+//       delete productTemp.sync
+//       // Merge entre Objetos
+//       productStore = {
+//         ...content.products.products[index],
+//         ...productTemp
+//       }
+//       content.products.products[index] = productStore
+//     }
+//   })
+// }
+
+function _storeProductsIfEmpty(content) {
+  if (content.products.products.length <= 0) {
+    content.products.products = content.temp.products
+  }
+}
+
+// function deleteProducts(content) {
+//   content.products.products.forEach((product, index) => {
+//     console.log(product.import)
+//     if (product.import.status === "delete") {
+//       console.log(product.id)
+//     }
+//   })
+// }
+
+function clearFileTemp(content) {
+  content.temp = {}
 }
 
 const init = async objContentFilesPath => {
@@ -31,8 +57,11 @@ const init = async objContentFilesPath => {
 
   const content = state.load(objContentFilesPath)
 
-  storeProducts(content)
-  updateStatusSyncOfProducts(content)
+  //deleteProducts(content)
+  _storeProductsIfEmpty(content)
+  //_storeProductsIfModified(content)
+  //updateStatusSyncOfProducts(content)
+  // clearFileTemp(content)
 
   state.save(objContentFilesPath, content)
 }
