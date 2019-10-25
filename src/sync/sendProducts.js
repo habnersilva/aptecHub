@@ -3,7 +3,7 @@ const state = require("./state")
 const dateFormat = require("dateformat")
 
 async function sync(content) {
-  const promises = content.products.products.map(async (product, index) => {
+  const promises = content.production.products.map(async (product, index) => {
     let productSync = {}
 
     if (product.sync.status === "create") {
@@ -30,7 +30,7 @@ async function sync(content) {
     }
 
     if (product.sync.status === "create" || product.sync.status === "update") {
-      content.products.products[index].sync = {
+      content.production.products[index].sync = {
         status: "synced",
         date: dateFormat(new Date(), "dd-mm-yyyy HH:MM:ss"),
         id: productSync.metafields.idaptechub.value,

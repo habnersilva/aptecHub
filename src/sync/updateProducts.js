@@ -36,7 +36,7 @@ function _productsHaveBeenDeleted(content) {
 }
 
 // function _productsIsNew(content) {
-//   const idsProductsInArray = content.products.products.map(
+//   const idsProductsInArray = content.production.products.map(
 //     product => product.id
 //   )
 //   const idsProductsTempInArray = content.temp.products.map(
@@ -90,7 +90,7 @@ function _setStageOfProduct(content, idProduct, stage) {
   if (stage === "deleted") {
     // Pega o produto em file Products pois em Temp não existe
     content.temp.products.push({
-      ...content.products.products.find(product => product.id === idProduct),
+      ...content.production.products.find(product => product.id === idProduct),
       stage: "deleted"
     })
   } else {
@@ -106,11 +106,11 @@ function _setStageOfProduct(content, idProduct, stage) {
 function _checkAndSetStageProductTemp(content) {
   const idsProductsNewOrModified = _compareAndReturnStatusOfProducts(content, [
     "original",
-    "products"
+    "production"
   ])
 
   const idsProductsDeleted = _compareAndReturnStatusOfProducts(content, [
-    "products",
+    "production",
     "original"
   ])
 

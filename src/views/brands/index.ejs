@@ -74,8 +74,8 @@
 
                         <div class="row mt-5">
 
-                            <%#= JSON.stringify(brand.sync.products.products) %>
-                            <% if(JSON.stringify(brand.sync.products) !== "{}"){ %>
+                            <%#= JSON.stringify(brand.sync.production.products) %>
+                            <% if(JSON.stringify(brand.sync.production) !== "{}"){ %>
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
@@ -87,8 +87,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <% if(brand.sync.products.products.length > 0 ){ %>
-                                    <% brand.sync.products.products.forEach( product => { %>
+                                    <% if(brand.sync.production.products.length > 0 ){ %>
+                                    <% brand.sync.production.products.forEach( product => { %>
                                     <tr>
                                         <th scope="row"><%= product.id %></th>
                                         <td><%= product.title %></td>

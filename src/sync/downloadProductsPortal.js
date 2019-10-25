@@ -14,8 +14,8 @@ function _createVariables(content) {
   }
 
   // A variavel products deve ser fixa
-  if (typeof content.products.products === "undefined") {
-    content.products.products = []
+  if (typeof content.production.products === "undefined") {
+    content.production.products = []
   }
 }
 
@@ -61,7 +61,7 @@ function organizeFileContent(content) {
 }
 
 function salveInTempProducts(content) {
-  content.products.products = content.temp.productsPortalPattern
+  content.production.products = content.temp.productsPortalPattern
 }
 
 const init = async objContentFilesPath => {
@@ -70,8 +70,8 @@ const init = async objContentFilesPath => {
   const content = state.load(objContentFilesPath)
 
   if (
-    typeof content.products.products === "undefined" ||
-    content.products.products.length <= 0
+    typeof content.production.products === "undefined" ||
+    content.production.products.length <= 0
   ) {
     console.log("+++> Rodou!")
 

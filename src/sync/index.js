@@ -14,7 +14,7 @@ async function reset(brand, objContentFilesPath) {
   const content = robots.state.load(objContentFilesPath)
 
   content.temp = {}
-  content.products.products = []
+  content.production.products = []
 
   robots.state.save(objContentFilesPath, content)
 
@@ -45,13 +45,17 @@ async function start(brand, objContentFilesPath) {
       ` => ${productTemp.stage} ---- ${productTemp.id} (${productTemp.title})`
     )
   )
+  console.log(">>>>>>>>>>> Product PRODUCTION ")
+  content.production.products.forEach(product =>
+    console.log(` => ${product.stage} ---- ${product.id} (${product.title})`)
+  )
 }
 
 const init = brand => {
   const objContentFilesPath = {
     original: `./tmp/${brand.id}_original.json`,
     temp: `./tmp/${brand.id}_temp.json`,
-    products: `./tmp/${brand.id}_products.json`
+    production: `./tmp/${brand.id}_production.json`
   }
 
   return {

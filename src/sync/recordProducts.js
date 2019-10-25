@@ -1,16 +1,16 @@
 const state = require("./state")
 
 function updateStatusSyncOfProducts(content) {
-  content.products.products.forEach((product, index) => {
+  content.production.products.forEach((product, index) => {
     if (product.import.status === "new" && product.sync.status === "init") {
-      content.products.products[index].sync.status = "create"
+      content.production.products[index].sync.status = "create"
     }
 
     if (
       product.import.status === "modified" &&
       product.sync.status !== "synced"
     ) {
-      content.products.products[index].sync.status = "update"
+      content.production.products[index].sync.status = "update"
     }
   })
 }
@@ -25,22 +25,22 @@ function updateStatusSyncOfProducts(content) {
 //       delete productTemp.sync
 //       // Merge entre Objetos
 //       productStore = {
-//         ...content.products.products[index],
+//         ...content.production.products[index],
 //         ...productTemp
 //       }
-//       content.products.products[index] = productStore
+//       content.production.products[index] = productStore
 //     }
 //   })
 // }
 
 function _storeProductsIfEmpty(content) {
-  if (content.products.products.length <= 0) {
-    content.products.products = content.temp.products
+  if (content.production.products.length <= 0) {
+    content.production.products = content.temp.products
   }
 }
 
 // function deleteProducts(content) {
-//   content.products.products.forEach((product, index) => {
+//   content.production.products.forEach((product, index) => {
 //     console.log(product.import)
 //     if (product.import.status === "delete") {
 //       console.log(product.id)
@@ -58,7 +58,7 @@ const init = async objContentFilesPath => {
   const content = state.load(objContentFilesPath)
 
   //deleteProducts(content)
-  _storeProductsIfEmpty(content)
+  //_storeProductsIfEmpty(content)
   //_storeProductsIfModified(content)
   //updateStatusSyncOfProducts(content)
   // clearFileTemp(content)
