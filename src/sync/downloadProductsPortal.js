@@ -22,7 +22,7 @@ function _createVariables(content) {
 const _fetchProducts = async content => {
   content.temp.productsPortal = await portalDoTricot
     .list_all_products({
-      vendor: content.products.brand.name
+      vendor: content.production.brand.name
     })
     .catch(err => {
       throw new Error(

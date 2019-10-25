@@ -32,7 +32,7 @@ async function start(brand, objContentFilesPath) {
   await robots.fetchProducts(objContentFilesPath)
   await robots.updateProducts(objContentFilesPath)
   await robots.recordProducts(objContentFilesPath)
-  // // await robots.sendProducts(objContentFilesPath)
+  await robots.sendProducts(objContentFilesPath)
 
   const content = robots.state.load(objContentFilesPath)
   console.log(">>>>>>>>>>> Product ORIGINAL ")

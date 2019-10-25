@@ -92,10 +92,22 @@
                                     <tr>
                                         <th scope="row"><%= product.id %></th>
                                         <td><%= product.title %></td>
-                                        <td><span class="badge badge-primary"><%= product.stage %></span></td>
+                                        <td>
+                                            <% let stage = ""
+                                            if(product.stage === "new"){ 
+                                                stage = "success"
+                                            }else if(product.stage === "modified"){ 
+                                                stage = "warning" 
+                                            }else if(product.stage === "deleted"){ 
+                                                stage = "danger" 
+                                            } %>
+                                            <span class="badge badge-<%= stage %>">
+                                                <%= product.stage %>
+                                            </span>
+                                        </td>
                                         <td>
                                             <% if(typeof product.import !== undefined){ %>
-                                            <span class="badge badge-primary"><%= product.import %></span>
+                                            <span class=" badge badge-primary"><%= product.import %></span>
                                             <% } %>
                                             <% if(typeof product.import !== undefined){ %>
                                             <span class="badge badge-primary">
