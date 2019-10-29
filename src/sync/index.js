@@ -45,10 +45,10 @@ async function start(brand, objContentFilesPath) {
   //     ` => ${productTemp.stage} ---- ${productTemp.id} (${productTemp.title})`
   //   )
   // )
-  console.log("\n>>>>>>>>>>> Product PRODUCTION ")
-  content.production.products.forEach(product =>
-    console.log(` => ${product.stage} ---- ${product.id} (${product.title})`)
-  )
+  // console.log("\n>>>>>>>>>>> Product PRODUCTION ")
+  // content.production.products.forEach(product =>
+  //   console.log(` => ${product.stage} ---- ${product.id} (${product.title})`)
+  // )
 }
 
 const init = brand => {

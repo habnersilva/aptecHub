@@ -7,6 +7,8 @@ const init = () => {
     password: process.env.SHOPIFY_PASSWORD
   })
 
+  shopify.on("callLimits", limits => console.log(limits))
+
   const _getObjMetaFields = (data, idProductShopify) => {
     return {
       link: {
@@ -100,6 +102,8 @@ const init = () => {
    */
   const update_a_product = async (data, idProductShopify) => {
     return new Promise(async (resolve, reject) => {
+      console.log(shopify.callLimits)
+
       try {
         const params = _transformDataFromShopify(data)
 
@@ -107,6 +111,7 @@ const init = () => {
         let productShopify = await shopify.product
           .update(idProductShopify, params)
           .catch(err => {
+            //console.error(err)
             throw new Error(`Editando produto no Shopify\n |--> ${err}`)
           })
 
