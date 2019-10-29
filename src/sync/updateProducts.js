@@ -20,50 +20,8 @@ function _compareIfObjsProductsAreEquals(objProduct1, objProduct2) {
 
 /**
  * @param {*} content
- * Identifica quais produtos foram deletados e salva stage "delete" no produto
- */
-function _productsHaveBeenDeleted(content) {
-  const arrayOfIdsDeleted = _whichProductsAreDifferent(content, [
-    "products",
-    "original"
-  ])
-
-  arrayOfIdsDeleted.forEach((item, index) => {
-    if (item.response === "notexist")
-      // o produto será EXCLUIDO, se o productTemp não existir em product
-      content.temp.products[index].stage = "delete"
-  })
-}
-
-// function _productsIsNew(content) {
-//   const idsProductsInArray = content.production.products.map(
-//     product => product.id
-//   )
-//   const idsProductsTempInArray = content.temp.products.map(
-//     productTemp => productTemp.id
-//   )
-
-//   content.original.products.forEach(productOriginal => {
-//     if (
-//       !(
-//         idsProductsInArray.includes(productOriginal.id) ||
-//         idsProductsTempInArray.includes(productOriginal.id)
-//       )
-//     ) {
-//       content.temp.products.push({
-//         ...productOriginal,
-//         stage: "new"
-//       })
-//     }
-//   })
-// }
-
-/**
- * @param {*} content
  * @param Array<{products}, {products}> fileNames
- * @return !Array<{id:(number, status:(string))}>
- *  idProduct - Id do produto
- *  statuts - "equal" or "different"
+ * @return
  * */
 function _compareAndReturnStatusOfProducts(content, fileNames) {
   const data = { notexists: [], equals: [], differents: [] }

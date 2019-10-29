@@ -82,8 +82,8 @@
                                         <th scope="col">ID</th>
                                         <th scope="col">Nome</th>
                                         <th scope="col">Estágio</th>
-                                        <th scope="col" class="w-25">Status de Importação</th>
-                                        <th scope="col" class="w-25">Status de Sincronização</th>
+                                        <th scope="col">Sincronização</th>
+                                        <th scope="col" class="w-25">Data da Sincronização</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -93,24 +93,37 @@
                                         <th scope="row"><%= product.id %></th>
                                         <td><%= product.title %></td>
                                         <td>
-                                            <% let stage = ""
+                                            <% let badgeColorStage = ""
                                             if(product.stage === "new"){ 
-                                                stage = "success"
+                                                badgeColorStage = "success"
                                             }else if(product.stage === "modified"){ 
-                                                stage = "warning" 
+                                                badgeColorStage = "warning" 
                                             }else if(product.stage === "deleted"){ 
-                                                stage = "danger" 
+                                                badgeColorStage = "danger" 
                                             } %>
-                                            <span class="badge badge-<%= stage %>">
+                                            <span class="badge badge-<%= badgeColorStage %>">
                                                 <%= product.stage %>
                                             </span>
                                         </td>
                                         <td>
-                                            <% if(typeof product.import !== undefined){ %>
-                                            <span class=" badge badge-primary"><%= product.import %></span>
+                                            <% if(typeof product.sync !== "undefined"){ %>
+                                            <% let badgeColorStatus = ""
+                                                if(product.sync.status === "created"){ 
+                                                    badgeColorStatus = "success"                                                        
+                                                }else if(product.sync.status === "updated"){ 
+                                                    badgeColorStatus = "warning" 
+                                                }else{ 
+                                                    badgeColorStatus = "danger" 
+                                                } %>
+                                            <span class="badge badge-<%= badgeColorStatus %>">
+                                                <%= product.sync.status %>
+                                            </span>
                                             <% } %>
-                                            <% if(typeof product.import !== undefined){ %>
+                                        </td>
+                                        <td>
+                                            <% if(typeof product.sync !== "undefined"){ %>
                                             <span class="badge badge-primary">
+                                                <%= product.sync.date %>
                                             </span>
                                             <% } %>
                                         </td>

@@ -46,7 +46,11 @@ function mapFieldsProductsPattern(content) {
         id: metafields.idaptechub.value,
         title: product.title,
         stage: "download",
-        metafields
+        sync: {
+          idaptechub: metafields.idaptechub.value,
+          idportaldotricot: product.id,
+          metafields
+        }
       })
     })
   } catch (err) {

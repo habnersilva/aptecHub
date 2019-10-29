@@ -60,9 +60,7 @@ const init = () => {
         // adiciona produto
         let productShopify = await shopify.product.create(params).catch(err => {
           throw new Error(
-            `${err}\n     ==> Criando produto no Shopify\n     JSON ${JSON.stringify(
-              params
-            )}\n |--> ${err}`
+            `${err}\n     ==> Criando produto no Shopify\n |--> ${err}`
           )
         })
 
@@ -75,9 +73,7 @@ const init = () => {
             .create(objMetaFields.link)
             .catch(err => {
               throw new Error(
-                `${err}\n     ==> Criando metafield "link" no Shopify\n     JSON ${JSON.stringify(
-                  objMetaFields.link
-                )}\n |--> ${err}`
+                `${err}\n     ==> Criando metafield "link" no Shopify\n |--> ${err}`
               )
             }),
           // adiciona metafield "idaptechub"
@@ -85,9 +81,7 @@ const init = () => {
             .create(objMetaFields.idaptechub)
             .catch(err => {
               throw new Error(
-                `${err}\n     ==> Criando metafield "idaptechub" no Shopify\n     JSON ${JSON.stringify(
-                  objMetaFields.idaptechub
-                )}\n |--> ${err}`
+                `${err}\n     ==> Criando metafield "idaptechub" no Shopify\n |--> ${err}`
               )
             })
         }
@@ -99,23 +93,24 @@ const init = () => {
     })
   }
 
-  const update_a_product = async (idProduct, data) => {
+  /**
+   * @param {*} data
+   * @param {*} idProductShopify
+   * @return {Promise}
+   */
+  const update_a_product = async (data, idProductShopify) => {
     return new Promise(async (resolve, reject) => {
       try {
         const params = _transformDataFromShopify(data)
 
         // edita produto
         let productShopify = await shopify.product
-          .update(idProduct, params)
+          .update(idProductShopify, params)
           .catch(err => {
-            throw new Error(
-              `Editando produto no Shopify\n     JSON ${JSON.stringify(
-                params
-              )}\n |--> ${err}`
-            )
+            throw new Error(`Editando produto no Shopify\n |--> ${err}`)
           })
 
-        const objMetaFields = _getObjMetaFields(data, idProduct)
+        const objMetaFields = _getObjMetaFields(data, idProductShopify)
 
         // Edita metafields
         productShopify.metafields = {
@@ -126,9 +121,7 @@ const init = () => {
             })
             .catch(err => {
               throw new Error(
-                `${err}\n     ==> Editando metafield "link" no Shopify\n     JSON ${JSON.stringify(
-                  objMetaFields.link
-                )}\n |--> ${err}`
+                `${err}\n     ==> Editando metafield "link" no Shopify\n |--> ${err}`
               )
             }),
           // Edita metafield "idaptechub"
@@ -138,14 +131,32 @@ const init = () => {
             })
             .catch(err => {
               throw new Error(
-                `${err}\n     ==> Editando metafield "idaptechub" no Shopify\n     JSON ${JSON.stringify(
-                  objMetaFields.idaptechub
-                )}\n |--> ${err}`
+                `${err}\n     ==> Editando metafield "idaptechub" no Shopify\n |--> ${err}`
               )
             })
         }
 
         resolve(productShopify)
+      } catch (err) {
+        reject(err)
+      }
+    })
+  }
+
+  /**
+   * @param {*} data
+   * @param {*} idProductShopify
+   * @return {Promise}
+   */
+  const delete_a_product = async idProductShopify => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        // delete produto
+        await shopify.product.delete(idProductShopify).catch(err => {
+          throw new Error(`Excluindo produto no Shopify\n |--> ${err}`)
+        })
+
+        resolve("success")
       } catch (err) {
         reject(err)
       }
@@ -184,6 +195,7 @@ const init = () => {
   return {
     create_a_product,
     update_a_product,
+    delete_a_product,
     list_all_products,
     count_all_products
   }

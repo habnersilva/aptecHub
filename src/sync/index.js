@@ -35,17 +35,17 @@ async function start(brand, objContentFilesPath) {
   await robots.sendProducts(objContentFilesPath)
 
   const content = robots.state.load(objContentFilesPath)
-  console.log(">>>>>>>>>>> Product ORIGINAL ")
-  content.original.products.forEach(productOriginal =>
-    console.log(`${productOriginal.id} (${productOriginal.title})`)
-  )
-  console.log(">>>>>>>>>>> Product TEMP ")
-  content.temp.products.forEach(productTemp =>
-    console.log(
-      ` => ${productTemp.stage} ---- ${productTemp.id} (${productTemp.title})`
-    )
-  )
-  console.log(">>>>>>>>>>> Product PRODUCTION ")
+  // console.log(">>>>>>>>>>> Product ORIGINAL ")
+  // content.original.products.forEach(productOriginal =>
+  //   console.log(`${productOriginal.id} (${productOriginal.title})`)
+  // )
+  // console.log(">>>>>>>>>>> Product TEMP ")
+  // content.temp.products.forEach(productTemp =>
+  //   console.log(
+  //     ` => ${productTemp.stage} ---- ${productTemp.id} (${productTemp.title})`
+  //   )
+  // )
+  console.log("\n>>>>>>>>>>> Product PRODUCTION ")
   content.production.products.forEach(product =>
     console.log(` => ${product.stage} ---- ${product.id} (${product.title})`)
   )
