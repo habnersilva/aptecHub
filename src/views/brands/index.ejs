@@ -34,30 +34,23 @@
                             <div class="col-lg-2 py-2">
                                 Total de Produtos
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    <%= brand.Syncs[0] ? brand.Syncs[0].totalProducts : 0 %></div>
+                                    <%= brand.sync.production.stats.products.total %></div>
 
                             </div>
                             <div class="col-lg-2 py-2">
-                                Armazenamento
+                                Total de Produtos Sincronizados
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    <%= brand.Syncs[0] ? brand.Syncs[0].size : 0 %></div>
+                                    <%= brand.sync.production.stats.products.totalSynced %></div>
                             </div>
                             <div class="col-lg-2 py-2">
-                                Criado em
+                                Total de Produtos Sincronizados
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    <%= brand.Syncs[0] ? dateFormat(brand.Syncs[0].createdAt, "dd/mm/yyyy h:MM:ss TT") : "" %>
-                                </div>
+                                    <%= brand.sync.production.stats.process.status %></div>
                             </div>
-                            <div class="col-lg-2 py-2">
-                                Existe atualização?
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">Sim</div>
-                            </div>
-
-
-
                             <div class="col-lg-2">
                             </div>
                             <div class="col-lg-2">
+                                <% if(brand.sync.production.stats.process.status === "end"){ %>
                                 <div class="float-right">
                                     <a href="/marcas/sincronizar/<%= brand.id %>" class="btn btn-primary btn-circle">
                                         <i class="fas fa-sync-alt"></i></a>
@@ -69,20 +62,19 @@
                                         <i class="fas fa-trash"></i>
                                     </a>
                                 </div>
+                                <% } %>
                             </div>
                         </div>
 
+                        <% if(JSON.stringify(brand.sync.production) !== "{}"){ %>
                         <div class="row mt-5">
-
-                            <%#= JSON.stringify(brand.sync.production.products) %>
-                            <% if(JSON.stringify(brand.sync.production) !== "{}"){ %>
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
                                         <th scope="col">ID</th>
                                         <th scope="col">Nome</th>
+                                        <th scope="col">Status</th>
                                         <th scope="col">Estágio</th>
-                                        <th scope="col">Sincronização</th>
                                         <th scope="col" class="w-25">Data da Sincronização</th>
                                     </tr>
                                 </thead>
@@ -93,32 +85,31 @@
                                         <th scope="row"><%= product.id %></th>
                                         <td><%= product.title %></td>
                                         <td>
-                                            <% let badgeColorStage = ""
-                                            if(product.stage === "new"){ 
-                                                badgeColorStage = "success"
-                                            }else if(product.stage === "modified"){ 
-                                                badgeColorStage = "warning" 
-                                            }else if(product.stage === "deleted"){ 
-                                                badgeColorStage = "danger" 
-                                            } %>
-                                            <span class="badge badge-<%= badgeColorStage %>">
-                                                <%= product.stage %>
-                                            </span>
-                                        </td>
-                                        <td>
                                             <% if(typeof product.sync !== "undefined"){ %>
                                             <% let badgeColorStatus = ""
-                                                if(product.sync.status === "created"){ 
-                                                    badgeColorStatus = "success"                                                        
-                                                }else if(product.sync.status === "updated"){ 
-                                                    badgeColorStatus = "warning" 
-                                                }else{ 
-                                                    badgeColorStatus = "danger" 
-                                                } %>
+                                                    if(product.sync.status === "new"){ 
+                                                        badgeColorStatus = "primary"                                                        
+                                                    }else if(product.sync.status === "modified"){ 
+                                                        badgeColorStatus = "warning" 
+                                                    }else{ 
+                                                        badgeColorStatus = "danger" 
+                                                    } %>
                                             <span class="badge badge-<%= badgeColorStatus %>">
                                                 <%= product.sync.status %>
                                             </span>
                                             <% } %>
+                                        </td>
+
+                                        <td>
+                                            <% let badgeColorStage = ""
+                                                if(product.sync.stage === "to_sync"){ 
+                                                    badgeColorStage = "secondary"
+                                                }else if(product.sync.stage === "synced"){ 
+                                                    badgeColorStage = "success" 
+                                                } %>
+                                            <span class="badge badge-<%= badgeColorStage %>">
+                                                <%= product.sync.stage %>
+                                            </span>
                                         </td>
                                         <td>
                                             <% if(typeof product.sync !== "undefined"){ %>
@@ -135,10 +126,8 @@
                                     <% } %>
                                 </tbody>
                             </table>
-                            <% } %>
-
                         </div>
-
+                        <% } %>
                     </div>
                 </div>
             </div>

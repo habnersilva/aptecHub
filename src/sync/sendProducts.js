@@ -1,48 +1,6 @@
 const portalDoTricot = require("../api/portaldotricot")
 const state = require("./state")
-const dateFormat = require("dateformat")
-
-// async function sync(content) {
-//   const promises = content.production.products.map(async (product, index) => {
-//     let productSync = {}
-
-//     if (product.sync.status === "create") {
-//       productSync = await portalDoTricot
-//         .create_a_product(product)
-//         .catch(err => {
-//           throw new Error(
-//             `Criando produto no PortaldoTricot\n     JSON ${JSON.stringify(
-//               product
-//             )}\n |--> ${err}`
-//           )
-//         })
-//     } else if (product.sync.status === "update") {
-//       console.log("**** update")
-//       productSync = await portalDoTricot
-//         .update_a_product(product.sync.id, product)
-//         .catch(err => {
-//           throw new Error(
-//             `Editando produto no PortaldoTricot\n     JSON ${JSON.stringify(
-//               product
-//             )}\n |--> ${err}`
-//           )
-//         })
-//     }
-
-//     if (product.sync.status === "create" || product.sync.status === "update") {
-//       content.production.products[index].sync = {
-//         status: "synced",
-//         date: dateFormat(new Date(), "dd-mm-yyyy HH:MM:ss"),
-//         id: productSync.metafields.idaptechub.value,
-//         metafields: { ...productSync.metafields }
-//       }
-//     }
-//   })
-
-//   await Promise.all(promises).catch(err => {
-//     throw new Error(`Falha no Robot Send Products\n |--> ${err}`)
-//   })
-// }
+const moment = require("moment")
 
 /**
  * @param {Object} content
@@ -58,9 +16,9 @@ async function _create(product) {
  * @param {number} idportaldotricot
  * @return {Object} product
  */
-async function _update(product, idportaldotricot) {
+async function _update(product) {
   return await portalDoTricot
-    .update_a_product(product, idportaldotricot)
+    .update_a_product(product, product.sync.idportaldotricot)
     .catch(err => {
       throw new Error(
         `Editando produto ${product.id} - ${idportaldotricot} no PortaldoTricot\n |--> ${err}`
@@ -80,14 +38,63 @@ async function _delete(idportaldotricot) {
   })
 }
 
-function _getObjectProductSync(productSync, idProduct, status) {
-  return {
-    status,
-    idaptechub: idProduct,
-    idportaldotricot: productSync.id,
-    date: dateFormat(new Date(), "dd-mm-yyyy HH:MM:ss"),
-    metafields: { ...productSync.metafields }
+/**
+ *
+ * @param {*} products
+ * @param {*} stage
+ */
+function _filterStage(products, stage) {
+  return products.filter(product => product.sync.stage === stage)
+}
+
+async function _sendProductsAndRetutrnSynced(productsToSync) {
+  const total = productsToSync.length ? productsToSync.length : 10
+
+  // precisa se sincrono para não estorar o limite de requisição no shopify
+  for (index = 0; index < total; index++) {
+    try {
+      let productSynced = null
+      let stage = "synced"
+
+      if (productsToSync[index].sync.status === "new") {
+        productSynced = await _create(productsToSync[index])
+      } else if (productsToSync[index].sync.status === "modified") {
+        productSynced = await _update(productsToSync[index])
+      } else if (productsToSync[index].sync.status === "deleted") {
+        stage = null
+        productSynced = await _delete(
+          productsToSync[index].sync.idportaldotricot
+        )
+      }
+
+      if (!productSynced)
+        throw new Error(
+          "Não foi possível retorno o valor do produto sincronizado!"
+        )
+
+      if (!productSynced.metafields.link) {
+        stage = "synced partial"
+      }
+
+      if (!productSynced.metafields.idaptechub) {
+        stage = "synced partial"
+      }
+
+      productsToSync[index].sync = {
+        stage,
+        status: productsToSync[index].sync.status,
+        idportaldotricot: productSynced.id,
+        date: moment().format("DD/MM/YYYY HH:mm:ss"),
+        metafields: { ...productSynced.metafields }
+      }
+
+      console.log(`${index} => ${productsToSync[index].id}`)
+    } catch (err) {
+      console.error(err)
+    }
   }
+
+  return productsToSync
 }
 
 /**
@@ -95,33 +102,23 @@ function _getObjectProductSync(productSync, idProduct, status) {
  *
  */
 async function sync(content) {
-  const promises = content.production.products.map(async product => {
-    try {
-      let productSync = null
+  const productsToSync = _filterStage(content.production.products, "to_sync")
 
-      if (product.stage === "new") {
-        productSync = await _create(product)
-        product.sync = _getObjectProductSync(productSync, product.id, "created")
-      } else if (product.stage === "modified") {
-        productSync = await _update(product, product.sync.idportaldotricot)
-        product.sync = _getObjectProductSync(productSync, product.id, "updated")
-      } else if (
-        product.stage === "deleted" &&
-        product.sync.status !== "deleted"
-      ) {
-        productSync = await _delete(product.sync.idportaldotricot)
-        product.sync = _getObjectProductSync(productSync, product.id, "deleted")
+  const productsSynced = await _sendProductsAndRetutrnSynced(productsToSync)
+
+  content.production.products = content.production.products.map(
+    productProduction => {
+      const productSynced = productsSynced.find(
+        productSynced => productSynced.id === productProduction.id
+      )
+
+      if (typeof productSynced !== "undefined") {
+        return productSynced
+      } else {
+        return productProduction
       }
-
-      return product
-    } catch (err) {
-      console.error(err)
     }
-  })
-
-  await Promise.all(promises).catch(err => {
-    throw new Error(`Falha no Robot Send Products\n |--> ${err}`)
-  })
+  )
 }
 
 const init = async objContentFilesPath => {

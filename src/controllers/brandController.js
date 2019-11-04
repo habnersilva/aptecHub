@@ -83,8 +83,17 @@ const syncProducts = ({ Brands, Syncs }) => async (req, res) => {
 
   try {
     await sync(brand).start()
+    const { production } = await sync(brand).load()
 
-    req.flash("success", `Importação realizar com sucesso para ${brand.name}`)
+    if (production.stats.process.status === "begin") {
+      req.flash(
+        "warning",
+        `Neste momento os produtos estão sendo processados para ${brand.name}`
+      )
+    } else {
+      req.flash("success", `Importação realizar com sucesso para ${brand.name}`)
+    }
+
     res.redirect("/marcas")
   } catch (err) {
     console.log(err)

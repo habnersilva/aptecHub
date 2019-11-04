@@ -1,5 +1,5 @@
 const fs = require("fs")
-const dateFormat = require("dateformat")
+
 const byteFormat = require("bytes")
 const aptecHubError = require("../errors")
 
@@ -8,8 +8,7 @@ const fileStats = filePath => {
   return {
     sizeOriginal: stats.size,
     size: byteFormat(stats.size),
-    dateMs: stats.birthtimeMs,
-    date: dateFormat(stats.birthtimeMs, "dd/mm/yyyy h:MM:ss TT")
+    dateMs: stats.birthtimeMs
   }
 }
 

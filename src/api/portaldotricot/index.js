@@ -4,10 +4,15 @@ const init = () => {
   const shopify = new Shopify({
     shopName: process.env.SHOPIFY_SHOPNAME,
     apiKey: process.env.SHOPIFY_APIKEY,
-    password: process.env.SHOPIFY_PASSWORD
+    password: process.env.SHOPIFY_PASSWORD,
+    autoLimit: {
+      calls: 1,
+      interval: 2000,
+      bucketSize: 35
+    }
   })
 
-  shopify.on("callLimits", limits => console.log(limits))
+  //shopify.on("callLimits", limits => console.log(limits))
 
   const _getObjMetaFields = (data, idProductShopify) => {
     return {
@@ -54,6 +59,10 @@ const init = () => {
     return params
   }
 
+  /**
+   * @param {*} data
+   * @return {Promise}
+   */
   const create_a_product = async data => {
     return new Promise(async (resolve, reject) => {
       try {
@@ -102,8 +111,6 @@ const init = () => {
    */
   const update_a_product = async (data, idProductShopify) => {
     return new Promise(async (resolve, reject) => {
-      console.log(shopify.callLimits)
-
       try {
         const params = _transformDataFromShopify(data)
 

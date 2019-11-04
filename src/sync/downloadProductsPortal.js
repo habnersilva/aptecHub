@@ -1,16 +1,15 @@
 const fs = require("fs")
 const state = require("./state")
 const portalDoTricot = require("../api/portaldotricot")
-const dateFormat = require("dateformat")
 
 function _createVariables(content) {
   // Esta variaveis sera temporarias e sempre reclicadas
-  content.temp.productsPortal = []
-  content.temp.productsPortalPattern = []
+  content.production.productsPortal = []
+  content.production.productsPortalPattern = []
 
   // A variavel products deve ser fixa
-  if (typeof content.temp.products === "undefined") {
-    content.temp.products = []
+  if (typeof content.production.products === "undefined") {
+    content.production.products = []
   }
 
   // A variavel products deve ser fixa
@@ -20,7 +19,7 @@ function _createVariables(content) {
 }
 
 const _fetchProducts = async content => {
-  content.temp.productsPortal = await portalDoTricot
+  content.production.productsPortal = await portalDoTricot
     .list_all_products({
       vendor: content.production.brand.name
     })
@@ -34,20 +33,20 @@ const _fetchProducts = async content => {
 }
 
 function mapFieldsProductsPattern(content) {
-  const { brand } = content.temp
+  const { brand } = content.production
   try {
-    content.temp.productsPortal.map(product => {
+    content.production.productsPortal.map(product => {
       const metafields = {}
       product.metafields.map(metafield => {
         metafields[metafield.key] = metafield
       })
 
-      content.temp.productsPortalPattern.push({
+      content.production.productsPortalPattern.push({
         id: metafields.idaptechub.value,
         title: product.title,
-        stage: "download",
         sync: {
-          idaptechub: metafields.idaptechub.value,
+          stage: "synced",
+          stage: "download",
           idportaldotricot: product.id,
           metafields
         }
@@ -60,12 +59,12 @@ function mapFieldsProductsPattern(content) {
 
 function organizeFileContent(content) {
   // Zerar productsOriginal
-  delete content.temp.productsPortal
-  delete content.temp.productsPortalPattern
+  delete content.production.productsPortal
+  delete content.production.productsPortalPattern
 }
 
 function salveInTempProducts(content) {
-  content.production.products = content.temp.productsPortalPattern
+  content.production.products = content.production.productsPortalPattern
 }
 
 const init = async objContentFilesPath => {

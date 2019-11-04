@@ -7,11 +7,7 @@ const init = (brand, objContentFilesPath) => {
 
   const { id, name, domain, appKey } = brand
   content.original.brand = { id, name, domain, appKey }
-  content.temp.brand = { id, name, domain, appKey }
   content.production.brand = { id, name, domain, appKey }
-
-  // A variavel products deve ser fixa
-  content.temp.products = []
 
   // A variavel products deve ser fixa
   if (typeof content.original.products === "undefined") {
@@ -19,6 +15,18 @@ const init = (brand, objContentFilesPath) => {
   }
 
   // A variavel products deve ser fixa
+  if (typeof content.production.stats === "undefined") {
+    content.production.stats = {
+      products: {
+        total: 0,
+        totalSynced: 0
+      },
+      process: {
+        status: "end"
+      }
+    }
+  }
+
   if (typeof content.production.products === "undefined") {
     content.production.products = []
   }

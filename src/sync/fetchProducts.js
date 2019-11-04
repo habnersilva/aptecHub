@@ -1,6 +1,5 @@
 const aptecWeb = require("../api/aptecweb")
 const state = require("./state")
-const dateFormat = require("dateformat")
 
 function _createVariables(content) {
   // Esta variaveis sera temporarias e sempre reclicadas
@@ -39,7 +38,9 @@ function mapFieldsProductsPattern(content) {
         slug: item.Wsproduto.slug,
         imageMain: imageMain,
         images,
-        price: item.WsprodutoEstoque[0].valor_venda
+        price: item.WsprodutoEstoque[0].valor_venda,
+        date_created: item.Wsproduto.created,
+        date_modified: item.Wsproduto.modified
       })
     })
   } catch (err) {
