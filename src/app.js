@@ -4,8 +4,11 @@ const init = models => {
   const session = require("express-session")
   const path = require("path")
   const routers = require("./routes/indexRoutes")
+  const cron = require("./utils/cron")
 
   app = express()
+
+  cron(models)
 
   // Body Parser
   app.use(bodyParser.urlencoded({ extended: true }))

@@ -51,8 +51,8 @@ async function start(brand, objContentFilesPath) {
   console.log("=> start")
 
   // StartProcess
+  robots.initContentFiles(brand, objContentFilesPath)
   if (_checkIfItsInProcess(objContentFilesPath) === "end") {
-    robots.initContentFiles(brand, objContentFilesPath)
     _processStats(objContentFilesPath, "begin")
     await setTimeout(async function() {
       //await robots.downloadProductsPortal(objContentFilesPath)
@@ -78,8 +78,8 @@ function load(brand, objContentFilesPath) {
 
 const init = brand => {
   const objContentFilesPath = {
-    original: `./filestmp/${brand.id}_original.json`,
-    production: `./filestmp/${brand.id}_production.json`
+    original: `./filestemp/${brand.id}_original.json`,
+    production: `./filestemp/${brand.id}_production.json`
   }
 
   return {

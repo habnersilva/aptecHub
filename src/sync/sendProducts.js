@@ -90,7 +90,7 @@ async function _sendProductsAndRetutrnSynced(productsToSync) {
         }
       }
 
-      console.log(`${index} => ${productsToSync[index].id}`)
+      //console.log(`${index} => ${productsToSync[index].id}`)
     } catch (err) {
       console.error(err)
     }
