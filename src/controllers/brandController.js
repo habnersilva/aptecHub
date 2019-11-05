@@ -82,18 +82,8 @@ const syncProducts = ({ Brands, Syncs }) => async (req, res) => {
   const brand = await Brands.findByPk(req.params.id)
 
   try {
-    await sync(brand).start()
-    const { production } = await sync(brand).load()
-
-    if (production.stats.process.status === "begin") {
-      req.flash(
-        "warning",
-        `Neste momento os produtos estão sendo processados para ${brand.name}`
-      )
-    } else {
-      req.flash("success", `Importação realizar com sucesso para ${brand.name}`)
-    }
-
+    sync(brand).start()
+    req.flash("success", `Importação realizar com sucesso para ${brand.name}`)
     res.redirect("/marcas")
   } catch (err) {
     console.log(err)
@@ -102,6 +92,18 @@ const syncProducts = ({ Brands, Syncs }) => async (req, res) => {
 
     res.redirect("/marcas")
   }
+}
+
+const syncAllBrands = ({ Brands }) => async (req, res) => {
+  const brands = await Brands.findAll()
+
+  await Promise.all(
+    brands.map(async brand => {
+      await sync(brand).start()
+    })
+  )
+  req.flash("success", `Sincronização realizada`)
+  res.redirect("/marcas")
 }
 
 const resetSyncProducts = ({ Brands, Syncs }) => async (req, res) => {
@@ -129,6 +131,7 @@ module.exports = {
   create,
   update,
   remove,
+  syncAllBrands,
   syncProducts,
   resetSyncProducts
 }

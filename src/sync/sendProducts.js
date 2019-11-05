@@ -48,7 +48,7 @@ function _filterStage(products, stage) {
 }
 
 async function _sendProductsAndRetutrnSynced(productsToSync) {
-  const total = productsToSync.length ? productsToSync.length : 10
+  const total = productsToSync.length < 10 ? productsToSync.length : 10
 
   // precisa se sincrono para não estorar o limite de requisição no shopify
   for (index = 0; index < total; index++) {
@@ -72,20 +72,22 @@ async function _sendProductsAndRetutrnSynced(productsToSync) {
           "Não foi possível retorno o valor do produto sincronizado!"
         )
 
-      if (!productSynced.metafields.link) {
-        stage = "synced partial"
-      }
-
-      if (!productSynced.metafields.idaptechub) {
-        stage = "synced partial"
-      }
-
-      productsToSync[index].sync = {
-        stage,
-        status: productsToSync[index].sync.status,
-        idportaldotricot: productSynced.id,
-        date: moment().format("DD/MM/YYYY HH:mm:ss"),
-        metafields: { ...productSynced.metafields }
+      if (typeof productSynced.metafields === "undefined") {
+        productsToSync[index].sync = {
+          stage: "synced partial",
+          status: productsToSync[index].sync.status,
+          idportaldotricot: productSynced.id,
+          date: moment().format("DD/MM/YYYY HH:mm:ss"),
+          metafields: {}
+        }
+      } else {
+        productsToSync[index].sync = {
+          stage,
+          status: productsToSync[index].sync.status,
+          idportaldotricot: productSynced.id,
+          date: moment().format("DD/MM/YYYY HH:mm:ss"),
+          metafields: { ...productSynced.metafields }
+        }
       }
 
       console.log(`${index} => ${productsToSync[index].id}`)
@@ -102,7 +104,11 @@ async function _sendProductsAndRetutrnSynced(productsToSync) {
  *
  */
 async function sync(content) {
-  const productsToSync = _filterStage(content.production.products, "to_sync")
+  const productsToSync = content.production.products.filter(
+    product => product.sync.stage === "to_sync"
+  )
+
+  console.log(productsToSync.length)
 
   const productsSynced = await _sendProductsAndRetutrnSynced(productsToSync)
 

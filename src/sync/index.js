@@ -38,6 +38,12 @@ async function reset(brand, objContentFilesPath) {
   start(brand, objContentFilesPath)
 }
 
+function _checkIfItsInProcess(objContentFilesPath) {
+  console.log("=> _checkIfItsInProcess")
+  const content = robots.state.load(objContentFilesPath)
+  return content.production.stats.process.status
+}
+
 async function start(brand, objContentFilesPath) {
   console.log("**********************")
   console.log(`${brand.id} - ${brand.name}`)
@@ -45,15 +51,17 @@ async function start(brand, objContentFilesPath) {
   console.log("=> start")
 
   // StartProcess
-
-  robots.initContentFiles(brand, objContentFilesPath)
-  _processStats(objContentFilesPath, "begin")
-  //await robots.downloadProductsPortal(objContentFilesPath)
-  await robots.fetchProducts(objContentFilesPath)
-  robots.updateProducts(objContentFilesPath)
-  await robots.sendProducts(objContentFilesPath)
-  _processStats(objContentFilesPath, "end")
-
+  if (_checkIfItsInProcess(objContentFilesPath) === "end") {
+    robots.initContentFiles(brand, objContentFilesPath)
+    _processStats(objContentFilesPath, "begin")
+    await setTimeout(async function() {
+      //await robots.downloadProductsPortal(objContentFilesPath)
+      await robots.fetchProducts(objContentFilesPath)
+      robots.updateProducts(objContentFilesPath)
+      await robots.sendProducts(objContentFilesPath)
+      _processStats(objContentFilesPath, "end")
+    }, 5000)
+  }
   //  const content = robots.state.load(objContentFilesPath)
   // console.log("\n>>>>>>>>>>> Product PRODUCTION ")
   // content.production.products.forEach(product =>
