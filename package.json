@@ -29,6 +29,7 @@
     "express-session": "^1.16.2",
     "moment": "^2.24.0",
     "mysql2": "^1.7.0",
+    "node-cron": "^2.0.3",
     "sequelize": "^5.18.0",
     "shopify-api-node": "^2.23.1"
   },

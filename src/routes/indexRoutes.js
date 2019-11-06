@@ -1,4 +1,4 @@
-const init = models => {
+const init = dependencies => {
   const router = require("express").Router()
   const acl = require("express-acl")
 
@@ -35,9 +35,9 @@ const init = models => {
   const usuariosRoutes = require("./userRoutes")
 
   router.get("/", dashboardController.index)
-  router.use("/login", authRoutes(models))
-  router.use("/marcas", marcasRoutes(models))
-  router.use("/usuarios", usuariosRoutes(models))
+  router.use("/login", authRoutes(dependencies.models))
+  router.use("/marcas", marcasRoutes(dependencies))
+  router.use("/usuarios", usuariosRoutes(dependencies.models))
 
   return router
 }

@@ -4,11 +4,9 @@ const init = models => {
   const session = require("express-session")
   const path = require("path")
   const routers = require("./routes/indexRoutes")
-  const cron = require("./utils/cron")
+  const cron = require("cron")
 
   app = express()
-
-  cron(models)
 
   // Body Parser
   app.use(bodyParser.urlencoded({ extended: true }))
@@ -26,12 +24,12 @@ const init = models => {
 
   //Middleware
   app.use(async (req, res, next) => {
-    // req.session.user = {
-    //   id: "1",
-    //   name: "Habner Silva",
-    //   email: "habner@aptec.com.br",
-    //   role: "administrador"
-    // }
+    req.session.user = {
+      id: "1",
+      name: "Habner Silva",
+      email: "habner@aptec.com.br",
+      role: "administrador"
+    }
 
     // Seta messages global
     res.locals.messagesGlobal = require("./utils/messagesGlobal")(req, res)
@@ -51,7 +49,13 @@ const init = models => {
     }
   })
 
-  app.use(routers(models))
+  // dependencias
+  const dependencies = {
+    models,
+    tasks: require("./tasks/indexTasks")(cron, models)
+  }
+
+  app.use(routers(dependencies))
   app.disable("x-powered-by")
 
   app.set("view engine", "ejs")

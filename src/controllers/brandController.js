@@ -1,6 +1,8 @@
 const { extractErrors } = require("../utils/formattedErrors")
 const aptecWeb = require("../api/aptecweb")
 const sync = require("../sync")
+const cron = require("node-cron")
+const moment = require("moment")
 
 const index = ({ Brands, Syncs }) => async (req, res) => {
   const brands = await Brands.findAll({
@@ -94,16 +96,32 @@ const syncProducts = ({ Brands, Syncs }) => async (req, res) => {
   }
 }
 
-const syncAllBrands = ({ Brands }) => async (req, res) => {
-  const brands = await Brands.findAll()
+const syncAuto = ({ tasks }) => async (req, res) => {
+  if (req.params.option === "on") {
+    console.log("start autoSync!")
+    tasks.autoSync.start()
+  } else {
+    console.log("stop!")
+    tasks.autoSync.stop()
+  }
 
-  await Promise.all(
-    brands.map(async brand => {
-      await sync(brand).start()
-    })
-  )
-  req.flash("success", `Sincronização realizada`)
   res.redirect("/marcas")
+}
+
+const syncAllBrands = ({ Brands }) => async (req, res) => {
+  try {
+    const brands = await Brands.findAll()
+
+    await Promise.all(
+      brands.map(async brand => {
+        await sync(brand).start()
+      })
+    )
+    req.flash("success", `Sincronização realizada`)
+    res.redirect("/marcas")
+  } catch (err) {
+    console.error(err)
+  }
 }
 
 const resetSyncProducts = ({ Brands, Syncs }) => async (req, res) => {
@@ -131,6 +149,7 @@ module.exports = {
   create,
   update,
   remove,
+  syncAuto,
   syncAllBrands,
   syncProducts,
   resetSyncProducts
