@@ -1,7 +1,7 @@
 const state = require("./state")
 
 const init = (brand, objContentFilesPath) => {
-  console.log("=> initContentFiles")
+  //console.log("=> initContentFiles")
 
   const content = state.load(objContentFilesPath)
 

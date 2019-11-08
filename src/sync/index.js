@@ -8,7 +8,7 @@ const robots = {
 }
 
 function _processStats(objContentFilesPath, status = "begin") {
-  console.log("=> _processStats - " + status)
+  //console.log("=> _processStats - " + status)
 
   const content = robots.state.load(objContentFilesPath)
 
@@ -30,38 +30,37 @@ function _processStats(objContentFilesPath, status = "begin") {
 }
 
 async function reset(brand, objContentFilesPath) {
-  console.log("=> resetContentFiles")
+  //console.log("=> resetContentFiles")
 
   const content = robots.state.load(objContentFilesPath)
   content.production.products = []
   robots.state.save(objContentFilesPath, content)
-  start(brand, objContentFilesPath)
+
+  await start(brand, objContentFilesPath)
 }
 
 function _checkIfItsInProcess(objContentFilesPath) {
-  console.log("=> _checkIfItsInProcess")
+  //console.log("=> _checkIfItsInProcess")
   const content = robots.state.load(objContentFilesPath)
   return content.production.stats.process.status
 }
 
 async function start(brand, objContentFilesPath) {
-  console.log("**********************")
-  console.log(`${brand.id} - ${brand.name}`)
-  console.log("**********************")
-  console.log("=> start")
-
   // StartProcess
   robots.initContentFiles(brand, objContentFilesPath)
   if (_checkIfItsInProcess(objContentFilesPath) === "end") {
     _processStats(objContentFilesPath, "begin")
-    await setTimeout(async function() {
-      //await robots.downloadProductsPortal(objContentFilesPath)
-      await robots.fetchProducts(objContentFilesPath)
-      robots.updateProducts(objContentFilesPath)
-      await robots.sendProducts(objContentFilesPath)
-      _processStats(objContentFilesPath, "end")
-    }, 5000)
+
+    await robots.downloadProductsPortal(objContentFilesPath)
+    await robots.fetchProducts(objContentFilesPath)
+    robots.updateProducts(objContentFilesPath)
+    await robots.sendProducts(objContentFilesPath)
+
+    _processStats(objContentFilesPath, "end")
   }
+
+  console.log(`*** ${brand.id} - ${brand.name} ***`)
+
   //  const content = robots.state.load(objContentFilesPath)
   // console.log("\n>>>>>>>>>>> Product PRODUCTION ")
   // content.production.products.forEach(product =>

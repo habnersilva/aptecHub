@@ -14,6 +14,10 @@ function _markSyncCreate(stage, status) {
   }
 }
 
+/**
+ *
+ * @param {*} content
+ */
 function _createIfFileEmpty(content) {
   // Primeiro envio de produtos
   if (content.production.products.length <= 0) {
@@ -97,7 +101,13 @@ function _checkForModifiedProducts(content) {
         productOriginal.date_modified
       )
 
-      if (calculateDiffBetweenDates < 0) {
+      console.log(calculateDiffBetweenDates)
+
+      if (
+        calculateDiffBetweenDates < 0 &&
+        (productProduction.sync.stage === "synced" ||
+          productProduction.sync.stage === "download")
+      ) {
         productOriginal.sync = {
           ...productProduction.sync,
           stage: "to_sync",
@@ -139,6 +149,10 @@ function _checkForDeletedProducts(content) {
   )
 }
 
+/**
+ *
+ * @param {*} content
+ */
 function _checkForUpdates(content) {
   // Verifica se a novos produtos
   _checkForNewsProducts(content)
@@ -146,8 +160,12 @@ function _checkForUpdates(content) {
   _checkForDeletedProducts(content)
 }
 
+/**
+ *
+ * @param {*} objContentFilesPath
+ */
 const init = objContentFilesPath => {
-  console.log("=> checkUpdate")
+  //console.log("=> checkUpdate")
   const content = state.load(objContentFilesPath)
 
   const { products } = content.production

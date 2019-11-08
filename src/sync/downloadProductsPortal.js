@@ -1,7 +1,11 @@
-const fs = require("fs")
 const state = require("./state")
 const portalDoTricot = require("../api/portaldotricot")
+const moment = require("moment")
 
+/**
+ *
+ * @param {*} content
+ */
 function _createVariables(content) {
   // Esta variaveis sera temporarias e sempre reclicadas
   content.production.productsPortal = []
@@ -18,6 +22,10 @@ function _createVariables(content) {
   }
 }
 
+/**
+ *
+ * @param {*} content
+ */
 const _fetchProducts = async content => {
   content.production.productsPortal = await portalDoTricot
     .list_all_products({
@@ -32,8 +40,11 @@ const _fetchProducts = async content => {
     })
 }
 
+/**
+ *
+ * @param {*} content
+ */
 function mapFieldsProductsPattern(content) {
-  const { brand } = content.production
   try {
     content.production.productsPortal.map(product => {
       const metafields = {}
@@ -44,6 +55,8 @@ function mapFieldsProductsPattern(content) {
       content.production.productsPortalPattern.push({
         id: metafields.idaptechub.value,
         title: product.title,
+        date_created: moment(product.created_at).format("YYYY-MM-DD HH:mm:ss"), // "2019-09-23 14:49:40",
+        date_modified: moment(product.created_at).format("YYYY-MM-DD HH:mm:ss"), //"2019-11-06 08:55:58",
         sync: {
           stage: "synced",
           stage: "download",
@@ -57,16 +70,28 @@ function mapFieldsProductsPattern(content) {
   }
 }
 
+/**
+ *
+ * @param {*} content
+ */
 function organizeFileContent(content) {
   // Zerar productsOriginal
   delete content.production.productsPortal
   delete content.production.productsPortalPattern
 }
 
+/**
+ *
+ * @param {*} content
+ */
 function salveInTempProducts(content) {
   content.production.products = content.production.productsPortalPattern
 }
 
+/**
+ *
+ * @param {*} objContentFilesPath
+ */
 const init = async objContentFilesPath => {
   console.log("=> downlaodsProductsPortal")
 
@@ -76,7 +101,7 @@ const init = async objContentFilesPath => {
     typeof content.production.products === "undefined" ||
     content.production.products.length <= 0
   ) {
-    console.log("+++> Rodou!")
+    console.log(`---> Reset ${content.production.brand.name}`)
 
     _createVariables(content)
     await _fetchProducts(content)

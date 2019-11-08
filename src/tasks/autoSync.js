@@ -2,6 +2,9 @@ const sync = require("../sync")
 
 module.exports = function(cron, models) {
   async function syncAllProducts() {
+    console.log(
+      `Start syncAllProducts entre ${process.env.CRON_INTERVAL} minutos`
+    )
     try {
       const brands = await models.Brands.findAll()
 

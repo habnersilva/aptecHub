@@ -168,7 +168,7 @@ const init = () => {
           throw new Error(`Excluindo produto no Shopify\n |--> ${err}`)
         })
 
-        resolve("success")
+        resolve("deleted")
       } catch (err) {
         reject(err)
       }
