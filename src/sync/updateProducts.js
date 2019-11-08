@@ -101,8 +101,6 @@ function _checkForModifiedProducts(content) {
         productOriginal.date_modified
       )
 
-      console.log(calculateDiffBetweenDates)
-
       if (
         calculateDiffBetweenDates < 0 &&
         (productProduction.sync.stage === "synced" ||
