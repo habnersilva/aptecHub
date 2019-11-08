@@ -24,76 +24,86 @@
 
             <% brands.forEach( brand => { %>
 
-            <!-- Collapsable Card Example -->
-            <div class="card shadow mb-4">
-                <!-- Card Header - Accordion -->
-                <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse" role="button"
-                    aria-expanded="true" aria-controls="collapseCardExample">
-                    <h6 class="m-0 font-weight-bold text-primary"><%= brand.name %></h6>
-                </a>
-                <!-- Card Content - Collapse -->
-                <div class="collapse show" id="collapseCardExample">
-                    <div class="card-body">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <%= brand.name %>
+                </div>
 
 
-                        <div class="row">
 
-                            <div class="col-lg-2 py-2">
-                                Total de Produtos
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    <%= brand.sync.production.stats.products.total %></div>
+                <div class="card-body">
 
-                            </div>
-                            <div class="col-lg-2 py-2">
-                                Total de Produtos Sincronizados
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    <%= brand.sync.production.stats.products.totalSynced %></div>
-                            </div>
-                            <div class="col-lg-2 py-2">
-                                Total de Produtos Sincronizados
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    <%= brand.sync.production.stats.process.status %></div>
-                            </div>
-                            <div class="col-lg-2">
-                            </div>
-                            <div class="col-lg-2">
-                                <% if(brand.sync.production.stats.process.status === "end"){ %>
-                                <div class="float-right">
-                                    <a href="/marcas/sincronizar/<%= brand.id %>" class="btn btn-primary btn-circle">
-                                        <i class="fas fa-sync-alt"></i></a>
-                                    <a href="/marcas/reiniciar/<%= brand.id %>" class="btn btn-primary btn-circle">
-                                        <i class="fas fa-undo-alt"></i></a>
-                                    <a href="/marcas/editar/<%= brand.id %>" class="btn btn-success btn-circle">
-                                        <i class="fas fa-edit"></i></a>
-                                    <a href="/marcas/excluir/<%= brand.id %>" class="btn btn-danger btn-circle">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </div>
-                                <% } %>
-                            </div>
+
+
+                    <div class="row mb-4">
+
+                        <div class="col-lg-2 py-2">
+                            Total de Produtos
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                <%= brand.sync.production.stats.products.total %></div>
+
                         </div>
+                        <div class="col-lg-2 py-2">
+                            Total de Produtos Sincronizados
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                <%= brand.sync.production.stats.products.totalSynced %></div>
+                        </div>
+                        <div class="col-lg-2 py-2">
+                            Total de Produtos Sincronizados
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                <%= brand.sync.production.stats.process.status %></div>
+                        </div>
+                        <div class="col-lg-2">
+                        </div>
+                        <div class="col-lg-2">
+                            <% if(brand.sync.production.stats.process.status === "end"){ %>
+                            <div class="float-right">
+                                <a href="/marcas/sincronizar/<%= brand.id %>" class="btn btn-primary btn-circle">
+                                    <i class="fas fa-sync-alt"></i></a>
+                                <a href="/marcas/reiniciar/<%= brand.id %>" class="btn btn-primary btn-circle">
+                                    <i class="fas fa-undo-alt"></i></a>
+                                <a href="/marcas/editar/<%= brand.id %>" class="btn btn-success btn-circle">
+                                    <i class="fas fa-edit"></i></a>
+                                <a href="/marcas/excluir/<%= brand.id %>" class="btn btn-danger btn-circle">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                            <% } %>
+                        </div>
+                    </div>
 
-                        <% if(JSON.stringify(brand.sync.production) !== "{}"){ %>
-                        <div class="row mt-5">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">ID</th>
-                                        <th scope="col">Nome</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Estágio</th>
-                                        <th scope="col" class="w-25">Data da Sincronização</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% if(brand.sync.production.products.length > 0 ){ %>
-                                    <% brand.sync.production.products.forEach( product => { %>
-                                    <tr>
-                                        <th scope="row"><%= product.id %></th>
-                                        <td><%= product.title %></td>
-                                        <td>
-                                            <% if(typeof product.sync !== "undefined"){ %>
-                                            <% let badgeColorStatus = ""
+
+                    <!-- Collapsable Card Example -->
+                    <div class="card">
+                        <!-- Card Header - Accordion -->
+                        <a href="#collapseCard<%= brand.id %>" class="d-block card-header py-3" data-toggle="collapse"
+                            role="button" aria-expanded="false" aria-controls="collapseCard<%= brand.id %>">
+                            <h6 class="m-0 font-weight-bold text-primary">Sincronização</h6>
+                        </a>
+                        <!-- Card Content - Collapse -->
+                        <div class="collapse show" id="collapseCard<%= brand.id %>">
+                            <div class="card-body p-0">
+                                <% if(JSON.stringify(brand.sync.production) !== "{}"){ %>
+
+                                <table class="table table-striped mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">ID</th>
+                                            <th scope="col">Nome</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Estágio</th>
+                                            <th scope="col" class="w-25">Data da Sincronização</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% if(brand.sync.production.products.length > 0 ){ %>
+                                        <% brand.sync.production.products.forEach( product => { %>
+                                        <tr>
+                                            <th scope="row"><%= product.id %></th>
+                                            <td><%= product.title %></td>
+                                            <td>
+                                                <% if(typeof product.sync !== "undefined"){ %>
+                                                <% let badgeColorStatus = ""
                                                     if(product.sync.status === "new"){ 
                                                         badgeColorStatus = "primary"                                                        
                                                     }else if(product.sync.status === "modified"){ 
@@ -101,50 +111,44 @@
                                                     }else{ 
                                                         badgeColorStatus = "danger" 
                                                     } %>
-                                            <span class="badge badge-<%= badgeColorStatus %>">
-                                                <%= product.sync.status %>
-                                            </span>
-                                            <% } %>
-                                        </td>
-
-                                        <td>
-                                            <% let badgeColorStage = ""
+                                                <span class="badge badge-<%= badgeColorStatus %>">
+                                                    <%= product.sync.status %>
+                                                </span>
+                                                <% } %>
+                                            </td>
+                                            <td>
+                                                <% let badgeColorStage = ""
                                                 if(product.sync.stage === "to_sync"){ 
                                                     badgeColorStage = "secondary"
                                                 }else if(product.sync.stage === "synced"){ 
                                                     badgeColorStage = "success" 
                                                 } %>
-                                            <span class="badge badge-<%= badgeColorStage %>">
-                                                <%= product.sync.stage %>
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <% if(typeof product.sync !== "undefined"){ %>
-                                            <span class="badge badge-primary">
-                                                <%= product.sync.date %>
-                                            </span>
-                                            <% } %>
-                                        </td>
-                                        <td>
+                                                <span class="badge badge-<%= badgeColorStage %>">
+                                                    <%= product.sync.stage %>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <% if(typeof product.sync !== "undefined"){ %>
+                                                <span class="badge badge-primary">
+                                                    <%= product.sync.date %>
+                                                </span>
+                                                <% } %>
+                                            </td>
+                                        </tr>
+                                        <% }) %>
+                                        <% } %>
+                                    </tbody>
+                                </table>
 
-                                        </td>
-                                    </tr>
-                                    <% }) %>
-                                    <% } %>
-                                </tbody>
-                            </table>
+                                <% } %>
+                            </div>
                         </div>
-                        <% } %>
                     </div>
+
                 </div>
             </div>
-
             <% }) %>
 
         </div>
-    </div>
-
-</div>
-
-<!-- /.container-fluid -->
-<%- include('../partials/footer.ejs') %>
+    </div> <!-- /.container-fluid -->
+    <%- include('../partials/footer.ejs') %>

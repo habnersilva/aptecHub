@@ -93,7 +93,7 @@ function salveInTempProducts(content) {
  * @param {*} objContentFilesPath
  */
 const init = async objContentFilesPath => {
-  console.log("=> downlaodsProductsPortal")
+  //console.log("=> downlaodsProductsPortal")
 
   const content = state.load(objContentFilesPath)
 
