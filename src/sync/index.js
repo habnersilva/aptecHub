@@ -36,7 +36,7 @@ async function reset(brand, objContentFilesPath) {
   content.production.products = []
   robots.state.save(objContentFilesPath, content)
 
-  await start(brand, objContentFilesPath)
+  //await start(brand, objContentFilesPath)
 }
 
 function _checkIfItsInProcess(objContentFilesPath) {
