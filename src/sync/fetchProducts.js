@@ -24,7 +24,8 @@ function mapFieldsProductsPattern(content) {
 
       let images = item.WsprodutoImagem.map(data => {
         return {
-          id: data.id
+          src: data.imagem,
+          position: 1
         }
       })
 
