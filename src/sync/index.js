@@ -77,8 +77,8 @@ function load(brand, objContentFilesPath) {
 
 const init = brand => {
   const objContentFilesPath = {
-    original: `./filestemp/${brand.id}_original.json`,
-    production: `./filestemp/${brand.id}_production.json`
+    original: `./temp/${brand.id}_original.json`,
+    production: `./temp/${brand.id}_production.json`
   }
 
   return {

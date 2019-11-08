@@ -1,7 +1,14 @@
 const state = require("./state")
+const fs = require("fs")
+
+function _createFolderIfNotExist(folder) {
+  fs.existsSync(folder) || fs.mkdirSync(folder)
+}
 
 const init = (brand, objContentFilesPath) => {
   //console.log("=> initContentFiles")
+
+  _createFolderIfNotExist("temp")
 
   const content = state.load(objContentFilesPath)
 
