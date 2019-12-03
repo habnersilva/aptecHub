@@ -14,6 +14,11 @@ const init = () => {
 
   //shopify.on("callLimits", limits => console.log(limits))
 
+  /**
+   *
+   * @param {*} data
+   * @param {*} idProductShopify
+   */
   const _getObjMetaFields = (data, idProductShopify) => {
     return {
       link: {
@@ -35,6 +40,10 @@ const init = () => {
     }
   }
 
+  /**
+   *
+   * @param {*} data
+   */
   const _transformDataFromShopify = data => {
     const params = {
       title: data.title,
@@ -48,10 +57,8 @@ const init = () => {
       ],
       images: [
         {
-          src: data.imageMain,
-          position: 1,
-          width: "828",
-          height: "1200"
+          src: data.imageMain.imagem,
+          position: data.imageMain.principal
         }
       ]
     }
@@ -175,6 +182,10 @@ const init = () => {
     })
   }
 
+  /**
+   *
+   * @param {*} params
+   */
   const list_all_products = async params => {
     try {
       let productsSyncs = await shopify.product.list(params)
@@ -200,6 +211,10 @@ const init = () => {
     }
   }
 
+  /**
+   *
+   * @param {*} params
+   */
   const count_all_products = async params => {
     return await shopify.product.count(params)
   }

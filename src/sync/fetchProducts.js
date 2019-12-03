@@ -68,7 +68,7 @@ const init = async objContentFilesPath => {
   await fetchProducts(content)
   mapFieldsProductsPattern(content)
   salveInTempProducts(content)
-  organizeFileContent(content)
+  //organizeFileContent(content)
 
   state.save(objContentFilesPath, content)
 }
