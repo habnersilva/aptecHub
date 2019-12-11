@@ -31,13 +31,28 @@ module.exports = (sequelize, DataType) => {
         }
       }
     },
-    appKey: {
+    platform: {
       type: DataType.STRING,
       validate: {
         notEmpty: {
-          msg: "Preencha o campo appKey"
+          msg: "Preencha o campo da Plataforma"
+        },
+        isIn: {
+          args: [["aptecweb", "icone", "tray"]],
+          msg: "Você não escolheu a plataforma"
         }
       }
+    },
+    linkGoogleShopping: {
+      type: DataType.STRING,
+      validate: {
+        notEmpty: {
+          msg: "Preencha o campo do Link do Google Shopping"
+        }
+      }
+    },
+    fidexGender: {
+      type: DataType.STRING
     }
   })
 

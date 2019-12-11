@@ -47,15 +47,63 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="inputAppKey">appKey</label>
-                    <input name="appKey" type="appKey"
-                        class="form-control <% if(errors.fields.arrayOfFields.indexOf('appKey') >= 0){ %> is-invalid <% }  %>"
-                        id="inputappKey" aria-describedby="appKeyHelp" placeholder="Entre com o Domínio"
-                        value="<%= form.appKey %>">
-                    <%  if (errors.fields.arrayOfFields.indexOf('appKey') >= 0){ %>
-                    <div class="invalid-feedback"><%= errors.fields.appKey %></div>
+                    <label for="inputPlatform">Plataforma</label>
+                    <select name="platform"
+                        class="form-control <% if(errors.fields.arrayOfFields.indexOf('platform') >= 0){ %> is-invalid <% }  %>">
+                        <option <% if(form.platform === "Selecione a plataforma") { %>selected <% } %>>Selecione a
+                            plataforma</option>
+                        <option <% if(form.platform === "aptecweb") { %> selected <% } %> value="aptecweb">AptecWeb
+                        </option>
+                        <option <% if(form.platform === "icone") { %> selected <% } %> value="icone">Ícone</option>
+                        <!-- <option value="shopify">Shopify</option>
+                        <option value="nuvemshop">Nuvem Shop</option> -->
+                        <option <% if(form.platform === "tray") { %> selected <% } %> value="tray">Tray</option>
+                    </select>
+                    <%  if (errors.fields.arrayOfFields.indexOf('platform') >= 0){ %>
+                    <div class="invalid-feedback"><%= errors.fields.platform %></div>
                     <% } %>
                 </div>
+                <div class="form-group">
+                    <label for="inputLinkGoogleShopping">Link do Google Shopping</label>
+                    <input name="linkGoogleShopping" type="linkGoogleShopping"
+                        class="form-control <% if(errors.fields.arrayOfFields.indexOf('linkGoogleShopping') >= 0){ %> is-invalid <% }  %>"
+                        id="inputlinkGoogleShopping" aria-describedby="linkGoogleShoppingHelp"
+                        placeholder="Entre com o Link do Google Shopping" value="<%= form.linkGoogleShopping %>">
+                    <small id="passwordHelpBlock" class="form-text text-muted">Informe o protocolo. Ex: (https://,
+                        http://)
+                    </small>
+                    <%  if (errors.fields.arrayOfFields.indexOf('linkGoogleShopping') >= 0){ %>
+                    <div class="invalid-feedback"><%= errors.fields.linkGoogleShopping %></div>
+                    <% } %>
+                </div>
+                <%= JSON.stringify(form.fidexGender) %>
+                <div class="form-group">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Gênero de produto fixo</h5>
+                            <p class="card-text">Todos os produtos da marca serão definidos comforme sua escolha abaixo.
+                            </p>
+                            <div class="form-check form-check-inline">
+                                <input name="fidexGender" class="form-check-input" type="radio" id="inlineRadioNone"
+                                    value="" <% if(!form.fidexGender){ %>checked<% } %>>
+
+                                <label class="form-check-label" for="inlineRadioNone" value="">Nenhum</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input name="fidexGender" class="form-check-input" type="radio" id="inlineRadioFamele"
+                                    value="famele" <% if(form.fidexGender === "famele"){ %>checked<% } %>>
+                                <label class="form-check-label" for="inlineRadioFamele" value="famele">Feminino
+                                    Adulto</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input name="fidexGender" class="form-check-input" type="radio" id="inlineRadioMale"
+                                    value="male" <% if(form.fidexGender === "male"){ %>checked<% } %>>
+                                <label class="form-check-label" for="inlineRadioMale">Masculino Adulto</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
                 <button type="submit" class="btn btn-primary">Salvar</button>
 
