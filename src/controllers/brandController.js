@@ -1,6 +1,6 @@
 const { extractErrors } = require("../utils/formattedErrors")
 const aptecWeb = require("../api/aptecweb")
-const sync = require("../sync")
+const syncXML = require("../syncXML")
 const cron = require("node-cron")
 const moment = require("moment")
 
@@ -9,7 +9,7 @@ const index = ({ Brands, Syncs }) => async (req, res) => {
     include: [{ model: Syncs }]
   })
 
-  brands.map(brand => (brand.sync = sync(brand).load()))
+  brands.map(brand => (brand.sync = syncXML(brand).load()))
 
   res.render("brands/index", {
     brands
@@ -84,11 +84,10 @@ const syncProducts = ({ Brands, Syncs }) => async (req, res) => {
   const brand = await Brands.findByPk(req.params.id)
 
   try {
-    await sync(brand).start()
+    await syncXML(brand).start()
     req.flash("success", `Importação realizar com sucesso para ${brand.name}`)
     res.redirect("/marcas")
   } catch (err) {
-    console.log(err)
     if (err.name === "AptecHubError")
       req.flash(err.errors[0].type, err.errors[0].message)
 
@@ -114,7 +113,7 @@ const syncAllBrands = ({ Brands }) => async (req, res) => {
 
     await Promise.all(
       brands.map(async brand => {
-        await sync(brand).start()
+        await syncXML(brand).start()
       })
     )
     req.flash("success", `Sincronização realizada`)
@@ -128,7 +127,7 @@ const resetSyncProducts = ({ Brands, Syncs }) => async (req, res) => {
   const brand = await Brands.findByPk(req.params.id)
 
   try {
-    await sync(brand).reset()
+    await syncXML(brand).reset()
 
     req.flash(
       "success",

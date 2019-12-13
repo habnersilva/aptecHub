@@ -23,7 +23,7 @@ const init = () => {
     return {
       link: {
         key: "link",
-        value: data.domain + "/" + data.slug,
+        value: data.link,
         value_type: "string",
         namespace: "aptecHub",
         owner_resource: "product",
@@ -47,9 +47,10 @@ const init = () => {
   const _transformDataFromShopify = data => {
     const params = {
       title: data.title,
-      product_type: "Roupa",
+      description: data.description,
       vendor: data.brand,
       domain: data.domain,
+      product_type: data.product_type,
       variants: [
         {
           price: data.price
@@ -57,8 +58,7 @@ const init = () => {
       ],
       images: [
         {
-          src: data.imageMain.imagem,
-          position: data.imageMain.principal
+          src: data.image_link
         }
       ]
     }
@@ -77,9 +77,11 @@ const init = () => {
 
         // adiciona produto
         let productShopify = await shopify.product.create(params).catch(err => {
-          throw new Error(
-            `${err}\n     ==> Criando produto no Shopify\n |--> ${err}`
-          )
+          const error = `\n==> Criando produto no Shopify\n |--> ${JSON.stringify(
+            err.response.body.errors
+          )}`
+
+          throw new Error(error)
         })
 
         const objMetaFields = _getObjMetaFields(data, productShopify.id)
@@ -90,17 +92,19 @@ const init = () => {
           link: await shopify.metafield
             .create(objMetaFields.link)
             .catch(err => {
-              throw new Error(
-                `${err}\n     ==> Criando metafield "link" no Shopify\n |--> ${err}`
-              )
+              const error = `==> Criando metafield "link" no Shopify\n |--> ${JSON.stringify(
+                err.response.body.errors
+              )}`
+              throw new Error(error)
             }),
           // adiciona metafield "idaptechub"
           idaptechub: await shopify.metafield
             .create(objMetaFields.idaptechub)
             .catch(err => {
-              throw new Error(
-                `${err}\n     ==> Criando metafield "idaptechub" no Shopify\n |--> ${err}`
-              )
+              const error = `==> Criando metafield "idaptechub" no Shopify\n |--> ${JSON.stringify(
+                err.response.body.errors
+              )}`
+              throw new Error(error)
             })
         }
 
@@ -125,8 +129,8 @@ const init = () => {
         let productShopify = await shopify.product
           .update(idProductShopify, params)
           .catch(err => {
-            //console.error(err)
-            throw new Error(`Editando produto no Shopify\n |--> ${err}`)
+            console.log(err)
+            //throw new Error(`Editando produto no Shopify\n |--> ${err}`)
           })
 
         const objMetaFields = _getObjMetaFields(data, idProductShopify)
