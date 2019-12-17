@@ -1,4 +1,5 @@
 const state = require("./state")
+const slugify = require("slugify")
 
 function _set_gender(product, brand) {
   let gender = ""
@@ -25,16 +26,43 @@ function _set_age_group(product, brand) {
   return brand.fidexGender ? "adult" : age_group
 }
 
+/**
+ *
+ * @param {*} link
+ * @obs Pego o final do atributo link para criar o slud no produto
+ */
+function _getSlug(link, suffix) {
+  if (!link) return ""
+
+  const split = link.split("/")
+  const length = split.length
+  let slug = split[length - 1]
+
+  slug = slug === "p" ? split[length - 2] : slug
+
+  return slugify(`${slug}-${suffix}`, {
+    replacement: "-",
+    lower: true
+  })
+}
+
 const init = async objContentFilesPath => {
   console.log("=> addCustomDataInProducts")
 
   const content = state.load(objContentFilesPath)
 
-  content.production.products = content.production.products.map(product => {
-    product.domain = content.production.brand.domain
+  content.original.products = content.original.source.map(product => {
+    // Forço o nome da Marca com dados cadastrado no AptecHub
     product.brand = content.production.brand.name
+    product.domain = content.production.brand.domain
+    product.published = true
+
+    // Alugns XML não possuem o campo age_group, assim seto o valor do atributo no cadastro da Marca
     product.age_group = _set_age_group(product, content.production.brand)
     product.gender = _set_gender(product, content.production.brand)
+
+    // Shopify exige o slug(handle)
+    product.slug = _getSlug(product.link, `${product.id}-${product.brand}`)
 
     return product
   })

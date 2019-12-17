@@ -45,28 +45,24 @@ function _checkIfItsInProcess(objContentFilesPath) {
 }
 
 async function start(brand, objContentFilesPath) {
+  console.log(`*** ${brand.id} - ${brand.name} ***`)
+
   // StartProcess
   robots.initContentFiles(brand, objContentFilesPath)
   // if (_checkIfItsInProcess(objContentFilesPath) === "end") {
-  //   _processStats(objContentFilesPath, "begin")
-  //   await robots.downloadProductsPortal(objContentFilesPath)
+  // _processStats(objContentFilesPath, "begin")
+  //await robots.downloadProductsPortal(objContentFilesPath)
   await robots.fetchXMLProducts(objContentFilesPath)
+  robots.addCustomDataInProducts(objContentFilesPath)
   robots.defineStageOfProducts(objContentFilesPath)
-  // robots.addCustomDataInProducts(objContentFilesPath)
-  // await robots.sendProducts(objContentFilesPath)
+  await robots.sendProducts(objContentFilesPath)
 
   //   _processStats(objContentFilesPath, "end")
   // }
 
-  // console.log(`*** ${brand.id} - ${brand.name} ***`)
-
   // const content = robots.state.load(objContentFilesPath)
   // console.log("\n>>>>>>>>>>> Product PRODUCTION ")
-  // content.production.products.forEach(product =>
-  //   console.log(
-  //     ` => ${product.sync.status} ---- ${product.id} (${product.title})`
-  //   )
-  // )
+  // content.production.products.forEach(product => console.log(product.sync))
 }
 
 function load(brand, objContentFilesPath) {

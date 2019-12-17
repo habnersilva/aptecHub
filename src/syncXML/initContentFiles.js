@@ -18,6 +18,7 @@ const init = (brand, objContentFilesPath) => {
   // A variavel products deve ser fixa
   if (typeof content.original.products === "undefined") {
     content.original.products = []
+    content.original.source = []
   }
 
   // A variavel products deve ser fixa

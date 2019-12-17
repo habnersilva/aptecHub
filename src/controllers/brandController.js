@@ -9,7 +9,10 @@ const index = ({ Brands, Syncs }) => async (req, res) => {
     include: [{ model: Syncs }]
   })
 
-  brands.map(brand => (brand.sync = syncXML(brand).load()))
+  brands.map(brand => {
+    brand.sync = syncXML(brand).load()
+    return brand
+  })
 
   res.render("brands/index", {
     brands
@@ -88,6 +91,7 @@ const syncProducts = ({ Brands, Syncs }) => async (req, res) => {
     req.flash("success", `Importação realizar com sucesso para ${brand.name}`)
     res.redirect("/marcas")
   } catch (err) {
+    console.error(err)
     if (err.name === "AptecHubError")
       req.flash(err.errors[0].type, err.errors[0].message)
 

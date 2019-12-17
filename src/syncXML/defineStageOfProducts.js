@@ -3,11 +3,28 @@ const moment = require("moment")
 
 /**
  *
+ * @param {*} product1
+ * @param {*} product2
+ */
+function _hasDiffBetweenObjects(p1, p2) {
+  // Se eu fizer delete p2.sync ele apagará o sync de todas variaveis como productProduction
+  const product1 = Object.assign({}, p1)
+  delete product1.sync
+
+  const product2 = Object.assign({}, p2)
+  delete product2.sync
+
+  return JSON.stringify(product1) !== JSON.stringify(product2) ? true : false
+}
+
+/**
+ *
  * @param {*} stage
  * @param {*} status
  */
-function _buildSync(stage, status) {
+function _buildSync(sync, stage, status) {
   return {
+    ...sync,
     stage: stage,
     status: status,
     date_synced: null,
@@ -24,39 +41,15 @@ function _checkForNewsProducts(content) {
   const arrayOfIdsProducts = content.production.products.map(
     product => product.id
   )
-  const arrayOfIdsProductsOriginal = content.original.products.map(
-    product => product.id
-  )
 
-  // Procuro pelos Ids de produto originais que não estão em production
-  const arrayOfIdsNewsProducts = arrayOfIdsProductsOriginal.filter(
-    item => !arrayOfIdsProducts.includes(item)
-  )
-
-  if (arrayOfIdsNewsProducts.length > 0) {
-    // Percorro a array add os novos produtos em productions
-    content.production.products = arrayOfIdsNewsProducts.map(idProduct => {
-      const product = content.original.products.find(
-        product => product.id === idProduct
-      )
-
-      return {
-        ...product,
-        sync: _buildSync("to_sync", "new")
-      }
-    })
-  }
-}
-
-/**
- *
- * @param {date_string} date1
- * @param {date_string} date2
- */
-function _calculeDiffDates(date1, date2) {
-  date1 = moment(date1)
-  date2 = moment(date2)
-  return date1.diff(date2, "minutes")
+  content.original.products.forEach(productOriginal => {
+    if (!arrayOfIdsProducts.includes(productOriginal.id)) {
+      content.production.products.push({
+        ...productOriginal,
+        sync: _buildSync({}, "to_sync", "new")
+      })
+    }
+  })
 }
 
 /**
@@ -67,34 +60,29 @@ function _checkForModifiedProducts(content) {
   content.production.products = content.production.products.map(
     productProduction => {
       // Descarta se o status for igual a deleted
-      if (productProduction.sync.status === "deleted") return productProduction
+      // if (productProduction.sync.status === "deleted") return productProduction
 
       const productOriginal = content.original.products.find(
-        productOriginal => productOriginal.id === productProduction.id
+        productOriginal =>
+          parseInt(productOriginal.id) === parseInt(productProduction.id)
       )
-
       // Descarta se productOriginal for undefinid,
       // caso: Se o produto foi deletedo no em original
-      if (typeof productOriginal === "undefined") return productProduction
+      if (typeof productOriginal === "undefined") {
+        return productProduction
+      }
 
-      // Encontra a diff entre outras,
-      // ex -1 hora segnifica que date1 tem menor -1 hora para date2
-      const calculateDiffBetweenDates = _calculeDiffDates(
-        productProduction.date_modified,
-        productOriginal.date_modified
+      // Verifica se a diff os 2 produtos
+      const diffBetweenProducts = _hasDiffBetweenObjects(
+        productOriginal,
+        productProduction
       )
-
-      if (
-        calculateDiffBetweenDates < 0 &&
-        (productProduction.sync.stage === "synced" ||
-          productProduction.sync.stage === "download")
-      ) {
-        productOriginal.sync = {
-          ...productProduction.sync,
-          sync: _buildSync("to_sync", "modified")
+      if (diffBetweenProducts) {
+        const sync = _buildSync(productProduction.sync, "to_sync", "modified")
+        return {
+          ...productOriginal,
+          sync
         }
-
-        return productOriginal
       }
 
       return productProduction
@@ -113,13 +101,14 @@ function _checkForDeletedProducts(content) {
         productOriginal => productOriginal.id === productProduction.id
       )
 
+      // O produto deve estar sincronizado para realizar o delete não haverá erro
       if (
         typeof productOriginal === "undefined" &&
-        productProduction.sync.stage === "synced"
+        productProduction.sync.stage != "deleted"
       ) {
-        productProduction.sync = {
-          ...productProduction.sync,
-          sync: _buildSync("to_sync", "to_sync")
+        return {
+          ...productProduction,
+          sync: _buildSync(productProduction.sync, "to_sync", "deleted")
         }
       }
 

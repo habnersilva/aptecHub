@@ -6,61 +6,97 @@ const moment = require("moment")
  * @param {Object} content
  * @return {Object} productShopify
  */
-async function _create(products) {
-  const promises = products.map(async product => {
-    return await portalDoTricot.create_a_product(product).catch(err => {
-      return {
-        ...product,
-        sync: { ...product.sync, errors: err.message }
-      }
-    })
-  })
+async function _create(product) {
+  let sync = {}
+  try {
+    const productShopify = await portalDoTricot.create_a_product(product)
 
-  return await Promise.all(promises)
-}
-
-/**
- * @param {*} products
- * @return {Object} productShopify
- */
-async function _update(products) {
-  const promises = products.map(async product => {
-    return await portalDoTricot
-      .update_a_product(product, product.sync.idportaldotricot)
-      .catch(err => {
-        return {
-          ...product,
-          sync: { ...product.sync, errors: err.message }
-        }
-      })
-  })
-
-  return await Promise.all(promises)
-}
-
-/**
- * @param {*} products
- * @return {Object} productShopify
- */
-async function _delete(products) {
-  const promises = products.map(async product => {
-    const response = await portalDoTricot
-      .delete_a_product(product.sync.idportaldotricot)
-      .catch(err => {
-        throw new Error(
-          `Excluindo produto ${product.sync.idportaldotricot} no PortaldoTricot\n |--> ${err}`
-        )
-      })
-
-    if (response === "deleted") {
-      return {
-        id: product.sync.idportaldotricot,
-        metafields: product.sync.metafields
-      }
+    sync = {
+      ...product.sync,
+      stage: "synced",
+      idportaldotricot: productShopify.id,
+      date: moment().format("DD/MM/YYYY HH:mm:ss"),
+      metafields: { ...productShopify.metafields },
+      errors: ""
     }
-  })
+  } catch (err) {
+    sync = {
+      ...product.sync,
+      stage: "error",
+      date: moment().format("DD/MM/YYYY HH:mm:ss"),
+      errors: err.message
+    }
+  }
 
-  return await Promise.all(promises)
+  // Retorna produto com sync atualizado
+  return {
+    ...product,
+    sync
+  }
+}
+
+/**
+ * @param {*} products
+ * @return {Object} productShopify
+ */
+async function _update(product) {
+  let sync = {}
+  try {
+    const productShopify = await portalDoTricot.update_a_product(
+      product,
+      product.sync.idportaldotricot
+    )
+    sync = {
+      ...product.sync,
+      stage: "synced",
+      idportaldotricot: productShopify.id,
+      date: moment().format("DD/MM/YYYY HH:mm:ss"),
+      metafields: { ...productShopify.metafields },
+      errors: ""
+    }
+  } catch (err) {
+    sync = {
+      ...product.sync,
+      stage: "error",
+      date: moment().format("DD/MM/YYYY HH:mm:ss"),
+      errors: err.message
+    }
+  }
+
+  return {
+    ...product,
+    sync
+  }
+}
+
+/**
+ * @param {*} products
+ * @return {Object} productShopify
+ */
+async function _delete(product) {
+  let sync = {}
+  try {
+    await portalDoTricot.delete_a_product(product.sync.idportaldotricot)
+
+    sync = {
+      ...product.sync,
+      stage: "",
+      date: moment().format("DD/MM/YYYY HH:mm:ss"),
+      errors: ""
+    }
+  } catch (err) {
+    sync = {
+      ...product.sync,
+      stage: "error",
+      date: moment().format("DD/MM/YYYY HH:mm:ss"),
+      errors: err.message
+    }
+  }
+
+  return {
+    ...product,
+    sync
+  }
 }
 
 /**
@@ -85,7 +121,7 @@ function _organizeProductsByStatus(content) {
       prev[acc.sync.status].push(acc)
       return prev
     },
-    { new: [], modified: [], deleted: [] }
+    { new: [], modified: [], delete: [] }
   )
 }
 
@@ -98,9 +134,7 @@ async function _submit(content) {
   const productsSyncedModified = await _update(
     content.production.shopify.modified
   )
-  const productsSyncedDeleted = await _delete(
-    content.production.shopify.deleted
-  )
+  const productsSyncedDeleted = await _delete(content.production.shopify.delete)
 
   content.production.shopify = [
     ...productsSyncedNew,
@@ -109,75 +143,26 @@ async function _submit(content) {
   ]
 }
 
-/**
- * Muda o stage do produto para Processing
- * @param {*} content
- */
-function _changeStageToProcessing(content) {
-  const arrayIdsOfProductsTemp = content.production.shopify.map(item => item.id)
-
-  content.production.products = content.production.products.map(product => {
-    if (arrayIdsOfProductsTemp.indexOf(product.id) >= 0) {
-      product.sync.stage = "processing"
-    }
-
-    return product
-  })
-}
-
-/**
- *
- * @param {*} content
- */
-function _changeStageToErrors(content) {
-  content.production.products = content.production.products.map(product => {
-    const productShopify = content.production.shopify.find(
-      item => item.id === product.id
-    )
-
-    if (productShopify) {
-      // Status expecifico para deleted
-      product.sync = {
-        ...product.sync,
-        stage: "error",
-        date: moment().format("DD/MM/YYYY HH:mm:ss"),
-        errors: productShopify.sync.errors
+async function _updateProduction(content) {
+  const promises = content.production.products.map(async product => {
+    if (product.sync.stage !== "synced") {
+      switch (product.sync.status) {
+        case "new":
+          product = await _create(product)
+          break
+        case "modified":
+          product = await _update(product)
+          break
+        case "deleted":
+          product.published = false
+          product = await _update(product)
+          break
       }
     }
-
     return product
   })
-}
 
-/**
- *
- * @param {*} content
- */
-function _changeStageToSynced(content) {
-  content.production.products = content.production.products.map(product => {
-    const productShopify = content.production.shopify.find(item => {
-      const idAptecHub = item.hasOwnProperty("metafields")
-        ? item.metafields.idaptechub.value
-        : 0
-
-      if (parseInt(product.id) === parseInt(idAptecHub)) return item
-    })
-
-    if (productShopify) {
-      // Status expecifico para deleted
-      const stage = product.sync.status === "deleted" ? "deleted" : "synced"
-
-      product.sync = {
-        ...product.sync,
-        stage,
-        idportaldotricot: productShopify.id,
-        date: moment().format("DD/MM/YYYY HH:mm:ss"),
-        metafields: { ...productShopify.metafields }
-      }
-    }
-
-    return product
-  })
+  content.production.products = await Promise.all(promises)
 }
 
 /**
@@ -189,40 +174,7 @@ const init = async objContentFilesPath => {
 
   const content = state.load(objContentFilesPath)
 
-  /*
-   * Criar variavel shopify em content.production para retorno do dados do produtos conectados
-   */
-
-  /*
-   *  Fraciona vetor de produtos em 10 em 10 para evitar estouro de requisição
-   */
-  _filterProductsToSync(content, 3)
-
-  /*
-   * Seta o Stage dos produtos em content.production.products para "processing"
-   */
-  // _changeStageToProcessing(content)
-
-  /*
-   * Organiza os produtos por status "new", "update", "delelte"
-   * dentro de content.production.shopify
-   */
-  _organizeProductsByStatus(content)
-
-  /*
-   *  Enviar para shopify
-   */
-  await _submit(content)
-
-  /**
-   * Percorre shopify buscando errors
-   */
-  _changeStageToErrors(content)
-
-  /*
-   * Altera o Stage para synced se foi enviando com sucesso
-   */
-  _changeStageToSynced(content)
+  await _updateProduction(content)
 
   state.save(objContentFilesPath, content)
 }

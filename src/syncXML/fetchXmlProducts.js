@@ -1,8 +1,12 @@
+const state = require("./state")
 const axios = require("axios")
 const xml = require("fast-xml-parser")
-const state = require("./state")
 const { StringDecoder } = require("string_decoder")
 
+/**
+ *
+ * @param {*} data_binary
+ */
 function _decoderBufferUTF8(data_binary) {
   const decoder = new StringDecoder("utf8")
   return decoder.write(Buffer.from(data_binary))
@@ -22,13 +26,17 @@ async function _getProducts(content) {
   })
 
   const data = _decoderBufferUTF8(response.data.toString("binary"))
-
   const jsonObj = xml.parse(data)
 
-  if (jsonObj.rss.channel.item.length >= 1) {
-    content.original.products = jsonObj.rss.channel.item
+  // Pega o tipo da variavel
+  const typeItem = Object.prototype.toString.call(jsonObj.rss.channel.item)
+
+  if (typeItem === "[object Array]") {
+    content.original.source = jsonObj.rss.channel.item
+  } else if (typeItem === "[object Object]") {
+    content.original.source = [jsonObj.rss.channel.item]
   } else {
-    content.original.products = [jsonObj.rss.channel.item]
+    content.original.source = []
   }
 }
 
@@ -37,7 +45,7 @@ async function _getProducts(content) {
  * @param {*} content
  */
 function _removeCDATAEmptyInValues(content) {
-  content.original.products = content.original.products.map(product => {
+  content.original.source = content.original.source.map(product => {
     const data = {}
     // Percorre as propriedades do Obj Produtos
     Object.keys(product).forEach(key => {
@@ -56,7 +64,7 @@ function _removeCDATAEmptyInValues(content) {
  * @param {*} content
  */
 function _removePrefixGoogleInProps(content) {
-  content.original.products = content.original.products.map(product => {
+  content.original.source = content.original.source.map(product => {
     const data = {}
     // Percorre as propriedades do Obj Produtos, para remover o "g:"
     Object.keys(product).forEach(key => {
@@ -68,12 +76,8 @@ function _removePrefixGoogleInProps(content) {
 
 /**
  *
- * @param {*} content
+ * @param {*} objContentFilesPath
  */
-function salveInTempProducts(content) {
-  content.original.products = content.original.productsPattern
-}
-
 const init = async objContentFilesPath => {
   console.log("=> fetchXMLProducts")
 
@@ -85,4 +89,5 @@ const init = async objContentFilesPath => {
 
   state.save(objContentFilesPath, content)
 }
+
 module.exports = init
