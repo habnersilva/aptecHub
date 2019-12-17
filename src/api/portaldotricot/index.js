@@ -53,9 +53,11 @@ const init = () => {
       domain: data.domain,
       product_type: data.product_type,
       published: data.published,
+      tags: data.tags,
       variants: [
         {
-          price: data.price
+          price: data.price,
+          inventory_quantity: 1
         }
       ],
       images: [
