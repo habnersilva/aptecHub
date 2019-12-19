@@ -69,83 +69,11 @@ async function _update(product) {
   }
 }
 
-/**
- * @param {*} products
- * @return {Object} productShopify
- */
-async function _delete(product) {
-  let sync = {}
-  try {
-    await portalDoTricot.delete_a_product(product.sync.idportaldotricot)
-
-    sync = {
-      ...product.sync,
-      stage: "",
-      date: moment().format("DD/MM/YYYY HH:mm:ss"),
-      errors: ""
-    }
-  } catch (err) {
-    sync = {
-      ...product.sync,
-      stage: "error",
-      date: moment().format("DD/MM/YYYY HH:mm:ss"),
-      errors: err.message
-    }
-  }
-
-  return {
-    ...product,
-    sync
-  }
-}
-
-/**
- *
- * @param {*} content
- * @param {*} quantity
- */
-function _filterProductsToSync(content, quantity) {
-  content.production.shopify = content.production.products
-    .filter(item => item.sync.stage === "to_sync")
-    .filter((item, index) => index < quantity)
-}
-
-/**
- *
- * @param {*} products
- * @return {new:[], modified:[], deleted:[]}
- */
-function _organizeProductsByStatus(content) {
-  content.production.shopify = content.production.shopify.reduce(
-    (prev, acc) => {
-      prev[acc.sync.status].push(acc)
-      return prev
-    },
-    { new: [], modified: [], delete: [] }
-  )
-}
-
-/**
- *
- * @param {*} content
- */
-async function _submit(content) {
-  const productsSyncedNew = await _create(content.production.shopify.new)
-  const productsSyncedModified = await _update(
-    content.production.shopify.modified
-  )
-  const productsSyncedDeleted = await _delete(content.production.shopify.delete)
-
-  content.production.shopify = [
-    ...productsSyncedNew,
-    ...productsSyncedModified,
-    ...productsSyncedDeleted
-  ]
-}
-
-async function _updateProduction(content) {
+async function _updateProduction(content, limit = 10) {
+  let i = limit
   const promises = content.production.products.map(async product => {
-    if (product.sync.stage !== "synced") {
+    if (product.sync.stage === "to_sync" && i >= 0) {
+      i--
       switch (product.sync.status) {
         case "new":
           product = await _create(product)
@@ -174,7 +102,7 @@ const init = async objContentFilesPath => {
 
   const content = state.load(objContentFilesPath)
 
-  await _updateProduction(content)
+  await _updateProduction(content, 10)
 
   state.save(objContentFilesPath, content)
 }

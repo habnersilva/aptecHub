@@ -49,16 +49,15 @@ async function start(brand, objContentFilesPath) {
 
   // StartProcess
   robots.initContentFiles(brand, objContentFilesPath)
-  // if (_checkIfItsInProcess(objContentFilesPath) === "end") {
-  // _processStats(objContentFilesPath, "begin")
-  //await robots.downloadProductsPortal(objContentFilesPath)
-  await robots.fetchXMLProducts(objContentFilesPath)
-  robots.addCustomDataInProducts(objContentFilesPath)
-  robots.defineStageOfProducts(objContentFilesPath)
-  await robots.sendProducts(objContentFilesPath)
-
-  //   _processStats(objContentFilesPath, "end")
-  // }
+  if (_checkIfItsInProcess(objContentFilesPath) === "end") {
+    _processStats(objContentFilesPath, "begin")
+    await robots.downloadProductsPortal(objContentFilesPath)
+    await robots.fetchXMLProducts(objContentFilesPath)
+    robots.addCustomDataInProducts(objContentFilesPath)
+    robots.defineStageOfProducts(objContentFilesPath)
+    await robots.sendProducts(objContentFilesPath)
+    _processStats(objContentFilesPath, "end")
+  }
 
   // const content = robots.state.load(objContentFilesPath)
   // console.log("\n>>>>>>>>>>> Product PRODUCTION ")

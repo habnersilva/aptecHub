@@ -1,4 +1,4 @@
-const sync = require("../sync")
+const syncXML = require("../syncXML")
 
 module.exports = function(cron, models) {
   async function syncAllProducts() {
@@ -10,7 +10,7 @@ module.exports = function(cron, models) {
 
       await Promise.all(
         brands.map(async brand => {
-          await sync(brand).start()
+          await syncXML(brand).start()
         })
       )
     } catch (err) {

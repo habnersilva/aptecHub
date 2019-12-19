@@ -22,7 +22,11 @@ function _hasDiffBetweenObjects(p1, p2) {
  * @param {*} stage
  * @param {*} status
  */
-function _buildSync(sync, stage, status) {
+function _sync(sync, stage, status) {
+  if (sync.stage === "error") {
+    stage = "error"
+  }
+
   return {
     ...sync,
     stage: stage,
@@ -36,17 +40,51 @@ function _buildSync(sync, stage, status) {
  *
  * @param {*} content
  */
-function _checkForNewsProducts(content) {
-  // Monto array apenas com os Ids dos produtos
-  const arrayOfIdsProducts = content.production.products.map(
-    product => product.id
+function _defineStatusError(content) {
+  // Pega os produtos originais com error
+  const productsWithErrors = content.original.products.filter(
+    productOriginal => {
+      if (productOriginal.sync.status === "error") {
+        return productOriginal
+      }
+    }
   )
 
+  productsWithErrors.forEach(productWithError => {
+    let _hasProductInProduction = false
+
+    // Caso o produto erro já existir
+    content.production.products.forEach((product, index) => {
+      if (product.id === productWithError.id) {
+        content.production.products[index] = productWithError
+        _hasProductInProduction = true
+      }
+    })
+
+    if (_hasProductInProduction === false) {
+      content.production.products.push(productWithError)
+    }
+  })
+}
+
+/**
+ *
+ * @param {*} content
+ */
+function _defineStatusNew(content) {
   content.original.products.forEach(productOriginal => {
-    if (!arrayOfIdsProducts.includes(productOriginal.id)) {
+    let _hasProductInProduction = false
+
+    // Verifica se produto já existe em production
+    content.production.products.forEach(product => {
+      if (parseInt(product.id) === parseInt(productOriginal.id))
+        _hasProductInProduction = true
+    })
+
+    if (_hasProductInProduction === false) {
       content.production.products.push({
         ...productOriginal,
-        sync: _buildSync({}, "to_sync", "new")
+        sync: _sync(productOriginal.sync, "to_sync", "new")
       })
     }
   })
@@ -56,17 +94,17 @@ function _checkForNewsProducts(content) {
  *
  * @param {*} content
  */
-function _checkForModifiedProducts(content) {
+function _defineStatusModified(content) {
   content.production.products = content.production.products.map(
     productProduction => {
       // Descarta se o status for igual a deleted
-      // if (productProduction.sync.status === "deleted") return productProduction
+      //   if (productProduction.sync.status === "error") return productProduction
 
       const productOriginal = content.original.products.find(
         productOriginal =>
           parseInt(productOriginal.id) === parseInt(productProduction.id)
       )
-      // Descarta se productOriginal for undefinid,
+      // Descarta se productOriginal for undefined,
       // caso: Se o produto foi deletedo no em original
       if (typeof productOriginal === "undefined") {
         return productProduction
@@ -77,8 +115,9 @@ function _checkForModifiedProducts(content) {
         productOriginal,
         productProduction
       )
+
       if (diffBetweenProducts) {
-        const sync = _buildSync(productProduction.sync, "to_sync", "modified")
+        const sync = _sync(productProduction.sync, "to_sync", "modified")
         return {
           ...productOriginal,
           sync
@@ -94,7 +133,7 @@ function _checkForModifiedProducts(content) {
  *
  * @param {*} content
  */
-function _checkForDeletedProducts(content) {
+function _defineStatusDeleted(content) {
   content.production.products = content.production.products.map(
     productProduction => {
       const productOriginal = content.original.products.find(
@@ -108,7 +147,7 @@ function _checkForDeletedProducts(content) {
       ) {
         return {
           ...productProduction,
-          sync: _buildSync(productProduction.sync, "to_sync", "deleted")
+          sync: _sync(productProduction.sync, "to_sync", "deleted")
         }
       }
 
@@ -126,10 +165,10 @@ const init = objContentFilesPath => {
 
   const content = state.load(objContentFilesPath)
 
-  // Verifica se a novos produtos
-  _checkForNewsProducts(content)
-  _checkForModifiedProducts(content)
-  _checkForDeletedProducts(content)
+  _defineStatusError(content)
+  _defineStatusNew(content)
+  _defineStatusModified(content)
+  _defineStatusDeleted(content)
 
   state.save(objContentFilesPath, content)
 }

@@ -55,11 +55,10 @@ function mapFieldsProductsPattern(content) {
       content.production.productsPortalPattern.push({
         id: metafields.idaptechub.value,
         title: product.title,
-        date_created: moment(product.created_at).format("YYYY-MM-DD HH:mm:ss"), // "2019-09-23 14:49:40",
-        date_modified: moment(product.created_at).format("YYYY-MM-DD HH:mm:ss"), //"2019-11-06 08:55:58",
         sync: {
           stage: "synced",
           stage: "download",
+          date: moment(product.created_at).format("YYYY-MM-DD HH:mm:ss"), // "2019-09-23 14:49:40",
           idportaldotricot: product.id,
           metafields
         }
@@ -93,7 +92,7 @@ function salveInTempProducts(content) {
  * @param {*} objContentFilesPath
  */
 const init = async objContentFilesPath => {
-  //console.log("=> downlaodsProductsPortal")
+  console.log("=> downlaodsProductsPortal")
 
   const content = state.load(objContentFilesPath)
 
@@ -112,4 +111,5 @@ const init = async objContentFilesPath => {
 
   state.save(objContentFilesPath, content)
 }
+
 module.exports = init
