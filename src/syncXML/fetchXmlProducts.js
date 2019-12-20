@@ -5,10 +5,18 @@ const { StringDecoder } = require("string_decoder")
 
 /**
  *
- * @param {*} data_binary
+ * @param {*} arrayBuffer
+ * @param {*} platform
  */
-function _decoderBufferUTF8(data_binary) {
+function _treatEnconding(arrayBuffer, platform) {
   const decoder = new StringDecoder("utf8")
+
+  let data_binary = null
+  if (platform === "icone") {
+    data_binary = arrayBuffer.toString("binary")
+  } else {
+    data_binary = arrayBuffer.toString()
+  }
   return decoder.write(Buffer.from(data_binary))
 }
 
@@ -25,8 +33,13 @@ async function _getProducts(content) {
     responseEncoding: "binary"
   })
 
-  const data = _decoderBufferUTF8(response.data.toString("binary"))
-  const jsonObj = xml.parse(data)
+  const dataXml = _treatEnconding(
+    response.data,
+    content.original.brand.platform
+  )
+
+  // Transforma XML in JSON
+  const jsonObj = xml.parse(dataXml)
 
   // Pega o tipo da variavel
   const typeItem = Object.prototype.toString.call(jsonObj.rss.channel.item)

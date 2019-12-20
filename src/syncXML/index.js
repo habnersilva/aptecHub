@@ -53,9 +53,9 @@ async function start(brand, objContentFilesPath) {
     _processStats(objContentFilesPath, "begin")
     await robots.downloadProductsPortal(objContentFilesPath)
     await robots.fetchXMLProducts(objContentFilesPath)
-    robots.addCustomDataInProducts(objContentFilesPath)
-    robots.defineStageOfProducts(objContentFilesPath)
-    await robots.sendProducts(objContentFilesPath)
+    // robots.addCustomDataInProducts(objContentFilesPath)
+    // robots.defineStageOfProducts(objContentFilesPath)
+    // await robots.sendProducts(objContentFilesPath)
     _processStats(objContentFilesPath, "end")
   }
 
