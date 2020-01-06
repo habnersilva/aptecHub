@@ -1,8 +1,5 @@
 const { extractErrors } = require("../utils/formattedErrors")
-const aptecWeb = require("../api/aptecweb")
 const syncXML = require("../syncXML")
-const cron = require("node-cron")
-const moment = require("moment")
 
 const index = ({ Brands, Syncs }) => async (req, res) => {
   const brands = await Brands.findAll({
@@ -101,11 +98,11 @@ const syncProducts = ({ Brands, Syncs }) => async (req, res) => {
 
 const syncAuto = ({ tasks }) => async (req, res) => {
   if (req.params.option === "on") {
-    console.log("start autoSync!")
     tasks.autoSync.start()
+    console.log("start autoSync!")
   } else {
-    console.log("stop!")
     tasks.autoSync.stop()
+    console.log("stop!")
   }
 
   res.redirect("/marcas")

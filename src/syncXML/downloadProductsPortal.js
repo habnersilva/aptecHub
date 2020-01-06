@@ -56,7 +56,6 @@ function mapFieldsProductsPattern(content) {
         id: metafields.idaptechub.value,
         title: product.title,
         sync: {
-          stage: "synced",
           stage: "download",
           date: moment(product.created_at).format("YYYY-MM-DD HH:mm:ss"), // "2019-09-23 14:49:40",
           idportaldotricot: product.id,
@@ -92,7 +91,7 @@ function salveInTempProducts(content) {
  * @param {*} objContentFilesPath
  */
 const init = async objContentFilesPath => {
-  console.log("=> downlaodsProductsPortal")
+  // console.log("---> downlaodsProductsPortal")
 
   const content = state.load(objContentFilesPath)
 
@@ -100,7 +99,7 @@ const init = async objContentFilesPath => {
     typeof content.production.products === "undefined" ||
     content.production.products.length <= 0
   ) {
-    console.log(`---> Reset ${content.production.brand.name}`)
+    // console.log(`---> Reset ${content.production.brand.name}`)
 
     _createVariables(content)
     await _fetchProducts(content)

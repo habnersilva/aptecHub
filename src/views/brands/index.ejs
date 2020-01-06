@@ -47,12 +47,14 @@
                         <div class="col-lg-2 py-2">
                             Total de Produtos Sincronizados
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                <%= brand.sync.production.stats.process.status %></div>
+                                <small><%= brand.sync.production.stats.process.beginTime %></small><br />
+                                <small><%= brand.sync.production.stats.process.endTime %></small><br />
+                            </div>
                         </div>
                         <div class="col-lg-2">
                         </div>
                         <div class="col-lg-2">
-                            <% if(brand.sync.production.stats.process.status === "end"){ %>
+
                             <div class="float-right">
                                 <a href="/marcas/sincronizar/<%= brand.id %>" class="btn btn-primary btn-circle">
                                     <i class="fas fa-sync-alt"></i></a>
@@ -64,7 +66,7 @@
                                     <i class="fas fa-trash"></i>
                                 </a>
                             </div>
-                            <% } %>
+
                         </div>
                     </div>
 

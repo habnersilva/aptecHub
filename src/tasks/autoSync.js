@@ -1,10 +1,7 @@
 const syncXML = require("../syncXML")
 
 module.exports = function(cron, models) {
-  async function syncAllProducts() {
-    console.log(
-      `Start syncAllProducts entre ${process.env.CRON_INTERVAL} minutos`
-    )
+  const syncAllProducts = async () => {
     try {
       const brands = await models.Brands.findAll()
 

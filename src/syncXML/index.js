@@ -1,3 +1,4 @@
+const moment = require("moment")
 const robots = {
   initContentFiles: require("./initContentFiles"),
   downloadProductsPortal: require("./downloadProductsPortal"),
@@ -11,6 +12,21 @@ const robots = {
 function _processStats(objContentFilesPath, status = "begin") {
   const content = robots.state.load(objContentFilesPath)
 
+  let beginTime,
+    endTime,
+    terminalMsg = ""
+
+  if (status === "begin") {
+    beginTime = moment().format("DD/MM/YYYY HH:mm:ss")
+    terminalMsg = `${content.production.brand.id} - ${content.production.brand.name} => Start ${beginTime}`
+  }
+
+  if (status === "end") {
+    beginTime = content.production.stats.process.beginTime
+    endTime = moment().format("DD/MM/YYYY HH:mm:ss")
+    terminalMsg = `${content.production.brand.id} - ${content.production.brand.name} => End ${endTime}`
+  }
+
   const data = {
     products: {
       total: content.production.products.length,
@@ -19,11 +35,14 @@ function _processStats(objContentFilesPath, status = "begin") {
       ).length
     },
     process: {
-      status
+      beginTime,
+      endTime
     }
   }
 
   content.production.stats = data
+
+  console.log(terminalMsg)
 
   robots.state.save(objContentFilesPath, content)
 }
@@ -38,25 +57,21 @@ async function reset(brand, objContentFilesPath) {
   await start(brand, objContentFilesPath)
 }
 
-function _checkIfItsInProcess(objContentFilesPath) {
-  //console.log("=> _checkIfItsInProcess")
-  const content = robots.state.load(objContentFilesPath)
-  return content.production.stats.process.status
-}
-
 async function start(brand, objContentFilesPath) {
-  console.log(`*** ${brand.id} - ${brand.name} ***`)
+  // console.log(`>>> ${brand.id} - ${brand.name}`)
 
-  // StartProcess
-  robots.initContentFiles(brand, objContentFilesPath)
-  if (_checkIfItsInProcess(objContentFilesPath) === "end") {
+  try {
+    // StartProcess
+    robots.initContentFiles(brand, objContentFilesPath)
     _processStats(objContentFilesPath, "begin")
     await robots.downloadProductsPortal(objContentFilesPath)
     await robots.fetchXMLProducts(objContentFilesPath)
-    // robots.addCustomDataInProducts(objContentFilesPath)
-    // robots.defineStageOfProducts(objContentFilesPath)
-    // await robots.sendProducts(objContentFilesPath)
+    robots.addCustomDataInProducts(objContentFilesPath)
+    robots.defineStageOfProducts(objContentFilesPath)
+    await robots.sendProducts(objContentFilesPath)
     _processStats(objContentFilesPath, "end")
+  } catch (err) {
+    console.log(err)
   }
 
   // const content = robots.state.load(objContentFilesPath)

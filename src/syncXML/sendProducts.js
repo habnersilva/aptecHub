@@ -71,26 +71,39 @@ async function _update(product) {
 
 async function _updateProduction(content, limit = 10) {
   let i = limit
-  const promises = content.production.products.map(async product => {
-    if (product.sync.stage === "to_sync" && i >= 0) {
+  const productsLimited = content.production.products.filter(item => {
+    if (item.sync.stage === "to_sync" && i > 0) {
       i--
-      switch (product.sync.status) {
-        case "new":
-          product = await _create(product)
-          break
-        case "modified":
-          product = await _update(product)
-          break
-        case "deleted":
-          product.published = false
-          product = await _update(product)
-          break
-      }
+      return item
+    }
+  })
+
+  const promises = productsLimited.map(async product => {
+    switch (product.sync.status) {
+      case "new":
+        product = await _create(product)
+        break
+      case "modified":
+        product = await _update(product)
+        break
+      case "deleted":
+        product.published = false
+        product = await _update(product)
+        break
     }
     return product
   })
 
-  content.production.products = await Promise.all(promises)
+  const productsSended = await Promise.all(promises)
+  // Resolver merge do que foi enviado para Shopify com base atual
+
+  content.production.products = content.production.products.map(product => {
+    const productFinded = productsSended.find(item => item.id === product.id)
+    return {
+      ...product,
+      ...productFinded
+    }
+  })
 }
 
 /**
@@ -98,7 +111,7 @@ async function _updateProduction(content, limit = 10) {
  * @param {*} objContentFilesPath
  */
 const init = async objContentFilesPath => {
-  console.log("=> sendProducts")
+  // console.log("---> sendProducts")
 
   const content = state.load(objContentFilesPath)
 

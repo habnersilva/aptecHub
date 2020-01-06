@@ -161,7 +161,7 @@ function _defineStatusDeleted(content) {
  * @param {*} objContentFilesPath
  */
 const init = objContentFilesPath => {
-  console.log("=> defineStageOfProducts")
+  // console.log("---> defineStageOfProducts")
 
   const content = state.load(objContentFilesPath)
 

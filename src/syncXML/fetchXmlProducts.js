@@ -92,7 +92,7 @@ function _removePrefixGoogleInProps(content) {
  * @param {*} objContentFilesPath
  */
 const init = async objContentFilesPath => {
-  console.log("=> fetchXMLProducts")
+  // console.log("---> fetchXMLProducts")
 
   const content = state.load(objContentFilesPath)
 

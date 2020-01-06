@@ -197,7 +197,7 @@ function _traeatProduts(content) {
 }
 
 const init = async objContentFilesPath => {
-  console.log("=> addCustomDataInProducts")
+  //console.log("---> addCustomDataInProducts")
 
   const content = state.load(objContentFilesPath)
 
