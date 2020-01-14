@@ -1,6 +1,15 @@
 const state = require("./state")
 const moment = require("moment")
 
+function _unionTags(tags1, tags2) {
+  const vtr1 = tags1.split(","),
+    vtr2 = tags2.split(",")
+  const union = [...new Set([...vtr1, ...vtr2])]
+  const str = [...new Set([...vtr1, ...vtr2])].join(",")
+
+  return str
+}
+
 /**
  *
  * @param {*} product1
@@ -118,8 +127,10 @@ function _defineStatusModified(content) {
 
       if (diffBetweenProducts) {
         const sync = _sync(productProduction.sync, "to_sync", "modified")
+        _unionTags(productOriginal.tags, productProduction.tags)
         return {
           ...productOriginal,
+          tags: _unionTags(productOriginal.tags, productProduction.tags),
           sync
         }
       }

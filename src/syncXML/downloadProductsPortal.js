@@ -55,6 +55,7 @@ function mapFieldsProductsPattern(content) {
       content.production.productsPortalPattern.push({
         id: metafields.idaptechub.value,
         title: product.title,
+        tags: product.tags,
         sync: {
           stage: "download",
           date: moment(product.created_at).format("YYYY-MM-DD HH:mm:ss"), // "2019-09-23 14:49:40",
