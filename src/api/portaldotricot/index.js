@@ -52,7 +52,7 @@ const init = () => {
       vendor: data.brand,
       domain: data.domain,
       product_type: data.product_type,
-      published: data.published,
+      published_at: data.published_at,
       tags: data.tags,
       variants: [
         {

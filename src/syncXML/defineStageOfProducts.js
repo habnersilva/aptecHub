@@ -131,6 +131,7 @@ function _defineStatusModified(content) {
         return {
           ...productOriginal,
           tags: _unionTags(productOriginal.tags, productProduction.tags),
+          published_at: productProduction.published_at,
           sync
         }
       }
