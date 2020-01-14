@@ -2,7 +2,7 @@ const moment = require("moment")
 const robots = {
   initContentFiles: require("./initContentFiles"),
   downloadProductsPortal: require("./downloadProductsPortal"),
-  fetchXMLProducts: require("./fetchXMLProducts"),
+  fetchXmlProducts: require("./fetchXmlProducts"),
   defineStageOfProducts: require("./defineStageOfProducts"),
   addCustomDataInProducts: require("./addCustomDataInProducts"),
   sendProducts: require("./sendProducts"),
@@ -65,7 +65,7 @@ async function start(brand, objContentFilesPath) {
     robots.initContentFiles(brand, objContentFilesPath)
     _processStats(objContentFilesPath, "begin")
     await robots.downloadProductsPortal(objContentFilesPath)
-    await robots.fetchXMLProducts(objContentFilesPath)
+    await robots.fetchXmlProducts(objContentFilesPath)
     robots.addCustomDataInProducts(objContentFilesPath)
     robots.defineStageOfProducts(objContentFilesPath)
     await robots.sendProducts(objContentFilesPath)
