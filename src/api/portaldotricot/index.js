@@ -48,7 +48,7 @@ const init = () => {
     const params = {
       title: data.title,
       handle: data.slug,
-      description: data.description,
+      body_html: data.description,
       vendor: data.brand,
       domain: data.domain,
       product_type: data.product_type,
