@@ -53,12 +53,12 @@ function _gender(product, brand) {
   let gender = ""
 
   if (product.hasOwnProperty("gender")) {
-    gender = product.gender
+    gender = product.gender.toLowerCase()
   } else {
     gender = ""
   }
 
-  return (brand.fidexGender ? brand.fidexGender : gender).toLowerCase()
+  return brand.fidexGender ? brand.fidexGender : gender
 }
 
 /**
@@ -70,13 +70,14 @@ function _age_group(product, brand) {
   let age_group = ""
 
   if (product.hasOwnProperty("gender")) {
-    age_group = product.age_group
+    // verfico s age_group e verdade pois undefined da erro para toLowerCase()
+    age_group = product.age_group ? product.age_group.toLowerCase() : ""
   } else {
     age_group = ""
   }
 
   // Caso Genero seja fixo no cadastra da Marca e será automaticamente "adult"
-  return (brand.fidexGender ? "adult" : age_group).toLowerCase()
+  return brand.fidexGender ? "adult" : age_group
 }
 
 /**
@@ -179,7 +180,7 @@ function _traeatProduts(content) {
 
       // Shopify exige o slug(handle)
       product.slug = _slug(product.link, `${product.id}-${product.brand}`)
-      product.tags = `${product.gender}, ${product.age_group}, ${product.size}, ${product.color}`
+      product.tags = `${product.brand}, ${product.gender}, ${product.age_group}, ${product.size}, ${product.color}`
     } catch (err) {
       sync = {
         ...product.sync,
