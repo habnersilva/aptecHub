@@ -7,7 +7,7 @@ module.exports = function(cron, models) {
 
       await Promise.all(
         brands.map(async brand => {
-          await syncXML(brand).sync()
+          await syncXML(brand).download()
         })
       )
     } catch (err) {
@@ -16,9 +16,9 @@ module.exports = function(cron, models) {
   }
 
   let job = new cron.CronJob({
-    cronTime: process.env.CRON_INTERVAL_SYNC, // The time pattern when you want the job to start
+    cronTime: process.env.CRON_INTERVAL_SYNC_DOWNLOAD, // The time pattern when you want the job to start
     onTick: syncAllProducts, // Task to run
-    onComplete: () => console.log("Sync Task Completed"), // When job is completed and It stops.
+    onComplete: () => console.log("Download Task Completed"), // When job is completed and It stops.
     start: false, // immediately starts the job.
     timeZone: "America/Sao_Paulo" // The timezone
   })

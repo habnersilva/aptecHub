@@ -2,7 +2,7 @@ const init = dependencies => {
   const router = require("express").Router()
   const brandController = require("../controllers/brandController")
 
-  router.get("/", brandController.index(dependencies.models))
+  router.get("/", brandController.index(dependencies))
   router.get("/adicionar", brandController.create(dependencies.models))
   router.post("/adicionar", brandController.create(dependencies.models))
   router.get("/editar/:id", brandController.update(dependencies.models))
@@ -21,6 +21,10 @@ const init = dependencies => {
   router.get(
     "/reiniciar/:id",
     brandController.resetSyncProducts(dependencies.models)
+  )
+  router.get(
+    "/download/:id",
+    brandController.downloadSyncProducts(dependencies.models)
   )
 
   return router

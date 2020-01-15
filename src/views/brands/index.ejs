@@ -27,11 +27,63 @@
             <div class="card mb-4">
                 <div class="card-header">
                     <%= brand.name %>
+                    <div class="float-right">
+                        <a href="/marcas/editar/<%= brand.id %>" class="btn btn-success btn-icon-split btn-sm">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-edit"></i>
+                            </span>
+                            <span class="text">Editar</span>
+                        </a>
+                        <a href="/marcas/excluir/<%= brand.id %>" class="btn btn-danger btn-icon-split btn-sm">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-trash"></i>
+                            </span>
+                            <span class="text">Excluir</span>
+                        </a>
+                    </div>
                 </div>
-
-
-
                 <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-lg-2 py-2">
+                            Total de Produtos Baixados
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                <%= brand.sync.production.stats.products.totalFetch %></div>
+                        </div>
+                        <div class="col-lg-2 py-2">
+                            Baixado em
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                <small><%= brand.sync.production.stats.process.downloadBeginTime %></small><br />
+                                <small><%= brand.sync.production.stats.process.downloadEndTime %></small><br />
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="float-right">
+                                <a href="/marcas/download/<%= brand.id %>"
+                                    class="btn btn-primary btn-icon-split btn-sm">
+                                    <span class="icon text-white-50">
+                                        <i class="fas fa-download"></i>
+                                    </span>
+                                    <span class="text">Download</span>
+                                </a>
+                                <a href="/marcas/sincronizar/<%= brand.id %>"
+                                    class="btn btn-primary btn-icon-split btn-sm">
+                                    <span class="icon text-white-50">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </span>
+                                    <span class="text">Sincronizar</span>
+                                </a>
+                                <a href="/marcas/reiniciar/<%= brand.id %>"
+                                    class="btn btn-primary btn-icon-split btn-sm">
+                                    <span class="icon text-white-50">
+                                        <i class="fas fa-undo-alt"></i>
+                                    </span>
+                                    <span class="text">Reiniciar</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row mb-4">
                         <div class="col-lg-2 py-2">
                             Total de Produtos
@@ -47,27 +99,13 @@
                         <div class="col-lg-2 py-2">
                             Total de Produtos Sincronizados
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                <small><%= brand.sync.production.stats.process.beginTime %></small><br />
-                                <small><%= brand.sync.production.stats.process.endTime %></small><br />
+                                <small><%= brand.sync.production.stats.process.syncBeginTime %></small><br />
+                                <small><%= brand.sync.production.stats.process.syncEndTime %></small><br />
                             </div>
                         </div>
-                        <div class="col-lg-2">
+                        <div class="col-lg-6">
                         </div>
-                        <div class="col-lg-2">
 
-                            <div class="float-right">
-                                <a href="/marcas/sincronizar/<%= brand.id %>" class="btn btn-primary btn-circle">
-                                    <i class="fas fa-sync-alt"></i></a>
-                                <a href="/marcas/reiniciar/<%= brand.id %>" class="btn btn-primary btn-circle">
-                                    <i class="fas fa-undo-alt"></i></a>
-                                <a href="/marcas/editar/<%= brand.id %>" class="btn btn-success btn-circle">
-                                    <i class="fas fa-edit"></i></a>
-                                <a href="/marcas/excluir/<%= brand.id %>" class="btn btn-danger btn-circle">
-                                    <i class="fas fa-trash"></i>
-                                </a>
-                            </div>
-
-                        </div>
                     </div>
 
 

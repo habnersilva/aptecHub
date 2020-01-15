@@ -1,10 +1,8 @@
 const { extractErrors } = require("../utils/formattedErrors")
 const syncXML = require("../syncXML")
 
-const index = ({ Brands, Syncs }) => async (req, res) => {
-  const brands = await Brands.findAll({
-    include: [{ model: Syncs }]
-  })
+const index = ({ models, tasks }) => async (req, res) => {
+  const brands = await models.Brands.findAll()
 
   brands.map(brand => {
     brand.sync = syncXML(brand).load()
@@ -80,11 +78,11 @@ const remove = ({ Brands }) => async (req, res) => {
   res.redirect("/marcas")
 }
 
-const syncProducts = ({ Brands, Syncs }) => async (req, res) => {
+const syncProducts = ({ Brands }) => async (req, res) => {
   const brand = await Brands.findByPk(req.params.id)
 
   try {
-    await syncXML(brand).start()
+    await syncXML(brand).sync()
     req.flash("success", `Importação realizar com sucesso para ${brand.name}`)
     res.redirect("/marcas")
   } catch (err) {
@@ -99,6 +97,7 @@ const syncProducts = ({ Brands, Syncs }) => async (req, res) => {
 const syncAuto = ({ tasks }) => async (req, res) => {
   if (req.params.option === "on") {
     tasks.autoSync.start()
+    tasks.autoDownload.start()
     console.log("start autoSync!")
   } else {
     tasks.autoSync.stop()
@@ -124,7 +123,7 @@ const syncAllBrands = ({ Brands }) => async (req, res) => {
   }
 }
 
-const resetSyncProducts = ({ Brands, Syncs }) => async (req, res) => {
+const resetSyncProducts = ({ Brands }) => async (req, res) => {
   const brand = await Brands.findByPk(req.params.id)
 
   try {
@@ -144,6 +143,22 @@ const resetSyncProducts = ({ Brands, Syncs }) => async (req, res) => {
   }
 }
 
+const downloadSyncProducts = ({ Brands }) => async (req, res) => {
+  const brand = await Brands.findByPk(req.params.id)
+
+  try {
+    await syncXML(brand).download()
+    req.flash("success", `Download realizado com sucesso para ${brand.name}`)
+    res.redirect("/marcas")
+  } catch (err) {
+    console.log(err)
+    if (err.name === "AptecHubError")
+      req.flash(err.errors[0].type, err.errors[0].message)
+
+    res.redirect("/marcas")
+  }
+}
+
 module.exports = {
   index,
   create,
@@ -152,5 +167,6 @@ module.exports = {
   syncAuto,
   syncAllBrands,
   syncProducts,
-  resetSyncProducts
+  resetSyncProducts,
+  downloadSyncProducts
 }

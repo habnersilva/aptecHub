@@ -9,34 +9,61 @@ const robots = {
   state: require("./state")
 }
 
-function _processStats(objContentFilesPath, status = "begin") {
+function _processStats(objContentFilesPath, status = "begin", action = "") {
   const content = robots.state.load(objContentFilesPath)
 
-  let beginTime,
-    endTime,
-    terminalMsg = ""
+  let {
+    downloadBeginTime,
+    downloadEndTime,
+    syncBeginTime,
+    syncEndTime
+  } = content.production.stats.process
+
+  let terminalMsg = ""
+
+  terminalMsg = `${content.production.brand.id} - ${content.production.brand.name}`
 
   if (status === "begin") {
-    beginTime = moment().format("DD/MM/YYYY HH:mm:ss")
-    terminalMsg = `${content.production.brand.id} - ${content.production.brand.name} => Start ${beginTime}`
+    terminalMsg = terminalMsg.concat(` | ${action} => Start `)
+
+    if (action === "download") {
+      downloadBeginTime = moment().format("DD/MM/YYYY HH:mm:ss")
+      terminalMsg = terminalMsg.concat(downloadBeginTime)
+    }
+
+    if (action === "sync") {
+      syncBeginTime = moment().format("DD/MM/YYYY HH:mm:ss")
+      terminalMsg = terminalMsg.concat(syncBeginTime)
+    }
   }
 
   if (status === "end") {
-    beginTime = content.production.stats.process.beginTime
-    endTime = moment().format("DD/MM/YYYY HH:mm:ss")
-    terminalMsg = `${content.production.brand.id} - ${content.production.brand.name} => End ${endTime}`
+    terminalMsg = terminalMsg.concat(` | ${action} => End `)
+
+    if (action === "download") {
+      downloadEndTime = moment().format("DD/MM/YYYY HH:mm:ss")
+      terminalMsg = terminalMsg.concat(downloadEndTime)
+    }
+
+    if (action === "sync") {
+      syncEndTime = moment().format("DD/MM/YYYY HH:mm:ss")
+      terminalMsg = terminalMsg.concat(syncEndTime)
+    }
   }
 
   const data = {
     products: {
+      totalFetch: content.original.products.length,
       total: content.production.products.length,
       totalSynced: content.production.products.filter(
         product => product.sync.stage === "synced"
       ).length
     },
     process: {
-      beginTime,
-      endTime
+      downloadBeginTime,
+      downloadEndTime,
+      syncBeginTime,
+      syncEndTime
     }
   }
 
@@ -45,6 +72,11 @@ function _processStats(objContentFilesPath, status = "begin") {
   console.log(terminalMsg)
 
   robots.state.save(objContentFilesPath, content)
+}
+
+function load(brand, objContentFilesPath) {
+  robots.initContentFiles(brand, objContentFilesPath)
+  return robots.state.load(objContentFilesPath)
 }
 
 async function reset(brand, objContentFilesPath) {
@@ -57,31 +89,19 @@ async function reset(brand, objContentFilesPath) {
   await start(brand, objContentFilesPath)
 }
 
-async function start(brand, objContentFilesPath) {
-  // console.log(`>>> ${brand.id} - ${brand.name}`)
-
-  try {
-    // StartProcess
-    robots.initContentFiles(brand, objContentFilesPath)
-    _processStats(objContentFilesPath, "begin")
-    await robots.downloadProductsPortal(objContentFilesPath)
-    await robots.fetchXmlProducts(objContentFilesPath)
-    robots.addCustomDataInProducts(objContentFilesPath)
-    robots.defineStageOfProducts(objContentFilesPath)
-    await robots.sendProducts(objContentFilesPath)
-    _processStats(objContentFilesPath, "end")
-  } catch (err) {
-    console.log(err)
-  }
-
-  // const content = robots.state.load(objContentFilesPath)
-  // console.log("\n>>>>>>>>>>> Product PRODUCTION ")
-  // content.production.products.forEach(product => console.log(product.sync))
+async function sync(objContentFilesPath) {
+  _processStats(objContentFilesPath, "begin", "sync")
+  await robots.sendProducts(objContentFilesPath)
+  _processStats(objContentFilesPath, "end", "sync")
 }
 
-function load(brand, objContentFilesPath) {
-  robots.initContentFiles(brand, objContentFilesPath)
-  return robots.state.load(objContentFilesPath)
+async function download(objContentFilesPath) {
+  _processStats(objContentFilesPath, "begin", "download")
+  // await robots.downloadProductsPortal(objContentFilesPath)
+  await robots.fetchXmlProducts(objContentFilesPath)
+  robots.addCustomDataInProducts(objContentFilesPath)
+  robots.defineStageOfProducts(objContentFilesPath)
+  _processStats(objContentFilesPath, "end", "download")
 }
 
 const init = brand => {
@@ -91,9 +111,11 @@ const init = brand => {
   }
 
   return {
-    start: start.bind(null, brand, objContentFilesPath),
+    //  start: start.bind(null, brand, objContentFilesPath),
     reset: reset.bind(null, brand, objContentFilesPath),
-    load: load.bind(null, brand, objContentFilesPath)
+    load: load.bind(null, brand, objContentFilesPath),
+    sync: sync.bind(null, objContentFilesPath),
+    download: download.bind(null, objContentFilesPath)
   }
 }
 
