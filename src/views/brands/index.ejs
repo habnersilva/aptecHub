@@ -104,6 +104,15 @@
                             </div>
                         </div>
                         <div class="col-lg-6">
+
+                            <% if(brand.sync.production.stats.process.status === "begin"){ %>
+                            <a href="#" class="btn btn-warning btn-icon-split btn-lg">
+                                <span class="icon text-white-50">
+                                    <i class="fas fa-flag"></i>
+                                </span>
+                                <span class="text">SINCRONIZANDO</span>
+                            </a>
+                            <% } %>
                         </div>
 
                     </div>

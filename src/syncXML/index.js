@@ -60,6 +60,7 @@ function _processStats(objContentFilesPath, status = "begin", action = "") {
       ).length
     },
     process: {
+      status,
       downloadBeginTime,
       downloadEndTime,
       syncBeginTime,
@@ -90,14 +91,20 @@ async function reset(brand, objContentFilesPath) {
 }
 
 async function sync(objContentFilesPath) {
-  _processStats(objContentFilesPath, "begin", "sync")
-  await robots.sendProducts(objContentFilesPath)
-  _processStats(objContentFilesPath, "end", "sync")
+  const content = robots.state.load(objContentFilesPath)
+
+  if (content.production.stats.process.status === "end") {
+    _processStats(objContentFilesPath, "begin", "sync")
+    await robots.sendProducts(objContentFilesPath)
+    _processStats(objContentFilesPath, "end", "sync")
+  } else {
+    console.log("--> Cliente já está em Sync")
+  }
 }
 
 async function download(objContentFilesPath) {
   _processStats(objContentFilesPath, "begin", "download")
-  // await robots.downloadProductsPortal(objContentFilesPath)
+  await robots.downloadProductsPortal(objContentFilesPath)
   await robots.fetchXmlProducts(objContentFilesPath)
   robots.addCustomDataInProducts(objContentFilesPath)
   robots.defineStageOfProducts(objContentFilesPath)

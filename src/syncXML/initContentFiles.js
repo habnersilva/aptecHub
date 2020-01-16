@@ -25,6 +25,7 @@ const init = (brand, objContentFilesPath) => {
   if (typeof content.production.stats === "undefined") {
     content.production.stats = {
       products: {
+        totalFetch: 0,
         total: 0,
         totalSynced: 0
       },
