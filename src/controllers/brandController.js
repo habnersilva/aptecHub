@@ -4,10 +4,12 @@ const syncXML = require("../syncXML")
 const index = ({ models, tasks }) => async (req, res) => {
   const brands = await models.Brands.findAll()
 
-  brands.map(brand => {
-    brand.sync = syncXML(brand).load()
-    return brand
-  })
+  await Promise.all(
+    brands.map(async brand => {
+      brand.sync = await syncXML(brand).load()
+      return brand
+    })
+  )
 
   res.render("brands/index", {
     brands
@@ -78,7 +80,7 @@ const remove = ({ Brands }) => async (req, res) => {
   res.redirect("/marcas")
 }
 
-const syncProducts = ({ Brands }) => async (req, res) => {
+const sync = ({ Brands }) => async (req, res) => {
   const brand = await Brands.findByPk(req.params.id)
 
   try {
@@ -107,23 +109,7 @@ const syncAuto = ({ tasks }) => async (req, res) => {
   res.redirect("/marcas")
 }
 
-const syncAllBrands = ({ Brands }) => async (req, res) => {
-  try {
-    const brands = await Brands.findAll()
-
-    await Promise.all(
-      brands.map(async brand => {
-        await syncXML(brand).start()
-      })
-    )
-    req.flash("success", `Sincronização realizada`)
-    res.redirect("/marcas")
-  } catch (err) {
-    console.error(err)
-  }
-}
-
-const resetSyncProducts = ({ Brands }) => async (req, res) => {
+const resetSync = ({ Brands }) => async (req, res) => {
   const brand = await Brands.findByPk(req.params.id)
 
   try {
@@ -143,7 +129,7 @@ const resetSyncProducts = ({ Brands }) => async (req, res) => {
   }
 }
 
-const downloadSyncProducts = ({ Brands }) => async (req, res) => {
+const downloadSync = ({ Brands }) => async (req, res) => {
   const brand = await Brands.findByPk(req.params.id)
 
   try {
@@ -165,8 +151,7 @@ module.exports = {
   update,
   remove,
   syncAuto,
-  syncAllBrands,
-  syncProducts,
-  resetSyncProducts,
-  downloadSyncProducts
+  sync,
+  resetSync,
+  downloadSync
 }

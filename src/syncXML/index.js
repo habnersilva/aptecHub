@@ -1,7 +1,8 @@
 const moment = require("moment")
+const portalDoTricot = require("../api/portaldotricot")
 const robots = {
   initContentFiles: require("./initContentFiles"),
-  downloadProductsPortal: require("./downloadProductsPortal"),
+  reset: require("./reset"),
   fetchXmlProducts: require("./fetchXmlProducts"),
   defineStageOfProducts: require("./defineStageOfProducts"),
   addCustomDataInProducts: require("./addCustomDataInProducts"),
@@ -9,7 +10,22 @@ const robots = {
   state: require("./state")
 }
 
-function _processStats(objContentFilesPath, status = "begin", action = "") {
+function _checkSync(objContentFilesPath) {
+  const content = robots.state.load(objContentFilesPath)
+
+  if (content.production.stats.process.status === "begin") {
+    console.log("--> Cliente já está em Sync")
+    return true
+  } else {
+    return false
+  }
+}
+
+async function _processStats(
+  objContentFilesPath,
+  status = "begin",
+  action = ""
+) {
   const content = robots.state.load(objContentFilesPath)
 
   let {
@@ -57,7 +73,10 @@ function _processStats(objContentFilesPath, status = "begin", action = "") {
       total: content.production.products.length,
       totalSynced: content.production.products.filter(
         product => product.sync.stage === "synced"
-      ).length
+      ).length,
+      totalPortaldoTricot: await portalDoTricot.count_all_products({
+        vendor: content.production.brand.name
+      })
     },
     process: {
       status,
@@ -75,40 +94,33 @@ function _processStats(objContentFilesPath, status = "begin", action = "") {
   robots.state.save(objContentFilesPath, content)
 }
 
-function load(brand, objContentFilesPath) {
-  robots.initContentFiles(brand, objContentFilesPath)
+async function load(brand, objContentFilesPath) {
+  await robots.initContentFiles(brand, objContentFilesPath)
   return robots.state.load(objContentFilesPath)
 }
 
 async function reset(brand, objContentFilesPath) {
-  //console.log("=> resetContentFiles")
+  if (_checkSync(objContentFilesPath)) return false
 
-  const content = robots.state.load(objContentFilesPath)
-  content.production.products = []
-  robots.state.save(objContentFilesPath, content)
-
-  await start(brand, objContentFilesPath)
+  await _processStats(objContentFilesPath, "begin", "reset")
+  await robots.reset(objContentFilesPath)
+  await _processStats(objContentFilesPath, "end", "reset")
 }
 
 async function sync(objContentFilesPath) {
-  const content = robots.state.load(objContentFilesPath)
+  if (_checkSync(objContentFilesPath)) return false
 
-  if (content.production.stats.process.status === "end") {
-    _processStats(objContentFilesPath, "begin", "sync")
-    await robots.sendProducts(objContentFilesPath)
-    _processStats(objContentFilesPath, "end", "sync")
-  } else {
-    console.log("--> Cliente já está em Sync")
-  }
+  await _processStats(objContentFilesPath, "begin", "sync")
+  await robots.sendProducts(objContentFilesPath)
+  await _processStats(objContentFilesPath, "end", "sync")
 }
 
 async function download(objContentFilesPath) {
   _processStats(objContentFilesPath, "begin", "download")
-  await robots.downloadProductsPortal(objContentFilesPath)
   await robots.fetchXmlProducts(objContentFilesPath)
   robots.addCustomDataInProducts(objContentFilesPath)
   robots.defineStageOfProducts(objContentFilesPath)
-  _processStats(objContentFilesPath, "end", "download")
+  await _processStats(objContentFilesPath, "end", "download")
 }
 
 const init = brand => {

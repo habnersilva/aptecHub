@@ -1,11 +1,12 @@
 const state = require("./state")
 const fs = require("fs")
+const portalDoTricot = require("../api/portaldotricot")
 
 function _createFolderIfNotExist(folder) {
   fs.existsSync(folder) || fs.mkdirSync(folder)
 }
 
-const init = (brand, objContentFilesPath) => {
+const init = async (brand, objContentFilesPath) => {
   //console.log("=> initContentFiles")
 
   _createFolderIfNotExist("temp")
@@ -27,7 +28,10 @@ const init = (brand, objContentFilesPath) => {
       products: {
         totalFetch: 0,
         total: 0,
-        totalSynced: 0
+        totalSynced: 0,
+        totalPortaldoTricot: await portalDoTricot.count_all_products({
+          vendor: content.production.brand.name
+        })
       },
       process: {
         status: "end"

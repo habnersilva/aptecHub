@@ -114,9 +114,7 @@ const init = async objContentFilesPath => {
   // console.log("---> sendProducts")
 
   const content = state.load(objContentFilesPath)
-
   await _updateProduction(content, 10)
-
   state.save(objContentFilesPath, content)
 }
 module.exports = init

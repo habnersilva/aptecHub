@@ -10,22 +10,9 @@ const init = dependencies => {
   router.get("/excluir/:id", brandController.remove(dependencies.models))
 
   router.get("/autosincronizar/:option", brandController.syncAuto(dependencies))
-  router.get(
-    "/sincronizar/todos",
-    brandController.syncAllBrands(dependencies.models)
-  )
-  router.get(
-    "/sincronizar/:id",
-    brandController.syncProducts(dependencies.models)
-  )
-  router.get(
-    "/reiniciar/:id",
-    brandController.resetSyncProducts(dependencies.models)
-  )
-  router.get(
-    "/download/:id",
-    brandController.downloadSyncProducts(dependencies.models)
-  )
+  router.get("/sincronizar/:id", brandController.sync(dependencies.models))
+  router.get("/reiniciar/:id", brandController.resetSync(dependencies.models))
+  router.get("/download/:id", brandController.downloadSync(dependencies.models))
 
   return router
 }

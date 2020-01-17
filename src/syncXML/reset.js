@@ -27,17 +27,13 @@ function _createVariables(content) {
  * @param {*} content
  */
 const _fetchProducts = async content => {
-  content.production.productsPortal = await portalDoTricot
-    .list_all_products({
+  try {
+    content.production.productsPortal = await portalDoTricot.list_all_products({
       vendor: content.production.brand.name
     })
-    .catch(err => {
-      throw new Error(
-        `Editando produto no Shopify\n     JSON ${JSON.stringify(
-          params
-        )}\n |--> ${err}`
-      )
-    })
+  } catch (err) {
+    console.error(err)
+  }
 }
 
 /**
@@ -90,6 +86,14 @@ function salveInTempProducts(content) {
 
 /**
  *
+ * @param {*} content
+ */
+function clearProductionProducts(content) {
+  content.production.products = []
+}
+
+/**
+ *
  * @param {*} objContentFilesPath
  */
 const init = async objContentFilesPath => {
@@ -97,18 +101,12 @@ const init = async objContentFilesPath => {
 
   const content = state.load(objContentFilesPath)
 
-  if (
-    typeof content.production.products === "undefined" ||
-    content.production.products.length <= 0
-  ) {
-    // console.log(`---> Reset ${content.production.brand.name}`)
-
-    _createVariables(content)
-    await _fetchProducts(content)
-    mapFieldsProductsPattern(content)
-    salveInTempProducts(content)
-    organizeFileContent(content)
-  }
+  _createVariables(content)
+  clearProductionProducts(content)
+  await _fetchProducts(content)
+  mapFieldsProductsPattern(content)
+  salveInTempProducts(content)
+  organizeFileContent(content)
 
   state.save(objContentFilesPath, content)
 }

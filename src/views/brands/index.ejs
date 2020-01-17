@@ -45,20 +45,49 @@
                 <div class="card-body">
                     <div class="row mb-4">
                         <div class="col-lg-2 py-2">
-                            Total de Produtos Baixados
+                            Baixados da <%= brand.platform %>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                <%= brand.sync.production.stats.products.totalFetch %></div>
-                        </div>
-                        <div class="col-lg-2 py-2">
+                                <%= brand.sync.production.stats.products.totalFetch %>
+                            </div>
+                            <br />
                             Baixado em
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 <small><%= brand.sync.production.stats.process.downloadBeginTime %></small><br />
                                 <small><%= brand.sync.production.stats.process.downloadEndTime %></small><br />
                             </div>
                         </div>
-                        <div class="col-lg-4">
+                        <div class="col-lg-2 py-2">
+                            Portal do Tricot
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                <%= brand.sync.production.stats.products.totalPortaldoTricot %>
+                            </div>
                         </div>
-                        <div class="col-lg-4">
+                        <div class="col-lg-2 py-2">
+                            <% if(brand.sync.production.stats.process.status === "begin"){ %>
+                            <a href="#" class="btn btn-warning btn-icon-split btn-lg">
+                                <span class="icon text-white-50">
+                                    <i class="fas fa-flag"></i>
+                                </span>
+                                <span class="text">SINCRONIZANDO</span>
+                            </a><br />
+                            <% } %>
+
+                            Não Sincronizados
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                <%= brand.sync.production.stats.products.total %>
+                            </div>
+                            Sincronizados
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                <%= brand.sync.production.stats.products.totalSynced %>
+                            </div>
+                            <br />
+                            Sincronizados em
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                <small><%= brand.sync.production.stats.process.syncBeginTime %></small><br />
+                                <small><%= brand.sync.production.stats.process.syncEndTime %></small><br />
+                            </div>
+                        </div>
+                        <div class="col-lg-6 py-2">
                             <div class="float-right">
                                 <a href="/marcas/download/<%= brand.id %>"
                                     class="btn btn-primary btn-icon-split btn-sm">
@@ -84,41 +113,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row mb-4">
-                        <div class="col-lg-2 py-2">
-                            Total de Produtos
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                <%= brand.sync.production.stats.products.total %></div>
-
-                        </div>
-                        <div class="col-lg-2 py-2">
-                            Total de Produtos Sincronizados
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                <%= brand.sync.production.stats.products.totalSynced %></div>
-                        </div>
-                        <div class="col-lg-2 py-2">
-                            Total de Produtos Sincronizados
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                <small><%= brand.sync.production.stats.process.syncBeginTime %></small><br />
-                                <small><%= brand.sync.production.stats.process.syncEndTime %></small><br />
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-
-                            <% if(brand.sync.production.stats.process.status === "begin"){ %>
-                            <a href="#" class="btn btn-warning btn-icon-split btn-lg">
-                                <span class="icon text-white-50">
-                                    <i class="fas fa-flag"></i>
-                                </span>
-                                <span class="text">SINCRONIZANDO</span>
-                            </a>
-                            <% } %>
-                        </div>
-
-                    </div>
-
-
-                    <!-- Collapsable Card Example -->
                     <div class="card">
                         <!-- Card Header - Accordion -->
                         <a href="#collapseCard<%= brand.id %>" class="d-block card-header py-3" data-toggle="collapse"
@@ -192,7 +186,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
             <% }) %>

@@ -5,6 +5,7 @@ const init = () => {
     shopName: process.env.SHOPIFY_SHOPNAME,
     apiKey: process.env.SHOPIFY_APIKEY,
     password: process.env.SHOPIFY_PASSWORD,
+    apiVersion: "2019-07",
     autoLimit: {
       calls: 1,
       interval: 2000,
@@ -207,28 +208,40 @@ const init = () => {
    * @param {*} params
    */
   const list_all_products = async params => {
-    try {
-      let productsSyncs = await shopify.product.list(params)
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        let products = []
+        params.limit = 10
 
-      productsSyncs = await Promise.all(
-        productsSyncs.map(async product => {
-          const metafields = await shopify.metafield.list({
-            metafield: {
-              owner_resource: "product",
-              owner_id: product.id
-            }
-          })
-          return {
-            ...product,
-            metafields
-          }
-        })
-      )
+        do {
+          let productsSyncs = await shopify.product.list(params)
 
-      return productsSyncs
-    } catch (err) {
-      console.error(err)
-    }
+          params = productsSyncs.nextPageParameters
+
+          productsSyncs = await Promise.all(
+            productsSyncs.map(async product => {
+              const metafields = await shopify.metafield.list({
+                metafield: {
+                  owner_resource: "product",
+                  owner_id: product.id
+                }
+              })
+              return {
+                ...product,
+                metafields
+              }
+            })
+          )
+
+          products = [...products, ...productsSyncs]
+        } while (params !== undefined)
+        resolve(products)
+      } catch (err) {
+        reject(err)
+      }
+    })
+
+    return promise
   }
 
   /**
