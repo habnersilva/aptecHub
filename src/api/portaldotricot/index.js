@@ -46,7 +46,7 @@ const init = () => {
    * @param {*} data
    */
   const _transformDataFromShopify = data => {
-    const params = {
+    let params = {
       title: data.title,
       handle: data.slug,
       body_html: data.description,
@@ -55,17 +55,31 @@ const init = () => {
       product_type: data.product_type,
       published_at: data.published_at,
       tags: data.tags,
-      variants: [
+      variants: [{
+        price: data.price,
+        inventory_quantity: 1
+      }],
+      images: [{
+        src: data.image_link
+      }]
+    }
+
+    if (data.size && data.color) {
+      params.options = [{
+          name: `Size`
+        },
         {
-          price: data.price,
-          inventory_quantity: 1
-        }
-      ],
-      images: [
-        {
-          src: data.image_link
+          name: "Color"
         }
       ]
+
+      params.variants = [{
+        title: `${data.size} / ${data.color}`,
+        option1: data.size,
+        option2: data.color,
+        price: data.price,
+        inventory_quantity: 1
+      }]
     }
 
     return params
