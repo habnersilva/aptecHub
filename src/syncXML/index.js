@@ -6,6 +6,7 @@ const robots = {
   fetchXmlProducts: require("./fetchXmlProducts"),
   defineStageOfProducts: require("./defineStageOfProducts"),
   addCustomDataInProducts: require("./addCustomDataInProducts"),
+  removeProductsDuplicate: require("./removeProductsDuplicate"),
   sendProducts: require("./sendProducts"),
   state: require("./state")
 }
@@ -118,6 +119,7 @@ async function sync(objContentFilesPath) {
 async function download(objContentFilesPath) {
   _processStats(objContentFilesPath, "begin", "download")
   await robots.fetchXmlProducts(objContentFilesPath)
+  robots.removeProductsDuplicate(objContentFilesPath)
   robots.addCustomDataInProducts(objContentFilesPath)
   robots.defineStageOfProducts(objContentFilesPath)
   await _processStats(objContentFilesPath, "end", "download")
