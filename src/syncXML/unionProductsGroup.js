@@ -11,6 +11,7 @@ function _removeDuplicatesStr(str) {
 function _filterImageLinkUnique(content) {
   content.original.products = content.original.source.reduce((acc, curr) => {
     let index = 0;
+    let strSize = curr.size ? curr.size + ", " : "";
 
     // Encontra o indice do array
     index = acc.findIndex(
@@ -22,9 +23,9 @@ function _filterImageLinkUnique(content) {
     // Adiciona todos tamanhos do produto em tag
     if (index < 0) {
       index = acc.length;
-      curr.tags = curr.size + ", ";
+      curr.tags = strSize;
     } else {
-      curr.tags = acc[index].tags.concat(curr.size + ", ");
+      curr.tags = acc[index].tags.concat(strSize);
       curr.tags = _removeDuplicatesStr(curr.tags);
     }
 
