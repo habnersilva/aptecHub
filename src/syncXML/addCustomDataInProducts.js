@@ -161,7 +161,7 @@ function _sync() {
 }
 
 function _traeatProduts(content) {
-  content.original.products = content.original.source.map(product => {
+  content.original.products = content.original.products.map(product => {
     let sync = _sync()
     try {
       // Forço o nome da Marca com dados cadastrado no AptecHub
