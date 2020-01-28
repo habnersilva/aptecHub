@@ -1,24 +1,24 @@
-const moment = require("moment")
-const portalDoTricot = require("../api/portaldotricot")
+const moment = require("moment");
+const portalDoTricot = require("../api/portaldotricot");
 const robots = {
   initContentFiles: require("./initContentFiles"),
   reset: require("./reset"),
   fetchXmlProducts: require("./fetchXmlProducts"),
   defineStageOfProducts: require("./defineStageOfProducts"),
   addCustomDataInProducts: require("./addCustomDataInProducts"),
-  removeProductsDuplicate: require("./removeProductsDuplicate"),
+  unionProductsGroup: require("./unionProductsGroup"),
   sendProducts: require("./sendProducts"),
   state: require("./state")
-}
+};
 
 function _checkSync(objContentFilesPath) {
-  const content = robots.state.load(objContentFilesPath)
+  const content = robots.state.load(objContentFilesPath);
 
   if (content.production.stats.process.status === "begin") {
-    console.log("--> Cliente já está em Sync")
-    return true
+    console.log("--> Cliente já está em Sync");
+    return true;
   } else {
-    return false
+    return false;
   }
 }
 
@@ -27,44 +27,44 @@ async function _processStats(
   status = "begin",
   action = ""
 ) {
-  const content = robots.state.load(objContentFilesPath)
+  const content = robots.state.load(objContentFilesPath);
 
   let {
     downloadBeginTime,
     downloadEndTime,
     syncBeginTime,
     syncEndTime
-  } = content.production.stats.process
+  } = content.production.stats.process;
 
-  let terminalMsg = ""
+  let terminalMsg = "";
 
-  terminalMsg = `${content.production.brand.id} - ${content.production.brand.name}`
+  terminalMsg = `${content.production.brand.id} - ${content.production.brand.name}`;
 
   if (status === "begin") {
-    terminalMsg = terminalMsg.concat(` | ${action} => Start `)
+    terminalMsg = terminalMsg.concat(` | ${action} => Start `);
 
     if (action === "download") {
-      downloadBeginTime = moment().format("DD/MM/YYYY HH:mm:ss")
-      terminalMsg = terminalMsg.concat(downloadBeginTime)
+      downloadBeginTime = moment().format("DD/MM/YYYY HH:mm:ss");
+      terminalMsg = terminalMsg.concat(downloadBeginTime);
     }
 
     if (action === "sync") {
-      syncBeginTime = moment().format("DD/MM/YYYY HH:mm:ss")
-      terminalMsg = terminalMsg.concat(syncBeginTime)
+      syncBeginTime = moment().format("DD/MM/YYYY HH:mm:ss");
+      terminalMsg = terminalMsg.concat(syncBeginTime);
     }
   }
 
   if (status === "end") {
-    terminalMsg = terminalMsg.concat(` | ${action} => End `)
+    terminalMsg = terminalMsg.concat(` | ${action} => End `);
 
     if (action === "download") {
-      downloadEndTime = moment().format("DD/MM/YYYY HH:mm:ss")
-      terminalMsg = terminalMsg.concat(downloadEndTime)
+      downloadEndTime = moment().format("DD/MM/YYYY HH:mm:ss");
+      terminalMsg = terminalMsg.concat(downloadEndTime);
     }
 
     if (action === "sync") {
-      syncEndTime = moment().format("DD/MM/YYYY HH:mm:ss")
-      terminalMsg = terminalMsg.concat(syncEndTime)
+      syncEndTime = moment().format("DD/MM/YYYY HH:mm:ss");
+      terminalMsg = terminalMsg.concat(syncEndTime);
     }
   }
 
@@ -86,50 +86,50 @@ async function _processStats(
       syncBeginTime,
       syncEndTime
     }
-  }
+  };
 
-  content.production.stats = data
+  content.production.stats = data;
 
-  console.log(terminalMsg)
+  console.log(terminalMsg);
 
-  robots.state.save(objContentFilesPath, content)
+  robots.state.save(objContentFilesPath, content);
 }
 
 async function load(brand, objContentFilesPath) {
-  await robots.initContentFiles(brand, objContentFilesPath)
-  return robots.state.load(objContentFilesPath)
+  await robots.initContentFiles(brand, objContentFilesPath);
+  return robots.state.load(objContentFilesPath);
 }
 
 async function reset(brand, objContentFilesPath) {
-  if (_checkSync(objContentFilesPath)) return false
+  if (_checkSync(objContentFilesPath)) return false;
 
-  await _processStats(objContentFilesPath, "begin", "reset")
-  await robots.reset(objContentFilesPath)
-  await _processStats(objContentFilesPath, "end", "reset")
+  await _processStats(objContentFilesPath, "begin", "reset");
+  await robots.reset(objContentFilesPath);
+  await _processStats(objContentFilesPath, "end", "reset");
 }
 
 async function sync(objContentFilesPath) {
-  if (_checkSync(objContentFilesPath)) return false
+  if (_checkSync(objContentFilesPath)) return false;
 
-  await _processStats(objContentFilesPath, "begin", "sync")
-  await robots.sendProducts(objContentFilesPath)
-  await _processStats(objContentFilesPath, "end", "sync")
+  await _processStats(objContentFilesPath, "begin", "sync");
+  await robots.sendProducts(objContentFilesPath);
+  await _processStats(objContentFilesPath, "end", "sync");
 }
 
 async function download(objContentFilesPath) {
-  _processStats(objContentFilesPath, "begin", "download")
-  await robots.fetchXmlProducts(objContentFilesPath)
-  robots.removeProductsDuplicate(objContentFilesPath)
-  robots.addCustomDataInProducts(objContentFilesPath)
-  robots.defineStageOfProducts(objContentFilesPath)
-  await _processStats(objContentFilesPath, "end", "download")
+  _processStats(objContentFilesPath, "begin", "download");
+  await robots.fetchXmlProducts(objContentFilesPath);
+  robots.unionProductsGroup(objContentFilesPath);
+  robots.addCustomDataInProducts(objContentFilesPath);
+  robots.defineStageOfProducts(objContentFilesPath);
+  await _processStats(objContentFilesPath, "end", "download");
 }
 
 const init = brand => {
   const objContentFilesPath = {
     original: `./temp/${brand.id}_original.json`,
     production: `./temp/${brand.id}_production.json`
-  }
+  };
 
   return {
     //  start: start.bind(null, brand, objContentFilesPath),
@@ -137,7 +137,7 @@ const init = brand => {
     load: load.bind(null, brand, objContentFilesPath),
     sync: sync.bind(null, objContentFilesPath),
     download: download.bind(null, objContentFilesPath)
-  }
-}
+  };
+};
 
-module.exports = init
+module.exports = init;
