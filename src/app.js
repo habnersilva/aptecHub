@@ -1,15 +1,15 @@
 const init = models => {
-  const express = require("express")
-  const bodyParser = require("body-parser")
-  const session = require("express-session")
-  const path = require("path")
-  const routers = require("./routes/indexRoutes")
-  const cron = require("cron")
+  const express = require("express");
+  const bodyParser = require("body-parser");
+  const session = require("express-session");
+  const path = require("path");
+  const routers = require("./routes/indexRoutes");
+  const cron = require("cron");
 
-  app = express()
+  app = express();
 
   // Body Parser
-  app.use(bodyParser.urlencoded({ extended: true }))
+  app.use(bodyParser.urlencoded({ extended: true }));
   app.use(
     session({
       secret: "AptecHubSession",
@@ -18,50 +18,50 @@ const init = models => {
       saveUninitialized: true
       //  cookie: { secure: true }
     })
-  )
-  app.use(express.static("./dist/public"))
-  app.use(require("connect-flash")())
+  );
+  app.use(express.static("./dist/public"));
+  app.use(require("connect-flash")());
 
   //Middleware
   app.use(async (req, res, next) => {
-    req.session.user = {
-      id: "1",
-      name: "Habner Silva",
-      email: "habner@aptec.com.br",
-      role: "administrador"
-    }
+    // req.session.user = {
+    //   id: "1",
+    //   name: "Habner Silva",
+    //   email: "habner@aptec.com.br",
+    //   role: "administrador"
+    // }
 
     // Seta messages global
-    res.locals.messagesGlobal = require("./utils/messagesGlobal")(req, res)
-    res.locals.messagesFlash = require("express-messages")(req, res)
+    res.locals.messagesGlobal = require("./utils/messagesGlobal")(req, res);
+    res.locals.messagesFlash = require("express-messages")(req, res);
 
-    const { user } = req.session
+    const { user } = req.session;
 
     if (!user) {
       if (req.path !== "/login" && req.path !== "/login/cadastrese") {
-        res.redirect("/login")
+        res.redirect("/login");
       } else {
-        next()
+        next();
       }
     } else {
-      res.locals.user = user
-      next()
+      res.locals.user = user;
+      next();
     }
-  })
+  });
 
   // dependencias
   const dependencies = {
     models,
     tasks: require("./tasks/indexTasks")(cron, models)
-  }
+  };
 
-  app.use(routers(dependencies))
-  app.disable("x-powered-by")
+  app.use(routers(dependencies));
+  app.disable("x-powered-by");
 
-  app.set("view engine", "ejs")
-  app.set("views", path.join(__dirname, "views"))
+  app.set("view engine", "ejs");
+  app.set("views", path.join(__dirname, "views"));
 
-  return app
-}
+  return app;
+};
 
-module.exports = init
+module.exports = init;
