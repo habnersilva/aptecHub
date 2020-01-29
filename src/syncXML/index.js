@@ -6,11 +6,7 @@ const robots = {
   fetchXmlProducts: require("./fetchXmlProducts"),
   defineStageOfProducts: require("./defineStageOfProducts"),
   addCustomDataInProducts: require("./addCustomDataInProducts"),
-<<<<<<< HEAD
   unionProductsGroup: require("./unionProductsGroup"),
-=======
-  removeProductsDuplicate: require("./removeProductsDuplicate"),
->>>>>>> eb7c6a6f2898a81cf5049dbc8eb5ec0eceebf71c
   sendProducts: require("./sendProducts"),
   state: require("./state")
 };
@@ -121,21 +117,12 @@ async function sync(objContentFilesPath) {
 }
 
 async function download(objContentFilesPath) {
-<<<<<<< HEAD
   _processStats(objContentFilesPath, "begin", "download");
   await robots.fetchXmlProducts(objContentFilesPath);
   robots.unionProductsGroup(objContentFilesPath);
   robots.addCustomDataInProducts(objContentFilesPath);
   robots.defineStageOfProducts(objContentFilesPath);
   await _processStats(objContentFilesPath, "end", "download");
-=======
-  _processStats(objContentFilesPath, "begin", "download")
-  await robots.fetchXmlProducts(objContentFilesPath)
-  robots.removeProductsDuplicate(objContentFilesPath)
-  robots.addCustomDataInProducts(objContentFilesPath)
-  robots.defineStageOfProducts(objContentFilesPath)
-  await _processStats(objContentFilesPath, "end", "download")
->>>>>>> eb7c6a6f2898a81cf5049dbc8eb5ec0eceebf71c
 }
 
 const init = brand => {
@@ -153,8 +140,4 @@ const init = brand => {
   };
 };
 
-<<<<<<< HEAD
 module.exports = init;
-=======
-module.exports = init
->>>>>>> eb7c6a6f2898a81cf5049dbc8eb5ec0eceebf71c

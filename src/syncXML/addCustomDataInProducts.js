@@ -174,11 +174,7 @@ function _sync() {
 
 function _traeatProduts(content) {
   content.original.products = content.original.products.map(product => {
-<<<<<<< HEAD
     let sync = _sync();
-=======
-    let sync = _sync()
->>>>>>> eb7c6a6f2898a81cf5049dbc8eb5ec0eceebf71c
     try {
       // Forço o nome da Marca com dados cadastrado no AptecHub
       product.title = _title(product);
@@ -220,13 +216,7 @@ const init = async objContentFilesPath => {
 
   _traeatProduts(content);
 
-<<<<<<< HEAD
   state.save(objContentFilesPath, content);
 };
 
 module.exports = init;
-=======
-  state.save(objContentFilesPath, content)
-}
-module.exports = init
->>>>>>> eb7c6a6f2898a81cf5049dbc8eb5ec0eceebf71c
