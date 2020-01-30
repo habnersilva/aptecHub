@@ -24,12 +24,15 @@ const init = models => {
 
   //Middleware
   app.use(async (req, res, next) => {
-    req.session.user = {
-      id: "1",
-      name: "Habner Silva",
-      email: "habner@aptec.com.br",
-      role: "administrador"
-    };
+    console.log(process.env.REQUEST_LOGIN);
+    if (process.env.REQUEST_LOGIN === "false") {
+      req.session.user = {
+        id: "1",
+        name: "Habner Silva",
+        email: "habner@aptec.com.br",
+        role: "administrador"
+      };
+    }
 
     // Seta messages global
     res.locals.messagesGlobal = require("./utils/messagesGlobal")(req, res);
