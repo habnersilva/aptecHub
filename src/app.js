@@ -24,7 +24,6 @@ const init = models => {
 
   //Middleware
   app.use(async (req, res, next) => {
-    console.log(process.env.REQUEST_LOGIN);
     if (process.env.REQUEST_LOGIN === "false") {
       req.session.user = {
         id: "1",
