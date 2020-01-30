@@ -2,6 +2,48 @@ const state = require("./state");
 const slugify = require("slugify");
 const moment = require("moment");
 
+function _translateGender(gender) {
+  if (gender === "female") {
+    return "Feminino";
+  } else if (gender === "male") {
+    return "Masculino";
+  } else if (gender === "unissex") {
+    return "Unissex";
+  }
+}
+
+function _translateAgeGroup(age_group) {
+  if (age_group === "newborn") {
+    return "Recém-nascido";
+  } else if (age_group === "infant") {
+    return "3 a 12 meses";
+  } else if (age_group === "toddler") {
+    return "1 a 5 anos";
+  } else if (age_group === "kids") {
+    return "Infantil";
+  } else if (age_group === "adult") {
+    return "Adulto";
+  }
+}
+
+function _formatSize(size) {
+  return size.toString().toUpperCase();
+}
+
+function _formatColor(color) {
+  color = color.toString().toLowerCase();
+
+  // Capitalize
+  color = color
+    .split(" ")
+    .map(str => {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    })
+    .join(" ");
+
+  return color;
+}
+
 /**
  *
  * @param {*} product
@@ -109,7 +151,7 @@ function _size(product) {
     // throw new Error("O produto não possui TAMANHO")
   }
 
-  return size.toUpperCase();
+  return size;
 }
 
 /**
@@ -151,11 +193,17 @@ function _slug(link, suffix) {
 function _tags(product) {
   let str = product.tags;
 
-  if (product.brand) str = str.concat(product.brand + ", ");
-  if (product.gender) str = str.concat(product.gender + ", ");
-  if (product.age_group) str = str.concat(product.ager_group + ", ");
-  if (product.size) str = str.concat(product.size + ", ");
-  if (product.color) str = str.concat(product.color + ", ");
+  const strBrand = product.brand + ", ";
+  const strGender = _translateGender(product.gender) + ", ";
+  const strAgeGroup = _translateAgeGroup(product.age_group) + ", ";
+  const strSize = _formatSize(product.size) + ", ";
+  const strColor = _formatColor(product.color) + ", ";
+
+  if (product.brand) str = str.concat(strBrand);
+  if (product.gender) str = str.concat(strGender);
+  if (product.age_group) str = str.concat(strAgeGroup);
+  if (product.size) str = str.concat(strSize);
+  if (product.color) str = str.concat(strColor);
 
   return str;
 }
@@ -193,7 +241,9 @@ function _traeatProduts(content) {
       // Shopify exige o slug(handle)
       product.slug = _slug(product.link, `${product.id}-${product.brand}`);
       product.tags = _tags(product);
+      //    console.log(product.tags);
     } catch (err) {
+      console.error(err);
       sync = {
         ...product.sync,
         status: "error",
