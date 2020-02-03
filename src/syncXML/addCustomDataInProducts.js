@@ -170,6 +170,10 @@ function _color(product) {
   return color.toUpperCase();
 }
 
+function _link(link) {
+  return `${link}?utm_source=portaldotricot&utm_medium=produto&utm_campaign=portaldotricot-assinante`;
+}
+
 /**
  *
  * @param {*} link
@@ -240,8 +244,8 @@ function _traeatProduts(content) {
 
       // Shopify exige o slug(handle)
       product.slug = _slug(product.link, `${product.id}-${product.brand}`);
+      product.link = _link(product.link);
       product.tags = _tags(product);
-      //    console.log(product.tags);
     } catch (err) {
       console.error(err);
       sync = {
