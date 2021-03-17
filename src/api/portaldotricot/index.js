@@ -54,6 +54,7 @@ const init = () => {
       domain: data.domain,
       product_type: data.product_type,
       published_at: data.published_at,
+      status: (data.published ? "active" : "draft"),
       tags: data.tags,
       variants: [{
         price: data.price,
