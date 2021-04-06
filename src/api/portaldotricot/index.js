@@ -5,7 +5,7 @@ const init = () => {
     shopName: process.env.SHOPIFY_SHOPNAME,
     apiKey: process.env.SHOPIFY_APIKEY,
     password: process.env.SHOPIFY_PASSWORD,
-    apiVersion: "2019-07",
+    apiVersion: "2021-04", //2019-07
     autoLimit: {
       calls: 1,
       interval: 2000,
