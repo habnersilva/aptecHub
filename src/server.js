@@ -1,5 +1,9 @@
 require("dotenv").config()
 
+const moment = require('moment-timezone');
+
+moment.tz.setDefault(process.env.APTEC_TIMEZONE);
+
 const { sequelize, models, initialUser } = require("./models/indexModel")
 
 const port = process.env.PORT || 3000
