@@ -99,7 +99,7 @@ function clearProductionProducts(content) {
 const init = async objContentFilesPath => {
   // console.log("---> downlaodsProductsPortal")
 
-  const content = state.load(objContentFilesPath)
+  const content = await state.load(objContentFilesPath)
 
   _createVariables(content)
   clearProductionProducts(content)
@@ -108,7 +108,7 @@ const init = async objContentFilesPath => {
   salveInTempProducts(content)
   organizeFileContent(content)
 
-  state.save(objContentFilesPath, content)
+  await state.save(objContentFilesPath, content)
 }
 
 module.exports = init

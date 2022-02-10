@@ -266,11 +266,11 @@ function _traeatProduts(content) {
 const init = async objContentFilesPath => {
   //console.log("---> addCustomDataInProducts")
 
-  const content = state.load(objContentFilesPath);
+  const content = await state.load(objContentFilesPath);
 
   _traeatProduts(content);
 
-  state.save(objContentFilesPath, content);
+  await state.save(objContentFilesPath, content);
 };
 
 module.exports = init;

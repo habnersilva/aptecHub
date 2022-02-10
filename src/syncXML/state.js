@@ -1,40 +1,76 @@
 const fs = require("fs")
 
-function save(objContentFilesPath, content) {
-  const data = {}
+const { S3Client, GetObjectCommand, PutObjectCommand, ListObjectsCommand } = require('@aws-sdk/client-s3');
 
-  Object.keys(objContentFilesPath).forEach(nameFile => {
-    const contentFilePath = objContentFilesPath[nameFile]
-    data[nameFile] = saveOne(contentFilePath, content[nameFile])
+const region = process.env.AWS_REGION;
+const Bucket = process.env.AWS_BUCKET_NAME;
+const s3 = new S3Client({ region });
+
+async function save(objContentFilesPath, content) {
+  await Promise.all(Object.keys(objContentFilesPath).map(async key => {
+    const contentFilePath = objContentFilesPath[key]
+    await saveOne(contentFilePath, content[key])
+  }))
+}
+
+async function saveOne(contentFilePath, content) {
+  const Body = JSON.stringify(content);
+  const putObjectCommand = new PutObjectCommand({
+    Bucket,
+    Body,
+    Key: contentFilePath,
+  });
+  await s3.send(putObjectCommand);
+}
+
+async function getObjectFromS3(Key) {
+  return new Promise(async (resolve, reject) => {
+    const getObjectCommand = new GetObjectCommand({
+      Bucket,
+      Key
+    })
+
+    const content = await s3.send(getObjectCommand)
+
+    let chunks = [];
+
+    content.Body.once('error', err => reject(err))
+    content.Body.on('data', chunk => chunks.push(chunk))
+    content.Body.once('end', () => resolve(chunks.join('')))
+  })
+}
+
+async function load(objContentFilesPath) {
+  const listObjectsCommand = new ListObjectsCommand({
+    Bucket
   })
 
-  return data
-}
+  const objects = await s3.send(listObjectsCommand);
 
-function saveOne(contentFilePath, content) {
-  const contentString = JSON.stringify(content)
-  return fs.writeFileSync(contentFilePath, contentString)
-}
+  const keys = objects.Contents && objects.Contents.length ? objects.Contents.map(content => content.Key) : [];
 
-function load(objContentFilesPath) {
-  const data = {}
+  const result = Object.keys(objContentFilesPath).reduce(async (data, key) => {
+    const contentFilePath = objContentFilesPath[key]
 
-  Object.keys(objContentFilesPath).forEach(nameFile => {
-    const contentFilePath = objContentFilesPath[nameFile]
-
-    if (!fs.existsSync(contentFilePath)) {
-      saveOne(contentFilePath, {})
+    if (!keys.includes(contentFilePath)) {
+      await saveOne(contentFilePath, {})
     }
 
-    const fileBuffer = fs.readFileSync(contentFilePath, "utf-8")
-    const contentJson = JSON.parse(fileBuffer)
-    data[nameFile] = contentJson
-  })
+    const object = await getObjectFromS3(contentFilePath);
 
-  return data
+    // const fileBuffer = fs.readFileSync(contentFilePath, "utf-8")
+    const contentJson = JSON.parse(object)
+    return {
+      ...await data,
+      [key]: contentJson
+    }
+  }, {})
+
+
+  return result
 }
 
 module.exports = {
   save,
-  load
+  load,
 }

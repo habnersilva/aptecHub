@@ -1,4 +1,5 @@
 const moment = require("moment");
+const { get } = require('lodash');
 const portalDoTricot = require("../api/portaldotricot");
 const robots = {
   initContentFiles: require("./initContentFiles"),
@@ -11,10 +12,10 @@ const robots = {
   state: require("./state")
 };
 
-function _checkSync(objContentFilesPath) {
-  const content = robots.state.load(objContentFilesPath);
+async function _checkSync(objContentFilesPath) {
+  const content = await robots.state.load(objContentFilesPath);
 
-  if (content.production.stats.process.status === "begin") {
+  if (get(content, 'production.stats.process.status', '') === "begin") {
     console.log("--> Cliente já está em Sync");
     return true;
   } else {
@@ -27,7 +28,7 @@ async function _processStats(
   status = "begin",
   action = ""
 ) {
-  const content = robots.state.load(objContentFilesPath);
+  const content = await robots.state.load(objContentFilesPath);
 
   let {
     downloadBeginTime,
@@ -92,16 +93,18 @@ async function _processStats(
 
   console.log(terminalMsg);
 
-  robots.state.save(objContentFilesPath, content);
+  await robots.state.save(objContentFilesPath, content);
 }
 
 async function load(brand, objContentFilesPath) {
   await robots.initContentFiles(brand, objContentFilesPath);
-  return robots.state.load(objContentFilesPath);
+  const content = robots.state.load(objContentFilesPath);
+  return content
 }
 
 async function reset(brand, objContentFilesPath) {
-  if (_checkSync(objContentFilesPath)) return false;
+  const syncStatus = await _checkSync(objContentFilesPath);
+  if (syncStatus) return false;
 
   await _processStats(objContentFilesPath, "begin", "reset");
   await robots.reset(objContentFilesPath);
@@ -109,7 +112,8 @@ async function reset(brand, objContentFilesPath) {
 }
 
 async function sync(objContentFilesPath) {
-  if (_checkSync(objContentFilesPath)) return false;
+  const syncStatus = await _checkSync(objContentFilesPath);
+  if (syncStatus) return false;
 
   await _processStats(objContentFilesPath, "begin", "sync");
   await robots.sendProducts(objContentFilesPath);
@@ -119,16 +123,16 @@ async function sync(objContentFilesPath) {
 async function download(objContentFilesPath) {
   _processStats(objContentFilesPath, "begin", "download");
   await robots.fetchXmlProducts(objContentFilesPath);
-  robots.unionProductsGroup(objContentFilesPath);
-  robots.addCustomDataInProducts(objContentFilesPath);
-  robots.defineStageOfProducts(objContentFilesPath);
+  await robots.unionProductsGroup(objContentFilesPath);
+  await robots.addCustomDataInProducts(objContentFilesPath);
+  await robots.defineStageOfProducts(objContentFilesPath);
   await _processStats(objContentFilesPath, "end", "download");
 }
 
 const init = brand => {
   const objContentFilesPath = {
-    original: `./temp/${brand.id}_original.json`,
-    production: `./temp/${brand.id}_production.json`
+    original: `${brand.id}_original.json`,
+    production: `${brand.id}_production.json`
   };
 
   return {

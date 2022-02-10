@@ -94,13 +94,13 @@ function _removePrefixGoogleInProps(content) {
 const init = async objContentFilesPath => {
   // console.log("---> fetchXMLProducts")
 
-  const content = state.load(objContentFilesPath)
+  const content = await state.load(objContentFilesPath)
 
   await _getProducts(content)
   _removePrefixGoogleInProps(content)
   _removeCDATAEmptyInValues(content)
 
-  state.save(objContentFilesPath, content)
+  await state.save(objContentFilesPath, content)
 }
 
 module.exports = init
