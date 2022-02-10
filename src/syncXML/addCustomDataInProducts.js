@@ -1,6 +1,6 @@
 const state = require("./state");
 const slugify = require("slugify");
-const moment = require("moment");
+const moment = require("moment-timezone");
 
 function _translateGender(gender) {
   if (gender === "female") {

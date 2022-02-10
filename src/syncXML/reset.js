@@ -1,6 +1,6 @@
 const state = require("./state")
 const portalDoTricot = require("../api/portaldotricot")
-const moment = require("moment")
+const moment = require("moment-timezone")
 
 /**
  *

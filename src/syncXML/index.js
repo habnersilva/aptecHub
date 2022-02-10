@@ -1,4 +1,4 @@
-const moment = require("moment");
+const moment = require("moment-timezone");
 const { get } = require('lodash');
 const portalDoTricot = require("../api/portaldotricot");
 const robots = {

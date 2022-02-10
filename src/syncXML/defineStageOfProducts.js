@@ -1,5 +1,5 @@
 const state = require("./state");
-const moment = require("moment");
+const moment = require("moment-timezone");
 
 function _unionTags(tags1, tags2) {
   const vtr1 = tags1.split(","),
