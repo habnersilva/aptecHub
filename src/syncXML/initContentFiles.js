@@ -2,16 +2,10 @@ const state = require("./state")
 const fs = require("fs")
 const portalDoTricot = require("../api/portaldotricot")
 
-function _createFolderIfNotExist(folder) {
-  fs.existsSync(folder) || fs.mkdirSync(folder)
-}
-
 const init = async (brand, objContentFilesPath) => {
   //console.log("=> initContentFiles")
 
-  _createFolderIfNotExist("temp")
-
-  const content = state.load(objContentFilesPath)
+  const content = await state.load(objContentFilesPath)
 
   content.original.brand = brand
   content.production.brand = brand
@@ -43,7 +37,7 @@ const init = async (brand, objContentFilesPath) => {
     content.production.products = []
   }
 
-  state.save(objContentFilesPath, content)
+  await state.save(objContentFilesPath, content)
 }
 
 module.exports = init

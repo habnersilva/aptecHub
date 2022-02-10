@@ -38,10 +38,10 @@ function _filterImageLinkUnique(content) {
 const init = async objContentFilesPath => {
   //console.log("---> unionProductsGroup")
 
-  const content = state.load(objContentFilesPath);
+  const content = await state.load(objContentFilesPath);
 
   _filterImageLinkUnique(content);
 
-  state.save(objContentFilesPath, content);
+  await state.save(objContentFilesPath, content);
 };
 module.exports = init;

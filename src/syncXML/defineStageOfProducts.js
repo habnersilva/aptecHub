@@ -173,17 +173,17 @@ function _defineStatusDeleted(content) {
  *
  * @param {*} objContentFilesPath
  */
-const init = objContentFilesPath => {
+const init = async objContentFilesPath => {
   // console.log("---> defineStageOfProducts")
 
-  const content = state.load(objContentFilesPath);
+  const content = await state.load(objContentFilesPath);
 
   _defineStatusError(content);
   _defineStatusNew(content);
   _defineStatusModified(content);
   _defineStatusDeleted(content);
 
-  state.save(objContentFilesPath, content);
+  await state.save(objContentFilesPath, content);
 };
 
 module.exports = init;
