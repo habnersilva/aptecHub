@@ -2,6 +2,8 @@ const portalDoTricot = require("../api/portaldotricot")
 const state = require("./state")
 const moment = require("moment")
 
+const BATCH_SIZE = process.env.SYNC_BATCH_SIZE || 10;
+
 /**
  * @param {Object} content
  * @return {Object} productShopify
@@ -114,7 +116,7 @@ const init = async objContentFilesPath => {
   // console.log("---> sendProducts")
 
   const content = await state.load(objContentFilesPath)
-  await _updateProduction(content, 10)
+  await _updateProduction(content, BATCH_SIZE)
   await state.save(objContentFilesPath, content)
 }
 module.exports = init
