@@ -27,7 +27,7 @@
     "express-messages": "^1.0.1",
     "express-session": "^1.16.2",
     "fast-xml-parser": "^3.15.1",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "mysql2": "^1.7.0",
     "sequelize": "^5.18.0",
     "shopify-api-node": "^2.23.1",
